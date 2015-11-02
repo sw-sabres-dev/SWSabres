@@ -8,9 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
+		89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */; };
+		89E9FB591BE79FB200D031CE /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB581BE79FB200D031CE /* Game.swift */; };
+		89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */; };
+		89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB5C1BE7BE6400D031CE /* Venue.swift */; };
+		89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */; };
+		89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */; };
+		89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */; };
+		89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146D1BE7EC0C006FC782 /* Announcement.swift */; };
 		8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */; };
-		8F9EC5621BE5A7B500FB60CD /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9EC5611BE5A7B500FB60CD /* FirstViewController.swift */; };
-		8F9EC5641BE5A7B500FB60CD /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9EC5631BE5A7B500FB60CD /* SecondViewController.swift */; };
 		8F9EC5671BE5A7B500FB60CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5651BE5A7B500FB60CD /* Main.storyboard */; };
 		8F9EC5691BE5A7B500FB60CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */; };
 		8F9EC56C1BE5A7B500FB60CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */; };
@@ -18,10 +24,16 @@
 
 /* Begin PBXFileReference section */
 		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScheduleTableViewController.swift; path = ViewControllers/ScheduleTableViewController.swift; sourceTree = "<group>"; };
+		89E9FB581BE79FB200D031CE /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = SWSabres/Model/Game.swift; sourceTree = "<group>"; };
+		89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Schedule.swift; path = SWSabres/Model/Schedule.swift; sourceTree = "<group>"; };
+		89E9FB5C1BE7BE6400D031CE /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Venue.swift; path = SWSabres/Model/Venue.swift; sourceTree = "<group>"; };
+		89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResponseJSONObjectSerializable.swift; path = SWSabres/WebAPI/ResponseJSONObjectSerializable.swift; sourceTree = "<group>"; };
+		89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Request-ResponseSerializer.swift"; path = "SWSabres/WebAPI/Request-ResponseSerializer.swift"; sourceTree = "<group>"; };
+		89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementsTableViewController.swift; path = ViewControllers/AnnouncementsTableViewController.swift; sourceTree = "<group>"; };
+		89FE146D1BE7EC0C006FC782 /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Announcement.swift; path = SWSabres/Model/Announcement.swift; sourceTree = "<group>"; };
 		8F9EC55C1BE5A7B500FB60CD /* SWSabres.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SWSabres.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8F9EC5611BE5A7B500FB60CD /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		8F9EC5631BE5A7B500FB60CD /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		8F9EC5661BE5A7B500FB60CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8F9EC56B1BE5A7B500FB60CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -59,13 +71,44 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		89E9FB561BE79EF900D031CE /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */,
+				89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		89E9FB571BE79FA500D031CE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				89FE146D1BE7EC0C006FC782 /* Announcement.swift */,
+				89E9FB581BE79FB200D031CE /* Game.swift */,
+				89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */,
+				89E9FB5C1BE7BE6400D031CE /* Venue.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		89E9FB5E1BE7CB0800D031CE /* WebAPI */ = {
+			isa = PBXGroup;
+			children = (
+				89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */,
+				89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */,
+			);
+			name = WebAPI;
+			sourceTree = "<group>";
+		};
 		8F9EC5531BE5A7B500FB60CD = {
 			isa = PBXGroup;
 			children = (
-				8F9EC55E1BE5A7B500FB60CD /* SWSabres */,
-				8F9EC55D1BE5A7B500FB60CD /* Products */,
-				79352EC8C35F97FEDE6C13C9 /* Pods */,
 				54F17438AB206A4533EC7923 /* Frameworks */,
+				89E9FB571BE79FA500D031CE /* Model */,
+				79352EC8C35F97FEDE6C13C9 /* Pods */,
+				8F9EC55D1BE5A7B500FB60CD /* Products */,
+				8F9EC55E1BE5A7B500FB60CD /* SWSabres */,
+				89E9FB5E1BE7CB0800D031CE /* WebAPI */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,12 +124,11 @@
 			isa = PBXGroup;
 			children = (
 				8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */,
-				8F9EC5611BE5A7B500FB60CD /* FirstViewController.swift */,
-				8F9EC5631BE5A7B500FB60CD /* SecondViewController.swift */,
-				8F9EC5651BE5A7B500FB60CD /* Main.storyboard */,
 				8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */,
-				8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */,
 				8F9EC56D1BE5A7B500FB60CD /* Info.plist */,
+				8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */,
+				8F9EC5651BE5A7B500FB60CD /* Main.storyboard */,
+				89E9FB561BE79EF900D031CE /* ViewControllers */,
 			);
 			path = SWSabres;
 			sourceTree = "<group>";
@@ -213,9 +255,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F9EC5641BE5A7B500FB60CD /* SecondViewController.swift in Sources */,
+				89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */,
+				89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */,
+				89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */,
+				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,
+				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
+				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
+				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
+				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
 				8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */,
-				8F9EC5621BE5A7B500FB60CD /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
