@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-class ScheduleTableViewController: UITableViewController
+final class ScheduleTableViewController: UITableViewController
 {
     var scheduleMap: [String: Schedule] = [String: Schedule]()
     var venueMap: [String: Venue] = [String: Venue]()
@@ -35,6 +35,7 @@ class ScheduleTableViewController: UITableViewController
         dateFormatter.dateStyle = .NoStyle
         dateFormatter.timeStyle = .ShortStyle
 
+        //sectionDateFormatter.dateFormat = "EEE MMM dd yyyy"
         sectionDateFormatter.dateStyle = .FullStyle
         sectionDateFormatter.timeStyle = .NoStyle
         
@@ -185,6 +186,7 @@ class ScheduleTableViewController: UITableViewController
         if (cell == nil)
         {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "reuseIdentifier")
+            cell.accessoryType = .DisclosureIndicator
         }
         
         // Configure the cell...
@@ -195,6 +197,9 @@ class ScheduleTableViewController: UITableViewController
             let game = gamesOnDay[indexPath.row]
             
             var labelText: String = ""
+            
+            labelText += dateFormatter.stringFromDate(game.gameDate)
+            labelText += " "
             
             if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
@@ -221,7 +226,10 @@ class ScheduleTableViewController: UITableViewController
             
             cell.textLabel?.text = labelText
             
-            cell.detailTextLabel?.text = dateFormatter.stringFromDate(game.gameDate)
+            if let gameVenueId = game.gameVenueId, let venue: Venue = self.venueMap[gameVenueId]
+            {
+                cell.detailTextLabel?.text = venue.title
+            }
 
         }
         
