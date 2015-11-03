@@ -30,7 +30,6 @@ class ScheduleTableViewController: UITableViewController
         
         self.title = "Schedule"
 
-        dateFormatter.timeZone = NSTimeZone(name: "GMT")
         dateFormatter.dateStyle = .ShortStyle
         dateFormatter.timeStyle = .ShortStyle
 

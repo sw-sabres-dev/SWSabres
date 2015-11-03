@@ -32,9 +32,7 @@ struct Game: ResponseJSONObjectSerializable
             return nil
         }
         
-        //game_sched_id
-        
-        let game_unix_dtg = json["custom_fields"]["game_unix_dtg"][0].doubleValue
+        var game_unix_dtg = json["custom_fields"]["game_unix_dtg"][0].doubleValue
         
         if game_unix_dtg == 0
         {
@@ -44,6 +42,9 @@ struct Game: ResponseJSONObjectSerializable
         self.teamId = json["custom_fields"]["game_opponent_team"][0].string
         self.opponent = json["custom_fields"]["game_opponent"][0].string
         self.isHomeGame = json["custom_fields"]["game_is_home_game"][0].boolValue
+        
+        // Fix the timezone offset.
+        game_unix_dtg -= Double(NSTimeZone.localTimeZone().secondsFromGMT)
         
         self.gameDate = NSDate(timeIntervalSince1970: game_unix_dtg)
         
