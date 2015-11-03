@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-struct Team: ResponseJSONObjectSerializable
+struct Team: ResponseJSONObjectSerializable, UniqueObject
 {
     static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=500"
     
@@ -43,9 +43,17 @@ struct Team: ResponseJSONObjectSerializable
         self.shortName = team_short_name
     }
     
-    static func getTeams(completionHandler: (Result<[Team], NSError>) -> Void)
+    var uniqueId: String
     {
-        Alamofire.request(.GET, Team.endpoint).getPostsReponseArray { response in
+        get
+        {
+            return teamId
+        }
+    }
+    
+    static func getTeams(fileName: String, completionHandler: (Result<[Team], NSError>) -> Void)
+    {
+        Alamofire.request(.GET, Team.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
         }
     }

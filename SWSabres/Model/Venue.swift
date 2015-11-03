@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-struct Venue: ResponseJSONObjectSerializable
+struct Venue: ResponseJSONObjectSerializable, UniqueObject
 {
     static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_venue&count=500"
     
@@ -75,9 +75,17 @@ struct Venue: ResponseJSONObjectSerializable
         self.zip = venue_zip
     }
  
-    static func getVenues(completionHandler: (Result<[Venue], NSError>) -> Void)
+    var uniqueId: String
     {
-        Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray { response in
+        get
+        {
+            return venueId
+        }
+    }
+    
+    static func getVenues(fileName: String, completionHandler: (Result<[Venue], NSError>) -> Void)
+    {
+        Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
         }
     }

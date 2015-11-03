@@ -59,9 +59,9 @@ struct Game: ResponseJSONObjectSerializable
         return baseEndpoint + "&meta_key=game_sched_id&meta_value=\(scheduleId)"
     }
     
-    static func getAllGames(completionHandler: (Result<[Game], NSError>) -> Void)
+    static func getAllGames(fileName: String, completionHandler: (Result<[Game], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Game.baseEndpoint).getPostsReponseArray { response in
+        Alamofire.request(.GET, Game.baseEndpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
         }
     }

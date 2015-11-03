@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-struct Schedule: ResponseJSONObjectSerializable
+struct Schedule: ResponseJSONObjectSerializable, UniqueObject
 {
     static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_schedule"
     
@@ -54,9 +54,17 @@ struct Schedule: ResponseJSONObjectSerializable
         self.scheduleTeamId = schedule_team
     }
     
-    static func getSchedules(completionHandler: (Result<[Schedule], NSError>) -> Void)
+    var uniqueId: String
     {
-        Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray { response in
+        get
+        {
+            return scheduleId
+        }
+    }
+    
+static func getSchedules(fileName: String, completionHandler: (Result<[Schedule], NSError>) -> Void)
+    {
+        Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
         }
     }

@@ -24,17 +24,47 @@ class AnnouncementsTableViewController: UITableViewController {
         
         //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        Announcement.getAnnouncements { (result) -> Void in
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            let jsonCacheFolder = documentFolder.stringByAppendingPathComponent("jsonCacheFolder")
             
-            if let fetchedAnnouncements = result.value
+            do
             {
-                self.announcements = fetchedAnnouncements
+                try FileUtil.ensureFolder(jsonCacheFolder)
+            }
+            catch
+            {
+                return
+            }
+            
+            let announcementsFileName = jsonCacheFolder.stringByAppendingPathComponent("announcements.json")
+            let fileManager: NSFileManager = NSFileManager()
+            
+            if fileManager.fileExistsAtPath(announcementsFileName)
+            {
+                self.announcements =  Announcement.loadObjects(announcementsFileName)
                 
-                self.tableView.reloadData()
+                dispatch_async(dispatch_get_main_queue()) {
+                    
+                    self.tableView.reloadData()
+                }
+            }
+            else
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                
+                Announcement.getAnnouncements(announcementsFileName) { (result) -> Void in
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    
+                    if let fetchedAnnouncements = result.value
+                    {
+                        self.announcements = fetchedAnnouncements
+                        
+                        self.tableView.reloadData()
+                    }
+                }
             }
         }
         

@@ -1,24 +1,24 @@
 //
-//  ResponseJSONObjectSerializable.swift
+//  UniqueObject.swift
 //  SWSabres
 //
-//  Created by Mark Johnson on 11/2/15.
+//  Created by Mark Johnson on 11/3/15.
 //  Copyright © 2015 swdev.net. All rights reserved.
 //
 
 import Foundation
 import SwiftyJSON
 
-public protocol ResponseJSONObjectSerializable
+public protocol UniqueObject
 {
-    init?(json: SwiftyJSON.JSON)
+    var uniqueId: String { get }
 }
 
-extension ResponseJSONObjectSerializable
+extension UniqueObject
 {
-    static func loadObjects<T: ResponseJSONObjectSerializable>(fileName: String) -> [T]
+    static func loadObjectMap<T where T: ResponseJSONObjectSerializable, T: UniqueObject>(fileName: String) -> [String: T]
     {
-        var objects: [T] = [T]()
+        var objectMap: [String: T] = [String: T]()
         
         if let data: NSData = NSData(contentsOfFile: fileName)
         {
@@ -32,12 +32,12 @@ extension ResponseJSONObjectSerializable
                 {
                     if let object = T(json: item)
                     {
-                        objects.append(object)
+                        objectMap[object.uniqueId] = object
                     }
                 }
             }
         }
         
-        return objects
+        return objectMap
     }
 }

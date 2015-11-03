@@ -87,7 +87,7 @@ extension Alamofire.Request
         return response(responseSerializer: responseSerializer, completionHandler: completionHandler)
     }
     
-    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(completionHandler: Response<[T], NSError> -> Void) -> Self
+    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(fileName: String, completionHandler: Response<[T], NSError> -> Void) -> Self
     {
         let responseSerializer = ResponseSerializer<[T], NSError> { request, response, data, error in
             
@@ -110,28 +110,21 @@ extension Alamofire.Request
                 
             case .Success(let value):
                 
+                responseData.writeToFile(fileName, atomically: true)
+                
                 let json = SwiftyJSON.JSON(value)
                 
                 let posts = json["posts"]
                 
-                if posts.count > 0
+                var objects: [T] = []
+                for (_, item) in posts
                 {
-                    var objects: [T] = []
-                    for (_, item) in posts
+                    if let object = T(json: item)
                     {
-                        if let object = T(json: item)
-                        {
-                            objects.append(object)
-                        }
+                        objects.append(object)
                     }
-                    return .Success(objects)
                 }
-                else
-                {
-                    let failureReason = "posts array could not be found."
-                    let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
-                    return .Failure(error)
-                }
+                return .Success(objects)
                 
             case .Failure(let error):
                 return .Failure(error)

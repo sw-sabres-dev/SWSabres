@@ -88,9 +88,9 @@ struct Announcement: ResponseJSONObjectSerializable
         }
     }
     
-    static func getAnnouncements(completionHandler: (Result<[Announcement], NSError>) -> Void)
+    static func getAnnouncements(fileName: String, completionHandler: (Result<[Announcement], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Announcement.endpoint).getPostsReponseArray { response in
+        Alamofire.request(.GET, Announcement.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
         }
     }

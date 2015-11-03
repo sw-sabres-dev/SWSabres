@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
 		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
+		897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84001BE9525800CBEB90 /* FileUtil.swift */; };
+		897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84021BE9529600CBEB90 /* StringPathExtensions.swift */; };
+		897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84041BE959B000CBEB90 /* UniqueObject.swift */; };
 		89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */; };
 		89E9FB591BE79FB200D031CE /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB581BE79FB200D031CE /* Game.swift */; };
 		89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */; };
@@ -28,6 +31,9 @@
 /* Begin PBXFileReference section */
 		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
+		897B84001BE9525800CBEB90 /* FileUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileUtil.swift; path = Utility/FileUtil.swift; sourceTree = "<group>"; };
+		897B84021BE9529600CBEB90 /* StringPathExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringPathExtensions.swift; path = Utility/StringPathExtensions.swift; sourceTree = "<group>"; };
+		897B84041BE959B000CBEB90 /* UniqueObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UniqueObject.swift; path = SWSabres/WebAPI/UniqueObject.swift; sourceTree = "<group>"; };
 		89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScheduleTableViewController.swift; path = ViewControllers/ScheduleTableViewController.swift; sourceTree = "<group>"; };
 		89E9FB581BE79FB200D031CE /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = SWSabres/Model/Game.swift; sourceTree = "<group>"; };
 		89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Schedule.swift; path = SWSabres/Model/Schedule.swift; sourceTree = "<group>"; };
@@ -77,6 +83,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		897B83FF1BE9523600CBEB90 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				897B84001BE9525800CBEB90 /* FileUtil.swift */,
+				897B84021BE9529600CBEB90 /* StringPathExtensions.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
 		89E9FB561BE79EF900D031CE /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +111,7 @@
 				89E9FB5C1BE7BE6400D031CE /* Venue.swift */,
 			);
 			name = Model;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		89E9FB5E1BE7CB0800D031CE /* WebAPI */ = {
@@ -103,9 +119,11 @@
 			children = (
 				89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */,
 				89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */,
+				897B84041BE959B000CBEB90 /* UniqueObject.swift */,
 				891151C21BE925EB0039FE46 /* WordPressHelper.swift */,
 			);
 			name = WebAPI;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		8F9587371BE8409E00B1AE84 /* Extensions */ = {
@@ -114,18 +132,16 @@
 				8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */,
 			);
 			name = Extensions;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		8F9EC5531BE5A7B500FB60CD = {
 			isa = PBXGroup;
 			children = (
-				8F9587371BE8409E00B1AE84 /* Extensions */,
 				54F17438AB206A4533EC7923 /* Frameworks */,
-				89E9FB571BE79FA500D031CE /* Model */,
 				79352EC8C35F97FEDE6C13C9 /* Pods */,
 				8F9EC55D1BE5A7B500FB60CD /* Products */,
 				8F9EC55E1BE5A7B500FB60CD /* SWSabres */,
-				89E9FB5E1BE7CB0800D031CE /* WebAPI */,
 			);
 			sourceTree = "<group>";
 		};
@@ -142,10 +158,14 @@
 			children = (
 				8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */,
 				8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */,
+				8F9587371BE8409E00B1AE84 /* Extensions */,
 				8F9EC56D1BE5A7B500FB60CD /* Info.plist */,
 				8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */,
 				8F9EC5651BE5A7B500FB60CD /* Main.storyboard */,
+				89E9FB571BE79FA500D031CE /* Model */,
+				897B83FF1BE9523600CBEB90 /* Utility */,
 				89E9FB561BE79EF900D031CE /* ViewControllers */,
+				89E9FB5E1BE7CB0800D031CE /* WebAPI */,
 			);
 			path = SWSabres;
 			sourceTree = "<group>";
@@ -279,9 +299,12 @@
 				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,
 				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
+				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
 				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
+				897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
+				897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */,
 				8F95C2381BE81A6300126D4C /* Team.swift in Sources */,
 				8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */,
 			);
