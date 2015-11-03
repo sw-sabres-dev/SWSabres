@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
+		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
 		89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */; };
 		89E9FB591BE79FB200D031CE /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB581BE79FB200D031CE /* Game.swift */; };
 		89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
 		89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScheduleTableViewController.swift; path = ViewControllers/ScheduleTableViewController.swift; sourceTree = "<group>"; };
 		89E9FB581BE79FB200D031CE /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = SWSabres/Model/Game.swift; sourceTree = "<group>"; };
 		89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Schedule.swift; path = SWSabres/Model/Schedule.swift; sourceTree = "<group>"; };
@@ -99,8 +101,9 @@
 		89E9FB5E1BE7CB0800D031CE /* WebAPI */ = {
 			isa = PBXGroup;
 			children = (
-				89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */,
 				89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */,
+				89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */,
+				891151C21BE925EB0039FE46 /* WordPressHelper.swift */,
 			);
 			name = WebAPI;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */,
+				891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */,
 				89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */,
 				89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */,
 				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,

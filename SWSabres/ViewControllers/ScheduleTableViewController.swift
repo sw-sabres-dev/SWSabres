@@ -15,8 +15,10 @@ class ScheduleTableViewController: UITableViewController
     var scheduleMap: [String: Schedule] = [String: Schedule]()
     var venueMap: [String: Venue] = [String: Venue]()
     var teamMap: [String: Team] = [String: Team]()
-    var games: [Game] = [Game]()
     lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
+    var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
+    var sortedDays: [NSDate] = [NSDate]()
+    lazy var sectionDateFormatter: NSDateFormatter = NSDateFormatter()
     
     override func viewDidLoad()
     {
@@ -30,9 +32,12 @@ class ScheduleTableViewController: UITableViewController
         
         self.title = "Schedule"
 
-        dateFormatter.dateStyle = .ShortStyle
+        dateFormatter.dateStyle = .NoStyle
         dateFormatter.timeStyle = .ShortStyle
 
+        sectionDateFormatter.dateStyle = .FullStyle
+        sectionDateFormatter.timeStyle = .NoStyle
+        
         //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "testCellIdentifier")
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -97,8 +102,25 @@ class ScheduleTableViewController: UITableViewController
                 
                 if let fetchedGames = result.value
                 {
-                    self.games = fetchedGames
-                    //self.games = fetchedGames.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending }
+                    for game in fetchedGames
+                    {
+                        if let gameDay: NSDate = self.dayForDate(game.gameDate)
+                        {
+                            if var gamesOnDay: [Game] = self.gameSections[gameDay]
+                            {
+                                gamesOnDay.append(game)
+                                self.gameSections[gameDay] = gamesOnDay
+                            }
+                            else
+                            {
+                                var gamesOnDay: [Game] = [Game]()
+                                gamesOnDay.append(game)
+                                self.gameSections[gameDay] = gamesOnDay
+                            }
+                        }
+                    }
+                    
+                    self.sortedDays = self.gameSections.keys.sort {$0.compare($1) == .OrderedAscending}
                 }
                 
                 dispatch_group_leave(queueGroup)
@@ -118,18 +140,43 @@ class ScheduleTableViewController: UITableViewController
         // Dispose of any resources that can be recreated.
     }
 
+    private func dayForDate(date: NSDate) -> NSDate?
+    {
+        let calendar = NSCalendar.currentCalendar()
+        let timeZone = NSTimeZone.localTimeZone()
+        calendar.timeZone = timeZone
+        
+        let dateComps = calendar.components([.Year, .Month, .Day], fromDate: date)
+        
+        dateComps.hour = 0
+        dateComps.minute = 0
+        dateComps.second = 0
+        
+        return calendar.dateFromComponents(dateComps)
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return 1
+        return self.sortedDays.count
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return games.count
+        let dayDate: NSDate = self.sortedDays[section]
+        let gamesOnDay: [Game]? = self.gameSections[dayDate]
+        
+        return gamesOnDay != nil ? gamesOnDay!.count : 0
     }
 
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+    {
+        let dayDate: NSDate = self.sortedDays[section]
+        
+        return sectionDateFormatter.stringFromDate(dayDate)
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         //let cell = tableView.dequeueReusableCellWithIdentifier("testCellIdentifier", forIndexPath: indexPath)
@@ -142,36 +189,42 @@ class ScheduleTableViewController: UITableViewController
         
         // Configure the cell...
 
-        let game = games[indexPath.row]
-        
-        var labelText: String = ""
-        
-        if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
+        let dayDate: NSDate = self.sortedDays[indexPath.section]
+        if let gamesOnDay: [Game] = self.gameSections[dayDate]
         {
-            labelText += "\(shortName) "
+            let game = gamesOnDay[indexPath.row]
             
-            labelText += game.isHomeGame ? "vs " : "at "
+            var labelText: String = ""
             
-        }
-        
-        if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
-        {
-            if let teamName: String = team.name
+            if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
-                labelText += teamName
+                labelText += "\(shortName) "
+                
+                labelText += game.isHomeGame ? "vs " : "at "
+                
             }
-        }
-        else
-        {
-            if let opponent = game.opponent
+            
+            if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
             {
-                labelText += opponent
+                if let teamName: String = team.name
+                {
+                    labelText += teamName
+                }
             }
-        }
+            else
+            {
+                if let opponent = game.opponent
+                {
+                    labelText += opponent
+                }
+            }
+            
+            cell.textLabel?.text = labelText
+            
+            cell.detailTextLabel?.text = dateFormatter.stringFromDate(game.gameDate)
 
-        cell.textLabel?.text = labelText
+        }
         
-        cell.detailTextLabel?.text = dateFormatter.stringFromDate(game.gameDate)
         
         return cell
     }
