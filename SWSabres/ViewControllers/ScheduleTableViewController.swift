@@ -9,11 +9,14 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-import hpple
 
 class ScheduleTableViewController: UITableViewController
 {
-    var venues: [Venue] = [Venue]()
+    var scheduleMap: [String: Schedule] = [String: Schedule]()
+    var venueMap: [String: Venue] = [String: Venue]()
+    var teamMap: [String: Team] = [String: Team]()
+    var games: [Game] = [Game]()
+    lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
     
     override func viewDidLoad()
     {
@@ -27,18 +30,84 @@ class ScheduleTableViewController: UITableViewController
         
         self.title = "Schedule"
 
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "testCellIdentifier")
+        dateFormatter.timeZone = NSTimeZone(name: "GMT")
+        dateFormatter.dateStyle = .ShortStyle
+        dateFormatter.timeStyle = .ShortStyle
+
+        //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "testCellIdentifier")
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        Venue.getVenues { (result) -> Void in
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            let queueGroup = dispatch_group_create()
+            dispatch_group_enter(queueGroup)
             
-            if let fetchedVenues = result.value
-            {
-                self.venues = fetchedVenues
+            Venue.getVenues{ (result) -> Void in
                 
+                if let venues = result.value
+                {
+                    self.venueMap.removeAll()
+                    
+                    for venue in venues
+                    {
+                        self.venueMap[venue.venueId] = venue
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+
+            dispatch_group_enter(queueGroup)
+            
+            Team.getTeams{ (result) -> Void in
+                
+                if let teams = result.value
+                {
+                    self.teamMap.removeAll()
+                    
+                    for team in teams
+                    {
+                        self.teamMap[team.teamId] = team
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+
+            dispatch_group_enter(queueGroup)
+            
+            Schedule.getSchedules{ (result) -> Void in
+                
+                if let schedules = result.value
+                {
+                    self.scheduleMap.removeAll()
+                    
+                    for schedule in schedules
+                    {
+                        self.scheduleMap[schedule.scheduleId] = schedule
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+
+            dispatch_group_enter(queueGroup)
+            
+            Game.getAllGames{ (result) -> Void in
+                
+                if let fetchedGames = result.value
+                {
+                    self.games = fetchedGames
+                    //self.games = fetchedGames.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 self.tableView.reloadData()
             }
         }
@@ -59,18 +128,51 @@ class ScheduleTableViewController: UITableViewController
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return venues.count
+        return games.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("testCellIdentifier", forIndexPath: indexPath)
+        //let cell = tableView.dequeueReusableCellWithIdentifier("testCellIdentifier", forIndexPath: indexPath)
 
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
+        if (cell == nil)
+        {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "reuseIdentifier")
+        }
+        
         // Configure the cell...
 
-        let venue = venues[indexPath.row]
+        let game = games[indexPath.row]
         
-        cell.textLabel?.text = venue.title
+        var labelText: String = ""
+        
+        if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
+        {
+            labelText += "\(shortName) "
+            
+            labelText += game.isHomeGame ? "vs " : "at "
+            
+        }
+        
+        if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
+        {
+            if let teamName: String = team.name
+            {
+                labelText += teamName
+            }
+        }
+        else
+        {
+            if let opponent = game.opponent
+            {
+                labelText += opponent
+            }
+        }
+
+        cell.textLabel?.text = labelText
+        
+        cell.detailTextLabel?.text = dateFormatter.stringFromDate(game.gameDate)
         
         return cell
     }

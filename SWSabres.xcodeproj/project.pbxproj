@@ -16,6 +16,8 @@
 		89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */; };
 		89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */; };
 		89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146D1BE7EC0C006FC782 /* Announcement.swift */; };
+		8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */; };
+		8F95C2381BE81A6300126D4C /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95C2371BE81A6300126D4C /* Team.swift */; };
 		8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */; };
 		8F9EC5671BE5A7B500FB60CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5651BE5A7B500FB60CD /* Main.storyboard */; };
 		8F9EC5691BE5A7B500FB60CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */; };
@@ -32,7 +34,9 @@
 		89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Request-ResponseSerializer.swift"; path = "SWSabres/WebAPI/Request-ResponseSerializer.swift"; sourceTree = "<group>"; };
 		89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementsTableViewController.swift; path = ViewControllers/AnnouncementsTableViewController.swift; sourceTree = "<group>"; };
 		89FE146D1BE7EC0C006FC782 /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Announcement.swift; path = SWSabres/Model/Announcement.swift; sourceTree = "<group>"; };
-		8F9EC55C1BE5A7B500FB60CD /* SWSabres.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SWSabres.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String-UtilityExtensions.swift"; path = "SWSabres/Extensions/String-UtilityExtensions.swift"; sourceTree = "<group>"; };
+		8F95C2371BE81A6300126D4C /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Team.swift; path = SWSabres/Model/Team.swift; sourceTree = "<group>"; };
+		8F9EC55C1BE5A7B500FB60CD /* Go Sabres.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Go Sabres.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F9EC5661BE5A7B500FB60CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -86,6 +90,7 @@
 				89FE146D1BE7EC0C006FC782 /* Announcement.swift */,
 				89E9FB581BE79FB200D031CE /* Game.swift */,
 				89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */,
+				8F95C2371BE81A6300126D4C /* Team.swift */,
 				89E9FB5C1BE7BE6400D031CE /* Venue.swift */,
 			);
 			name = Model;
@@ -100,9 +105,18 @@
 			name = WebAPI;
 			sourceTree = "<group>";
 		};
+		8F9587371BE8409E00B1AE84 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		8F9EC5531BE5A7B500FB60CD = {
 			isa = PBXGroup;
 			children = (
+				8F9587371BE8409E00B1AE84 /* Extensions */,
 				54F17438AB206A4533EC7923 /* Frameworks */,
 				89E9FB571BE79FA500D031CE /* Model */,
 				79352EC8C35F97FEDE6C13C9 /* Pods */,
@@ -115,7 +129,7 @@
 		8F9EC55D1BE5A7B500FB60CD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8F9EC55C1BE5A7B500FB60CD /* SWSabres.app */,
+				8F9EC55C1BE5A7B500FB60CD /* Go Sabres.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,7 +167,7 @@
 			);
 			name = SWSabres;
 			productName = SWSabres;
-			productReference = 8F9EC55C1BE5A7B500FB60CD /* SWSabres.app */;
+			productReference = 8F9EC55C1BE5A7B500FB60CD /* Go Sabres.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -261,8 +275,10 @@
 				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,
 				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
+				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
+				8F95C2381BE81A6300126D4C /* Team.swift in Sources */,
 				8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,7 +397,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Go Sabres";
 			};
 			name = Debug;
 		};
@@ -394,7 +410,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Go Sabres";
 			};
 			name = Release;
 		};

@@ -88,11 +88,11 @@
             </objects>
             <point key="canvasLocation" x="0.0" y="0.0"/>
         </scene>
-        <!--Announcements-->
+        <!--News-->
         <scene sceneID="fMF-Xa-5ek">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="n2w-eR-RVb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Announcements" image="ReaderButton" id="jPf-RO-jeU"/>
+                    <tabBarItem key="tabBarItem" title="News" image="ReaderButton" id="jPf-RO-jeU"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dY6-dw-wZb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

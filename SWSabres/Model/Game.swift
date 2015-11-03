@@ -7,12 +7,59 @@
 //
 
 import Foundation
+import SwiftyJSON
+import Alamofire
 
-struct Game
+struct Game: ResponseJSONObjectSerializable
 {
-    static let gamesURL: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=500&meta_key=game_sched_id&meta_value=2015-jvg"
-    
+    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=500&meta_key=game_unix_dtg&orderby=meta_value&order=ASC"
+    let gameId: String
     let gameDate: NSDate
-    let opponent: String
-    let location: String
+    let gameScheduleId: String
+    var opponent: String?
+    var teamId: String?
+    let isHomeGame: Bool
+    
+    init?(json: SwiftyJSON.JSON)
+    {
+        guard let game_slug = json["slug"].string else
+        {
+            return nil
+        }
+
+        guard let game_sched_id = json["custom_fields"]["game_sched_id"][0].string else
+        {
+            return nil
+        }
+        
+        //game_sched_id
+        
+        let game_unix_dtg = json["custom_fields"]["game_unix_dtg"][0].doubleValue
+        
+        if game_unix_dtg == 0
+        {
+            return nil
+        }
+        
+        self.teamId = json["custom_fields"]["game_opponent_team"][0].string
+        self.opponent = json["custom_fields"]["game_opponent"][0].string
+        self.isHomeGame = json["custom_fields"]["game_is_home_game"][0].boolValue
+        
+        self.gameDate = NSDate(timeIntervalSince1970: game_unix_dtg)
+        
+        self.gameId = game_slug
+        self.gameScheduleId = game_sched_id
+    }
+    
+    static func endpointForScheduleId(scheduleId: String) -> String
+    {
+        return baseEndpoint + "&meta_key=game_sched_id&meta_value=\(scheduleId)"
+    }
+    
+    static func getAllGames(completionHandler: (Result<[Game], NSError>) -> Void)
+    {
+        Alamofire.request(.GET, Game.baseEndpoint).getPostsReponseArray { response in
+            completionHandler(response.result)
+        }
+    }
 }
