@@ -112,6 +112,29 @@ class AnnouncementsTableViewController: UITableViewController {
         return cell
     }
 
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        if section == 0
+        {
+            
+            let header: UIView = UIView(frame: CGRectMake(0, 0, tableView.frame.width, 117))
+            header.backgroundColor = ApptTintColors.backgroundTintColor
+            
+            let imageView: UIImageView = UIImageView(frame: CGRectMake(0, 0, tableView.frame.width, 117))
+            imageView.contentMode = .ScaleAspectFit
+            imageView.image = UIImage(named: "banner")
+            header.addSubview(imageView)
+            
+            return header
+            
+        }
+        
+        return nil
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 117
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
