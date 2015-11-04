@@ -256,7 +256,9 @@ final class ScheduleTableViewController: UITableViewController
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        if let cell: GameLogoTableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath) as? GameLogoTableViewCell
+        let baseCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath)
+        
+        if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
         {
             let dayDate: NSDate = self.sortedDays[indexPath.section]
             if let gamesOnDay: [Game] = self.gameSections[dayDate]
@@ -277,45 +279,39 @@ final class ScheduleTableViewController: UITableViewController
                     }
                 }
                 
-                if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
+                if let teamId: String = game.teamId, let team: Team = teamMap[teamId], let teamName: String = team.shortName ?? team.name
                 {
-                    if let teamName: String = team.shortName ?? team.name
+                    var logoUrl: NSURL? = nil
+                    
+                    if let teamLogoUrlString: String = team.logoUrl
                     {
-                        var logoUrl: NSURL? = nil
-                        
-                        if let teamLogoUrlString: String = team.logoUrl
-                        {
-                            logoUrl = NSURL(string: teamLogoUrlString)
-                        }
-                        
-                        if game.isHomeGame
-                        {
-                            cell.secondLogo.pin_setImageFromURL(logoUrl)
-                            cell.secondLogoLabel.text = teamName
-                        }
-                        else
-                        {
-                            cell.firstLogo.pin_setImageFromURL(logoUrl)
-                            cell.firstLogoLabel.text = teamName
-                        }
+                        logoUrl = NSURL(string: teamLogoUrlString)
+                    }
+                    
+                    if game.isHomeGame
+                    {
+                        cell.secondLogo.pin_setImageFromURL(logoUrl)
+                        cell.secondLogoLabel.text = teamName
+                    }
+                    else
+                    {
+                        cell.firstLogo.pin_setImageFromURL(logoUrl)
+                        cell.firstLogoLabel.text = teamName
                     }
                 }
-                else
+                else if let opponent = game.opponent
                 {
-                    if let opponent = game.opponent
+                    if game.isHomeGame
                     {
-                        if game.isHomeGame
-                        {
-                            cell.secondLogo.pin_setImageFromURL(nil)
-                            cell.secondLogo.image = nil
-                            cell.secondLogoLabel.text = opponent
-                        }
-                        else
-                        {
-                            cell.firstLogo.pin_setImageFromURL(nil)
-                            cell.firstLogo.image = nil
-                            cell.firstLogoLabel.text = opponent
-                        }
+                        cell.secondLogo.pin_setImageFromURL(nil)
+                        cell.secondLogo.image = nil
+                        cell.secondLogoLabel.text = opponent
+                    }
+                    else
+                    {
+                        cell.firstLogo.pin_setImageFromURL(nil)
+                        cell.firstLogo.image = nil
+                        cell.firstLogoLabel.text = opponent
                     }
                 }
                 
@@ -361,6 +357,9 @@ final class ScheduleTableViewController: UITableViewController
 
         }
         
+        return baseCell
+        
+        /*
         var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
         if (cell == nil)
         {
@@ -414,6 +413,7 @@ final class ScheduleTableViewController: UITableViewController
         
         
         return cell
+        */
     }
 
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
