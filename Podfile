@@ -4,6 +4,6 @@ use_frameworks!
 target 'SWSabres' do
 	pod 'Alamofire', '~> 3.1'
 	pod 'SwiftyJSON', '~> 2.3'
-	pod 'hpple', '~> 0.2'
+	pod 'PINRemoteImage', '~> 1.2'
 end
 

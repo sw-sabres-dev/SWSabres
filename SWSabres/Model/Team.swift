@@ -12,10 +12,11 @@ import Alamofire
 
 struct Team: ResponseJSONObjectSerializable, UniqueObject
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=500"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=-1"
     
     let teamId: String
     let name: String
+    var logoUrl: String?
     var shortName: String?
     
     init?(json: SwiftyJSON.JSON)
@@ -32,6 +33,8 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject
         
         self.teamId = team_slug
         self.name = team_full_name
+
+        self.logoUrl = json["custom_fields"]["team_alt_logo"][0].string
 
         var team_short_name = json["custom_fields"]["team_short_name"][0].string
         

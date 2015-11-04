@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
 		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
+		8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */; };
+		8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */; };
 		897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84001BE9525800CBEB90 /* FileUtil.swift */; };
 		897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84021BE9529600CBEB90 /* StringPathExtensions.swift */; };
 		897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84041BE959B000CBEB90 /* UniqueObject.swift */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
+		8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTintColors.swift; path = Utility/AppTintColors.swift; sourceTree = "<group>"; };
+		8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameLogoTableViewCell.swift; path = Cells/GameLogoTableViewCell.swift; sourceTree = "<group>"; };
 		897B84001BE9525800CBEB90 /* FileUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileUtil.swift; path = Utility/FileUtil.swift; sourceTree = "<group>"; };
 		897B84021BE9529600CBEB90 /* StringPathExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringPathExtensions.swift; path = Utility/StringPathExtensions.swift; sourceTree = "<group>"; };
 		897B84041BE959B000CBEB90 /* UniqueObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UniqueObject.swift; path = SWSabres/WebAPI/UniqueObject.swift; sourceTree = "<group>"; };
@@ -83,11 +87,20 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		8963C2831BEA626700DF4B0A /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		897B83FF1BE9523600CBEB90 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
 				897B84001BE9525800CBEB90 /* FileUtil.swift */,
 				897B84021BE9529600CBEB90 /* StringPathExtensions.swift */,
+				8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -158,6 +171,7 @@
 			children = (
 				8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */,
 				8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */,
+				8963C2831BEA626700DF4B0A /* Cells */,
 				8F9587371BE8409E00B1AE84 /* Extensions */,
 				8F9EC56D1BE5A7B500FB60CD /* Info.plist */,
 				8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */,
@@ -292,10 +306,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */,
 				89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */,
 				891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */,
 				89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */,
 				89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */,
+				8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */,
 				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,
 				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,

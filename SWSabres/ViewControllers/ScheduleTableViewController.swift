@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
+import PINRemoteImage
 
 final class ScheduleTableViewController: UITableViewController
 {
@@ -39,7 +40,7 @@ final class ScheduleTableViewController: UITableViewController
         sectionDateFormatter.dateStyle = .FullStyle
         sectionDateFormatter.timeStyle = .NoStyle
         
-        //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "testCellIdentifier")
+        self.tableView.rowHeight = 88
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
@@ -255,8 +256,92 @@ final class ScheduleTableViewController: UITableViewController
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        //let cell = tableView.dequeueReusableCellWithIdentifier("testCellIdentifier", forIndexPath: indexPath)
+        if let cell: GameLogoTableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath) as? GameLogoTableViewCell
+        {
+            let dayDate: NSDate = self.sortedDays[indexPath.section]
+            if let gamesOnDay: [Game] = self.gameSections[dayDate]
+            {
+                let game = gamesOnDay[indexPath.row]
+             
+                if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
+                {
+                    if game.isHomeGame
+                    {
+                        cell.firstLogo.image = UIImage(named: "logo")
+                        cell.firstLogoLabel.text = shortName
+                    }
+                    else
+                    {
+                        cell.secondLogo.image = UIImage(named: "logo")
+                        cell.secondLogoLabel.text = shortName
+                    }
+                }
+                
+                if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
+                {
+                    if let teamName: String = team.shortName ?? team.name
+                    {
+                        var logoUrl: NSURL? = nil
+                        
+                        if let teamLogoUrlString: String = team.logoUrl
+                        {
+                            logoUrl = NSURL(string: teamLogoUrlString)
+                        }
+                        
+                        if game.isHomeGame
+                        {
+                            cell.secondLogo.pin_setImageFromURL(logoUrl)
+                            cell.secondLogoLabel.text = teamName
+                        }
+                        else
+                        {
+                            cell.firstLogo.pin_setImageFromURL(logoUrl)
+                            cell.firstLogoLabel.text = teamName
+                        }
+                    }
+                }
+                else
+                {
+                    if let opponent = game.opponent
+                    {
+                        if game.isHomeGame
+                        {
+                            cell.secondLogo.image = nil
+                            cell.secondLogoLabel.text = opponent
+                        }
+                        else
+                        {
+                            cell.firstLogo.image = nil
+                            cell.firstLogoLabel.text = opponent
+                        }
+                    }
+                }
+                
+                cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
+                
+                if let gameVenueId = game.gameVenueId, let venue: Venue = self.venueMap[gameVenueId]
+                {
+                    cell.venueLabel.text = venue.title
+                    cell.addressLabel.text = "\(venue.address) \(venue.city) \(venue.state) \(venue.zip)"
+                }
+                else
+                {
+                    cell.venueLabel.text = ""
+                    cell.addressLabel.text = ""
+                }
+            }
+            else
+            {
+                cell.firstLogoLabel.text = ""
+                cell.firstLogo.image = nil
+                cell.secondLogoLabel.text = ""
+                cell.secondLogo.image = nil
+            }
+            
+            return cell
 
+        }
+        
         var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
         if (cell == nil)
         {
@@ -312,6 +397,15 @@ final class ScheduleTableViewController: UITableViewController
         return cell
     }
 
+    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
+    {
+        if let headerView: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView
+        {
+            headerView.contentView.backgroundColor = ApptTintColors.backgroundTintColor
+            headerView.textLabel?.textColor = UIColor.whiteColor()
+        }
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
