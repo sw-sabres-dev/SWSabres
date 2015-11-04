@@ -31,7 +31,7 @@ final class ScheduleTableViewController: UITableViewController
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        self.title = "Schedule"
+        self.title = "Game Schedule"
 
         dateFormatter.dateStyle = .NoStyle
         dateFormatter.timeStyle = .ShortStyle
@@ -306,36 +306,55 @@ final class ScheduleTableViewController: UITableViewController
                     {
                         if game.isHomeGame
                         {
+                            cell.secondLogo.pin_setImageFromURL(nil)
                             cell.secondLogo.image = nil
                             cell.secondLogoLabel.text = opponent
                         }
                         else
                         {
+                            cell.firstLogo.pin_setImageFromURL(nil)
                             cell.firstLogo.image = nil
                             cell.firstLogoLabel.text = opponent
                         }
                     }
                 }
                 
-                cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
-                
-                if let gameVenueId = game.gameVenueId, let venue: Venue = self.venueMap[gameVenueId]
+                if let gameResult = game.gameResult
                 {
-                    cell.venueLabel.text = venue.title
-                    cell.addressLabel.text = "\(venue.address) \(venue.city) \(venue.state) \(venue.zip)"
+                    cell.gameTimeLabel.text = gameResult
+                    cell.venueLabel.hidden = true
+                    cell.addressLabel.hidden = true
                 }
                 else
                 {
-                    cell.venueLabel.text = ""
-                    cell.addressLabel.text = ""
+                    cell.venueLabel.hidden = false
+                    cell.addressLabel.hidden = false
+
+                    cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
+                    
+                    if let gameVenueId = game.gameVenueId, let venue: Venue = self.venueMap[gameVenueId]
+                    {
+                        cell.venueLabel.text = venue.title
+                        cell.addressLabel.text = "\(venue.address) \(venue.city) \(venue.state) \(venue.zip)"
+                    }
+                    else
+                    {
+                        cell.venueLabel.text = ""
+                        cell.addressLabel.text = ""
+                    }
                 }
             }
             else
             {
                 cell.firstLogoLabel.text = ""
+                cell.firstLogo.pin_setImageFromURL(nil)
                 cell.firstLogo.image = nil
                 cell.secondLogoLabel.text = ""
+                cell.secondLogo.pin_setImageFromURL(nil)
                 cell.secondLogo.image = nil
+                cell.gameTimeLabel.text = ""
+                cell.venueLabel.text = ""
+                cell.addressLabel.text = ""
             }
             
             return cell

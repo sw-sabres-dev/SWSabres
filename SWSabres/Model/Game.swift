@@ -20,6 +20,7 @@ struct Game: ResponseJSONObjectSerializable
     var opponent: String?
     var teamId: String?
     var gameVenueId: String?
+    var gameResult: String?
     
     init?(json: SwiftyJSON.JSON)
     {
@@ -44,6 +45,9 @@ struct Game: ResponseJSONObjectSerializable
         self.opponent = json["custom_fields"]["game_opponent"][0].string
         self.isHomeGame = json["custom_fields"]["game_is_home_game"][0].boolValue
         self.gameVenueId = json["custom_fields"]["game_gl_location"][0].string
+        let result = json["custom_fields"]["game_result"][0].string
+        
+        self.gameResult = !String.isNilOrEmpty(result) ? result : nil
         
         // Fix the timezone offset.
         game_unix_dtg -= Double(NSTimeZone.localTimeZone().secondsFromGMT)
