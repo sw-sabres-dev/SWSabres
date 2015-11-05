@@ -107,9 +107,9 @@
 		897B83FF1BE9523600CBEB90 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */,
 				897B84001BE9525800CBEB90 /* FileUtil.swift */,
 				897B84021BE9529600CBEB90 /* StringPathExtensions.swift */,
-				8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";

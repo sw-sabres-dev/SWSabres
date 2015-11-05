@@ -22,6 +22,50 @@ struct Game: ResponseJSONObjectSerializable
     var gameVenueId: String?
     var gameResult: String?
     
+    init?(coder aDecoder: NSCoder)
+    {
+        guard let gameId = aDecoder.decodeObjectForKey("gameId") as? String else
+        {
+            return nil
+        }
+        self.gameId = gameId
+        
+        guard let gameDate = aDecoder.decodeObjectForKey("gameDate") as? NSDate else
+        {
+            return nil
+        }
+        self.gameDate = gameDate
+        
+        guard let gameScheduleId = aDecoder.decodeObjectForKey("gameScheduleId") as? String else
+        {
+            return nil
+        }
+        self.gameScheduleId = gameScheduleId
+        
+        guard let isHomeGameNumber = aDecoder.decodeObjectForKey("isHomeGame") as? NSNumber else
+        {
+            return nil
+        }
+        self.isHomeGame = isHomeGameNumber.boolValue
+        
+        self.opponent = aDecoder.decodeObjectForKey("opponent") as? String
+        self.teamId = aDecoder.decodeObjectForKey("teamId") as? String
+        self.gameVenueId = aDecoder.decodeObjectForKey("gameVenueId") as? String
+        self.gameResult = aDecoder.decodeObjectForKey("gameResult") as? String
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(gameId, forKey: "gameId")
+        aCoder.encodeObject(gameDate, forKey: "gameDate")
+        aCoder.encodeObject(gameScheduleId, forKey: "gameScheduleId")
+        aCoder.encodeObject(NSNumber(bool: isHomeGame), forKey: "isHomeGame")
+        aCoder.encodeObject(opponent, forKey: "opponent")
+        aCoder.encodeObject(teamId, forKey: "teamId")
+        aCoder.encodeObject(gameVenueId, forKey: "gameVenueId")
+        aCoder.encodeObject(gameResult, forKey: "gameResult")
+    }
+
     init?(json: SwiftyJSON.JSON)
     {
         guard let game_slug = json["slug"].string else
@@ -67,6 +111,26 @@ struct Game: ResponseJSONObjectSerializable
     {
         Alamofire.request(.GET, Game.baseEndpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
+        }
+    }
+    
+    class Helper: NSObject, NSCoding
+    {
+        var game: Game?
+        
+        init(game: Game)
+        {
+            self.game = game
+        }
+        
+        required init(coder aDecoder: NSCoder)
+        {
+            game = Game(coder: aDecoder)
+        }
+        
+        func encodeWithCoder(aCoder: NSCoder)
+        {
+            game?.encodeWithCoder(aCoder)
         }
     }
 }

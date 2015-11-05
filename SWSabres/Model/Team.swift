@@ -19,6 +19,32 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject
     var logoUrl: String?
     var shortName: String?
     
+    init?(coder aDecoder: NSCoder)
+    {
+        guard let teamId = aDecoder.decodeObjectForKey("teamId") as? String else
+        {
+            return nil
+        }
+        self.teamId = teamId
+        
+        guard let name = aDecoder.decodeObjectForKey("name") as? String else
+        {
+            return nil
+        }
+        self.name = name
+        
+        logoUrl = aDecoder.decodeObjectForKey("logoUrl") as? String
+        shortName = aDecoder.decodeObjectForKey("shortName") as? String
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(teamId, forKey: "teamId")
+        aCoder.encodeObject(name, forKey: "name")
+        aCoder.encodeObject(logoUrl, forKey: "logoUrl")
+        aCoder.encodeObject(shortName, forKey: "shortName")
+    }
+    
     init?(json: SwiftyJSON.JSON)
     {
         guard let team_full_name = json["custom_fields"]["team_full_name"][0].string else
@@ -58,6 +84,26 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject
     {
         Alamofire.request(.GET, Team.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
+        }
+    }
+    
+    class Helper: NSObject, NSCoding
+    {
+        var team: Team?
+        
+        init(team: Team)
+        {
+            self.team = team
+        }
+        
+        required init(coder aDecoder: NSCoder)
+        {
+            team = Team(coder: aDecoder)
+        }
+        
+        func encodeWithCoder(aCoder: NSCoder)
+        {
+            team?.encodeWithCoder(aCoder)
         }
     }
 }

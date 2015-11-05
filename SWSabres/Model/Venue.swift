@@ -21,6 +21,55 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
     let zip: String
     let title: String
     
+    init?(coder aDecoder: NSCoder)
+    {
+        guard let venueId = aDecoder.decodeObjectForKey("venueId") as? String else
+        {
+            return nil
+        }
+        self.venueId = venueId
+        
+        guard let address = aDecoder.decodeObjectForKey("address") as? String else
+        {
+            return nil
+        }
+        self.address = address
+        
+        guard let city = aDecoder.decodeObjectForKey("city") as? String else
+        {
+            return nil
+        }
+        self.city = city
+        
+        guard let state = aDecoder.decodeObjectForKey("state") as? String else
+        {
+            return nil
+        }
+        self.state = state
+        
+        guard let zip = aDecoder.decodeObjectForKey("zip") as? String else
+        {
+            return nil
+        }
+        self.zip = zip
+        
+        guard let title = aDecoder.decodeObjectForKey("title") as? String else
+        {
+            return nil
+        }
+        self.title = title
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(venueId, forKey: "venueId")
+        aCoder.encodeObject(address, forKey: "address")
+        aCoder.encodeObject(city, forKey: "city")
+        aCoder.encodeObject(state, forKey: "state")
+        aCoder.encodeObject(zip, forKey: "zip")
+        aCoder.encodeObject(title, forKey: "title")
+    }
+    
     init?(json: SwiftyJSON.JSON)
     {
         guard let venue_street = json["custom_fields"]["venue_street"][0].string else
@@ -87,6 +136,26 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
     {
         Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
+        }
+    }
+    
+    class Helper: NSObject, NSCoding
+    {
+        var venue: Venue?
+        
+        init(venue: Venue)
+        {
+            self.venue = venue
+        }
+        
+        required init(coder aDecoder: NSCoder)
+        {
+            venue = Venue(coder: aDecoder)
+        }
+        
+        func encodeWithCoder(aCoder: NSCoder)
+        {
+            venue?.encodeWithCoder(aCoder)
         }
     }
 }

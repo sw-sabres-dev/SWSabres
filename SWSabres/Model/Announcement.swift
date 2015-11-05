@@ -19,6 +19,41 @@ struct Announcement: ResponseJSONObjectSerializable
     let content: String
     let date: NSDate
     
+    init?(coder aDecoder: NSCoder)
+    {
+        guard let decodedAnnouncementId = aDecoder.decodeObjectForKey("announcementId") as? String else
+        {
+            return nil
+        }
+        self.announcementId = decodedAnnouncementId
+        
+        guard let decodedTitle = aDecoder.decodeObjectForKey("title") as? String else
+        {
+            return nil
+        }
+        self.title = decodedTitle
+        
+        guard let decodedContent = aDecoder.decodeObjectForKey("content") as? String else
+        {
+            return nil
+        }
+        self.content = decodedContent
+        
+        guard let decodedDate = aDecoder.decodeObjectForKey("date") as? NSDate else
+        {
+            return nil
+        }
+        self.date = decodedDate
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(announcementId, forKey: "announcementId")
+        aCoder.encodeObject(title, forKey: "title")
+        aCoder.encodeObject(content, forKey: "content")
+        aCoder.encodeObject(date, forKey: "date")
+    }
+    
     init?(json: SwiftyJSON.JSON)
     {
         guard let announcement_slug = json["slug"].string else
@@ -79,6 +114,26 @@ struct Announcement: ResponseJSONObjectSerializable
     {
         Alamofire.request(.GET, Announcement.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
+        }
+    }
+    
+    class Helper: NSObject, NSCoding
+    {
+        var announcement: Announcement?
+        
+        init(announcement: Announcement)
+        {
+            self.announcement = announcement
+        }
+        
+        required init(coder aDecoder: NSCoder)
+        {
+            announcement = Announcement(coder: aDecoder)
+        }
+        
+        func encodeWithCoder(aCoder: NSCoder)
+        {
+            announcement?.encodeWithCoder(aCoder)
         }
     }
 }

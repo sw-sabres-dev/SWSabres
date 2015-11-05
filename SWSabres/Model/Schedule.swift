@@ -18,6 +18,34 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
     let title: String
     let scheduleTeamId: String
     
+    init?(coder aDecoder: NSCoder)
+    {
+        guard let scheduleId = aDecoder.decodeObjectForKey("scheduleId") as? String else
+        {
+            return nil
+        }
+        self.scheduleId = scheduleId
+        
+        guard let title = aDecoder.decodeObjectForKey("title") as? String else
+        {
+            return nil
+        }
+        self.title = title
+        
+        guard let scheduleTeamId = aDecoder.decodeObjectForKey("scheduleTeamId") as? String else
+        {
+            return nil
+        }
+        self.scheduleTeamId = scheduleTeamId
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(scheduleId, forKey: "scheduleId")
+        aCoder.encodeObject(title, forKey: "title")
+        aCoder.encodeObject(scheduleTeamId, forKey: "scheduleTeamId")
+    }
+    
     init?(json: SwiftyJSON.JSON)
     {
         guard let schedule_slug = json["slug"].string else
@@ -62,10 +90,30 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-static func getSchedules(fileName: String, completionHandler: (Result<[Schedule], NSError>) -> Void)
+    static func getSchedules(fileName: String, completionHandler: (Result<[Schedule], NSError>) -> Void)
     {
         Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray(fileName) { response in
             completionHandler(response.result)
+        }
+    }
+    
+    class Helper: NSObject, NSCoding
+    {
+        var schedule: Schedule?
+        
+        init(schedule: Schedule)
+        {
+            self.schedule = schedule
+        }
+        
+        required init(coder aDecoder: NSCoder)
+        {
+            schedule = Schedule(coder: aDecoder)
+        }
+        
+        func encodeWithCoder(aCoder: NSCoder)
+        {
+            schedule?.encodeWithCoder(aCoder)
         }
     }
 }
