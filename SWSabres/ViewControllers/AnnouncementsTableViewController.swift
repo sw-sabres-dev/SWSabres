@@ -20,13 +20,10 @@ class AnnouncementsTableViewController: UITableViewController {
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .MediumStyle
         
-        //self.title = "Announcements"
-        
         if let logoTitleView: LogoTitleView = LogoTitleView.loadFromNibNamed("LogoTitleView") as? LogoTitleView
         {
             logoTitleView.backgroundColor = ApptTintColors.backgroundTintColor
             logoTitleView.titleLabel.textColor = UIColor.whiteColor()
-            logoTitleView.autoresizingMask = .None
             
             if let size = self.navigationController?.navigationBar.bounds
             {
@@ -94,33 +91,6 @@ class AnnouncementsTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
-    {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-        
-        if self.view.frame.size.width < size.width
-        {
-            if let titleView: UIView = self.navigationItem.titleView
-            {
-                var titleViewFrame: CGRect  = titleView.frame
-                titleViewFrame.size = CGSizeMake(size.width, 32)
-                self.navigationItem.titleView?.frame = titleViewFrame;
-            }
-        }
-        else
-        {
-            if let titleView: UIView = self.navigationItem.titleView
-            {
-                var titleViewFrame: CGRect  = titleView.frame
-                titleViewFrame.size = CGSizeMake(size.width, 44)
-                self.navigationItem.titleView?.frame = titleViewFrame;
-            }
-        }
-//        coordinator.animateAlongsideTransition(nil) { (coordinator) -> Void in
-//            
-//            
-//        }
-    }
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int

@@ -49,7 +49,19 @@
                 <constraint firstItem="UIm-IM-vjs" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Hd5-Rc-67R"/>
                 <constraint firstItem="lTU-n6-JQ1" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QIG-wE-K0u"/>
                 <constraint firstItem="lTU-n6-JQ1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="XUk-BF-hh0"/>
+                <constraint firstItem="lTU-n6-JQ1" firstAttribute="leading" secondItem="UIm-IM-vjs" secondAttribute="trailing" constant="2" id="fm7-bx-1G9"/>
             </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="fm7-bx-1G9"/>
+                </mask>
+            </variation>
+            <variation key="widthClass=compact">
+                <mask key="constraints">
+                    <exclude reference="Ege-yb-9lD"/>
+                    <include reference="fm7-bx-1G9"/>
+                </mask>
+            </variation>
             <connections>
                 <outlet property="titleLabel" destination="lTU-n6-JQ1" id="qFT-gZ-r9U"/>
             </connections>
