@@ -9,21 +9,53 @@
         <scene sceneID="boe-tC-hna">
             <objects>
                 <tableViewController id="cYr-Og-EqJ" customClass="AnnouncementsTableViewController" customModule="SWSabres" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="MxL-BF-ZPE">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="66" sectionHeaderHeight="28" sectionFooterHeight="28" id="MxL-BF-ZPE">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="rvX-cL-Qsz">
-                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="announcementCellIdentifier" id="rvX-cL-Qsz" customClass="AnnouncementTableViewCell" customModule="SWSabres" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="600" height="66"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rvX-cL-Qsz" id="aru-Hr-KWs">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="65"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="y46-hf-nRn">
+                                            <rect key="frame" x="8" y="8" width="584" height="49"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Headline" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="6iV-cM-0X4">
+                                                    <rect key="frame" x="0.0" y="0.0" width="584" height="27"/>
+                                                    <animations/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="November 21, 2015" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bU8-yS-cA2">
+                                                    <rect key="frame" x="0.0" y="29" width="584" height="20"/>
+                                                    <animations/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <animations/>
+                                        </stackView>
+                                    </subviews>
                                     <animations/>
+                                    <constraints>
+                                        <constraint firstItem="y46-hf-nRn" firstAttribute="top" secondItem="aru-Hr-KWs" secondAttribute="topMargin" id="AZb-Og-gWJ"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="y46-hf-nRn" secondAttribute="bottom" id="RFR-HB-RpG"/>
+                                        <constraint firstAttribute="leadingMargin" secondItem="y46-hf-nRn" secondAttribute="leading" id="ddx-EZ-9vI"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="y46-hf-nRn" secondAttribute="trailing" id="zdY-LM-8zP"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <animations/>
+                                <connections>
+                                    <outlet property="dateLabel" destination="bU8-yS-cA2" id="tSJ-ob-3xj"/>
+                                    <outlet property="headlineLabel" destination="6iV-cM-0X4" id="fK0-ee-cbQ"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

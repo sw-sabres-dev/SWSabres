@@ -17,8 +17,8 @@ class AnnouncementsTableViewController: UITableViewController {
     {
         super.viewDidLoad()
 
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .MediumStyle
+        dateFormatter.dateStyle = .FullStyle
+        dateFormatter.timeStyle = .NoStyle
         
         if let logoTitleView: LogoTitleView = LogoTitleView.loadFromNibNamed("LogoTitleView") as? LogoTitleView
         {
@@ -32,7 +32,7 @@ class AnnouncementsTableViewController: UITableViewController {
             self.navigationItem.titleView = logoTitleView
         }
         
-        //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
+        //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "announcementCellIdentifier")
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
@@ -104,20 +104,26 @@ class AnnouncementsTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        //let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("announcementCellIdentifier", forIndexPath: indexPath)
 
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
-        if (cell == nil)
-        {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "reuseIdentifier")
-        }
+//        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
+//        if (cell == nil)
+//        {
+//            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "reuseIdentifier")
+//        }
         
         // Configure the cell...
 
         let announcement = announcements[indexPath.row]
         
-        cell.textLabel?.text = announcement.title
-        cell.detailTextLabel?.text = dateFormatter.stringFromDate(announcement.date)
+        if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
+        {
+            announcementCell.headlineLabel.text = announcement.title
+            announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
+        }
+
+        //cell.textLabel?.text = announcement.title
+        //cell.detailTextLabel?.text = dateFormatter.stringFromDate(announcement.date)
         
         return cell
     }
