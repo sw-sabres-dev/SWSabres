@@ -55,6 +55,7 @@
                                 <connections>
                                     <outlet property="dateLabel" destination="bU8-yS-cA2" id="tSJ-ob-3xj"/>
                                     <outlet property="headlineLabel" destination="6iV-cM-0X4" id="fK0-ee-cbQ"/>
+                                    <segue destination="wue-7H-C6o" kind="show" id="lAk-hv-eHQ"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -69,6 +70,41 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N2B-Nv-kv6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1601" y="-235"/>
+        </scene>
+        <!--Announcement Details View Controller-->
+        <scene sceneID="ikR-bi-I6c">
+            <objects>
+                <viewController id="wue-7H-C6o" customClass="AnnouncementDetailsViewController" customModule="SWSabres" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="oKJ-Wa-ksB"/>
+                        <viewControllerLayoutGuide type="bottom" id="KFJ-1X-bhw"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Duu-BW-crK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eal-iN-dPX">
+                                <rect key="frame" x="20" y="72" width="560" height="471"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="eal-iN-dPX" secondAttribute="trailing" id="Bn1-V1-5d2"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="eal-iN-dPX" secondAttribute="leading" id="OCt-Cn-6jB"/>
+                            <constraint firstItem="KFJ-1X-bhw" firstAttribute="top" secondItem="eal-iN-dPX" secondAttribute="bottom" constant="8" id="PBD-o1-H01"/>
+                            <constraint firstItem="eal-iN-dPX" firstAttribute="top" secondItem="oKJ-Wa-ksB" secondAttribute="bottom" constant="8" id="TFE-9U-NgX"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="eal-iN-dPX" id="mAr-qD-Aaa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="avb-Dj-20x" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2241" y="-236"/>
         </scene>
         <!--Schedule Table View Controller-->
         <scene sceneID="Ba5-fW-mPD">

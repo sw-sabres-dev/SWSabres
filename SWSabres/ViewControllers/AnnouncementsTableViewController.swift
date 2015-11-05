@@ -32,8 +32,6 @@ class AnnouncementsTableViewController: UITableViewController {
             self.navigationItem.titleView = logoTitleView
         }
         
-        //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "announcementCellIdentifier")
-        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
             let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -188,14 +186,19 @@ class AnnouncementsTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController
+        {
+            viewController.announcement = announcements[indexPath.row]
+        }
+        
     }
-    */
 
 }

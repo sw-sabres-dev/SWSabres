@@ -42,6 +42,7 @@ struct Announcement: ResponseJSONObjectSerializable
         }
         
         self.announcementId = announcement_slug
+        self.content = announcement_content
 
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         //dateFormatter.timeZone = NSTimeZone(name: "EST")
@@ -54,24 +55,10 @@ struct Announcement: ResponseJSONObjectSerializable
         
         self.date = parsedDate
         
-        guard let encodedContent = announcement_content.dataUsingEncoding(NSUTF8StringEncoding) else
-        {
-            return nil
-        }
-        
         let attributedOptions : [String: AnyObject] = [
             NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
             NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding
         ]
-        
-        if let attributedString = try? NSAttributedString(data: encodedContent, options: attributedOptions, documentAttributes: nil)
-        {
-            self.content = attributedString.string
-        }
-        else
-        {
-            return nil
-        }
         
         guard let encodedTitle = announcement_title.dataUsingEncoding(NSUTF8StringEncoding) else
         {
