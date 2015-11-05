@@ -89,6 +89,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-SWSabres/PINCache.framework"
   install_framework "Pods-SWSabres/PINRemoteImage.framework"
   install_framework "Pods-SWSabres/SwiftyJSON.framework"
+  install_framework "Pods-SWSabres/THLabel.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-SWSabres/Alamofire.framework"
@@ -96,4 +97,5 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-SWSabres/PINCache.framework"
   install_framework "Pods-SWSabres/PINRemoteImage.framework"
   install_framework "Pods-SWSabres/SwiftyJSON.framework"
+  install_framework "Pods-SWSabres/THLabel.framework"
 fi

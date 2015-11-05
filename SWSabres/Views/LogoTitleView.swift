@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import THLabel
 
 extension UIView
 {
@@ -18,8 +19,16 @@ extension UIView
 
 class LogoTitleView: UIView {
 
-    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var titleLabel: THLabel!
     
+    override func awakeFromNib()
+    {
+        super.awakeFromNib()
+        titleLabel.gradientStartColor = UIColor(red: 219/255, green: 221/255, blue: 222/255, alpha: 1)
+        titleLabel.gradientEndColor = UIColor(red: 137/255, green: 140/255, blue: 144/255, alpha: 1)//137,140,144
+        titleLabel.shadowColor = UIColor.blackColor()
+        titleLabel.shadowOffset = CGSizeMake(2.0, 2.0)
+    }
     /*
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
