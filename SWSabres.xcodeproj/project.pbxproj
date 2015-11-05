@@ -28,6 +28,8 @@
 		8F9EC5671BE5A7B500FB60CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5651BE5A7B500FB60CD /* Main.storyboard */; };
 		8F9EC5691BE5A7B500FB60CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */; };
 		8F9EC56C1BE5A7B500FB60CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */; };
+		8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */; };
+		8FD26B941BEB9EE600322DDD /* LogoTitleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +56,8 @@
 		8F9EC5681BE5A7B500FB60CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8F9EC56B1BE5A7B500FB60CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8F9EC56D1BE5A7B500FB60CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogoTitleView.swift; path = Views/LogoTitleView.swift; sourceTree = "<group>"; };
+		8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LogoTitleView.xib; path = Views/LogoTitleView.xib; sourceTree = "<group>"; };
 		EFB70A4F1F3B3FA1EA8785D4 /* Pods-SWSabres.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.release.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.release.xcconfig"; sourceTree = "<group>"; };
 		F6ECCBC35FC3C957308B17E9 /* Pods-SWSabres.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,9 +183,19 @@
 				89E9FB571BE79FA500D031CE /* Model */,
 				897B83FF1BE9523600CBEB90 /* Utility */,
 				89E9FB561BE79EF900D031CE /* ViewControllers */,
+				8FD26B901BEB9E7900322DDD /* Views */,
 				89E9FB5E1BE7CB0800D031CE /* WebAPI */,
 			);
 			path = SWSabres;
+			sourceTree = "<group>";
+		};
+		8FD26B901BEB9E7900322DDD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */,
+				8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,6 +259,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FD26B941BEB9EE600322DDD /* LogoTitleView.xib in Resources */,
 				8F9EC56C1BE5A7B500FB60CD /* LaunchScreen.storyboard in Resources */,
 				8F9EC5691BE5A7B500FB60CD /* Assets.xcassets in Resources */,
 				8F9EC5671BE5A7B500FB60CD /* Main.storyboard in Resources */,
@@ -318,6 +333,7 @@
 				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
 				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
+				8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */,
 				897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
 				897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */,
@@ -440,6 +456,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
+				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 			};
 			name = Debug;
@@ -453,6 +470,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
+				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 			};
 			name = Release;

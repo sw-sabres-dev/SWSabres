@@ -20,7 +20,19 @@ class AnnouncementsTableViewController: UITableViewController {
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .MediumStyle
         
-        self.title = "Announcements"
+        //self.title = "Announcements"
+        
+        if let logoTitleView: LogoTitleView = LogoTitleView.loadFromNibNamed("LogoTitleView") as? LogoTitleView
+        {
+            logoTitleView.backgroundColor = ApptTintColors.backgroundTintColor
+            logoTitleView.titleLabel.textColor = UIColor.whiteColor()
+
+            if let size = self.navigationController?.navigationBar.bounds
+            {
+                logoTitleView.frame = size
+            }
+            self.navigationItem.titleView = logoTitleView
+        }
         
         //self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
         
@@ -112,6 +124,7 @@ class AnnouncementsTableViewController: UITableViewController {
         return cell
     }
 
+    /*
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         if section == 0
@@ -135,6 +148,7 @@ class AnnouncementsTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 117
     }
+*/
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
