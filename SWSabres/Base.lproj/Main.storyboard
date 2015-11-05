@@ -8,7 +8,7 @@
         <!--Announcements Table View Controller-->
         <scene sceneID="boe-tC-hna">
             <objects>
-                <tableViewController id="cYr-Og-EqJ" customClass="AnnouncementsTableViewController" customModule="Go_Sabres" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="cYr-Og-EqJ" customClass="AnnouncementsTableViewController" customModule="SWSabres" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="MxL-BF-ZPE">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -41,14 +41,14 @@
         <!--Schedule Table View Controller-->
         <scene sceneID="Ba5-fW-mPD">
             <objects>
-                <tableViewController id="8vX-eT-k2w" customClass="ScheduleTableViewController" customModule="Go_Sabres" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="8vX-eT-k2w" customClass="ScheduleTableViewController" customModule="SWSabres" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="QJ5-dL-bm0">
                         <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="gameLogoCellIdentifier" rowHeight="88" id="9tb-go-Xfe" customClass="GameLogoTableViewCell" customModule="Go_Sabres" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="gameLogoCellIdentifier" rowHeight="88" id="9tb-go-Xfe" customClass="GameLogoTableViewCell" customModule="SWSabres" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="600" height="88"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9tb-go-Xfe" id="6h6-Hm-1vm">

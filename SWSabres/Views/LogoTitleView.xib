@@ -6,7 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="LogoTitleView" customModule="SWSabres" customModuleProvider="target">
+        <view clipsSubviews="YES" contentMode="scaleToFill" id="iN0-l3-epB" customClass="LogoTitleView" customModule="SWSabres" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -21,9 +21,25 @@
                     <rect key="frame" x="142" y="280" width="40" height="40"/>
                     <animations/>
                     <constraints>
-                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="40" id="urK-Kq-jrl"/>
-                        <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="yen-tS-msE"/>
+                        <constraint firstAttribute="width" constant="30" id="GUe-ZN-clI"/>
+                        <constraint firstAttribute="width" constant="30" id="dci-K8-YiE"/>
+                        <constraint firstAttribute="width" constant="40" id="urK-Kq-jrl"/>
+                        <constraint firstAttribute="height" constant="40" id="yen-tS-msE"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="GUe-ZN-clI"/>
+                            <exclude reference="dci-K8-YiE"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=compact">
+                        <mask key="constraints">
+                            <include reference="GUe-ZN-clI"/>
+                            <include reference="dci-K8-YiE"/>
+                            <exclude reference="urK-Kq-jrl"/>
+                            <exclude reference="yen-tS-msE"/>
+                        </mask>
+                    </variation>
                 </imageView>
             </subviews>
             <animations/>
