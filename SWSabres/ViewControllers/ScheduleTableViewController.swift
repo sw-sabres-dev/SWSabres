@@ -290,11 +290,13 @@ final class ScheduleTableViewController: UITableViewController
                     
                     if game.isHomeGame
                     {
+                        cell.secondLogo.image = nil
                         cell.secondLogo.pin_setImageFromURL(logoUrl)
                         cell.secondLogoLabel.text = teamName
                     }
                     else
                     {
+                        cell.firstLogo.image = nil
                         cell.firstLogo.pin_setImageFromURL(logoUrl)
                         cell.firstLogoLabel.text = teamName
                     }
