@@ -32,6 +32,9 @@
 		8F9EC56C1BE5A7B500FB60CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F9EC56A1BE5A7B500FB60CD /* LaunchScreen.storyboard */; };
 		8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */; };
 		8FD26B941BEB9EE600322DDD /* LogoTitleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */; };
+		8FEE52EA1BEC473B004FBB40 /* GameDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */; };
+		8FEE52EC1BEC5586004FBB40 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FEE52EB1BEC5586004FBB40 /* MapKit.framework */; };
+		8FEE52F01BEC5B7D004FBB40 /* ContentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE52EF1BEC5B7D004FBB40 /* ContentManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +65,9 @@
 		8F9EC56D1BE5A7B500FB60CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LogoTitleView.swift; path = Views/LogoTitleView.swift; sourceTree = "<group>"; };
 		8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LogoTitleView.xib; path = Views/LogoTitleView.xib; sourceTree = "<group>"; };
+		8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameDetailViewController.swift; path = ViewControllers/GameDetailViewController.swift; sourceTree = "<group>"; };
+		8FEE52EB1BEC5586004FBB40 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		8FEE52EF1BEC5B7D004FBB40 /* ContentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentManager.swift; path = Utility/ContentManager.swift; sourceTree = "<group>"; };
 		EFB70A4F1F3B3FA1EA8785D4 /* Pods-SWSabres.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.release.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.release.xcconfig"; sourceTree = "<group>"; };
 		F6ECCBC35FC3C957308B17E9 /* Pods-SWSabres.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FEE52EC1BEC5586004FBB40 /* MapKit.framework in Frameworks */,
 				37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,6 +88,7 @@
 		54F17438AB206A4533EC7923 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8FEE52EB1BEC5586004FBB40 /* MapKit.framework */,
 				194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */,
 			);
 			name = Frameworks;
@@ -108,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */,
+				8FEE52EF1BEC5B7D004FBB40 /* ContentManager.swift */,
 				897B84001BE9525800CBEB90 /* FileUtil.swift */,
 				897B84021BE9529600CBEB90 /* StringPathExtensions.swift */,
 			);
@@ -119,6 +128,7 @@
 			children = (
 				89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */,
 				89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */,
+				8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */,
 				89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */,
 			);
 			name = ViewControllers;
@@ -334,6 +344,7 @@
 				89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */,
 				8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */,
 				89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */,
+				8FEE52EA1BEC473B004FBB40 /* GameDetailViewController.swift in Sources */,
 				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
 				89D194551BEBEDF6007639BA /* AnnouncementTableViewCell.swift in Sources */,
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
@@ -341,6 +352,7 @@
 				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
 				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
+				8FEE52F01BEC5B7D004FBB40 /* ContentManager.swift in Sources */,
 				8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */,
 				897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
