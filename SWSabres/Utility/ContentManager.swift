@@ -16,19 +16,75 @@ final class ContentManager
     var games: [Game] = [Game]()
     var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
     var sortedDays: [NSDate] = [NSDate]()
+    var announcements: [Announcement] = [Announcement]()
     
-    func loadContent(completionBlock: () -> ())
+    class var contentPath: String
+    {
+        get
+        {
+            let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            return documentFolder.stringByAppendingPathComponent("contentCache")
+        }
+    }
+    
+    func loadAnnouncements(completionBlock: () -> ())
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            
-            let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-            let jsonCacheFolder = documentFolder.stringByAppendingPathComponent("jsonCacheFolder")
             
             let fileManager: NSFileManager = NSFileManager()
             
             do
             {
-                try FileUtil.ensureFolder(jsonCacheFolder)
+                try FileUtil.ensureFolder(ContentManager.contentPath)
+            }
+            catch
+            {
+                return
+            }
+            
+            let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
+            
+            if fileManager.fileExistsAtPath(announcementsFileName)
+            {
+                self.loadAnnouncements()
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    
+                    completionBlock()
+                    //self.tableView.reloadData()
+                }
+            }
+            else
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                
+                Announcement.getAnnouncements { (result) -> Void in
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    
+                    if let fetchedAnnouncements = result.value
+                    {
+                        self.announcements = fetchedAnnouncements
+                        
+                        self.saveAnnouncements()
+                        
+                        completionBlock()
+                        //self.tableView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+    
+    func loadContent(completionBlock: () -> ())
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            let fileManager: NSFileManager = NSFileManager()
+            
+            do
+            {
+                try FileUtil.ensureFolder(ContentManager.contentPath)
             }
             catch
             {
@@ -37,18 +93,18 @@ final class ContentManager
             
             let queueGroup = dispatch_group_create()
             
-            let venuesFileName = jsonCacheFolder.stringByAppendingPathComponent("venues.json")
+            let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
             
             if fileManager.fileExistsAtPath(venuesFileName)
             {
-                self.venueMap = Venue.loadObjectMap(venuesFileName)
+                self.loadVenues()
             }
             else
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 dispatch_group_enter(queueGroup)
                 
-                Venue.getVenues(venuesFileName){ (result) -> Void in
+                Venue.getVenues { (result) -> Void in
                     
                     if let venues = result.value
                     {
@@ -60,22 +116,24 @@ final class ContentManager
                         }
                     }
                     
+                    self.saveVenues()
+                    
                     dispatch_group_leave(queueGroup)
                 }
             }
             
-            let teamsFileName = jsonCacheFolder.stringByAppendingPathComponent("teams.json")
+            let teamsFileName = ContentManager.contentPath.stringByAppendingPathComponent("teamMap.ser")
             
             if fileManager.fileExistsAtPath(teamsFileName)
             {
-                self.teamMap = Team.loadObjectMap(teamsFileName)
+                self.loadTeams()
             }
             else
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 dispatch_group_enter(queueGroup)
                 
-                Team.getTeams(teamsFileName){ (result) -> Void in
+                Team.getTeams { (result) -> Void in
                     
                     if let teams = result.value
                     {
@@ -87,22 +145,24 @@ final class ContentManager
                         }
                     }
                     
+                    self.saveTeams()
+                    
                     dispatch_group_leave(queueGroup)
                 }
             }
             
-            let schedulesFileName = jsonCacheFolder.stringByAppendingPathComponent("schedules.json")
+            let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
             
             if fileManager.fileExistsAtPath(schedulesFileName)
             {
-                self.scheduleMap = Schedule.loadObjectMap(schedulesFileName)
+                self.loadSchedules()
             }
             else
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 dispatch_group_enter(queueGroup)
                 
-                Schedule.getSchedules(schedulesFileName){ (result) -> Void in
+                Schedule.getSchedules { (result) -> Void in
                     
                     if let schedules = result.value
                     {
@@ -114,19 +174,21 @@ final class ContentManager
                         }
                     }
                     
+                    self.saveSchedules()
+                    
                     dispatch_group_leave(queueGroup)
                 }
             }
             
             
             
-            let gameFileName = jsonCacheFolder.stringByAppendingPathComponent("games.json")
+            let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
             
-            if fileManager.fileExistsAtPath(gameFileName)
+            if fileManager.fileExistsAtPath(gamesFileName)
             {
-                let games: [Game] = Game.loadObjects(gameFileName)
+                self.loadGames()
                 
-                for game in games
+                for game in self.games
                 {
                     if let gameDay: NSDate = self.dayForDate(game.gameDate)
                     {
@@ -151,10 +213,12 @@ final class ContentManager
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 dispatch_group_enter(queueGroup)
                 
-                Game.getAllGames(gameFileName){ (result) -> Void in
+                Game.getAllGames { (result) -> Void in
                     
                     if let fetchedGames = result.value
                     {
+                        self.games = fetchedGames
+                        
                         for game in fetchedGames
                         {
                             if let gameDay: NSDate = self.dayForDate(game.gameDate)
@@ -176,6 +240,8 @@ final class ContentManager
                         self.sortedDays = self.gameSections.keys.sort {$0.compare($1) == .OrderedAscending}
                     }
                     
+                    self.saveGames()
+                    
                     dispatch_group_leave(queueGroup)
                 }
             }
@@ -183,13 +249,195 @@ final class ContentManager
             dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
                 
                 completionBlock()
-                //UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                //self.tableView.reloadData()
             }
         }
 
     }
     
+    func saveVenues()
+    {
+        let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
+        
+        do
+        {
+            try FileUtil.ensureFileFolder(venuesFileName)
+        }
+        catch
+        {
+            return
+        }
+        
+        var helperVenueMap: [String: Venue.Helper] = Dictionary<String, Venue.Helper>()
+        
+        for (key, value) in venueMap
+        {
+            helperVenueMap[key] = Venue.Helper(venue: value)
+        }
+        
+        NSKeyedArchiver.archiveRootObject(helperVenueMap, toFile: venuesFileName)
+    }
+    
+    func loadVenues()
+    {
+        venueMap.removeAll()
+        
+        let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
+        
+        if let helperVenueMap: [String: Venue.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(venuesFileName) as? [String: Venue.Helper]
+        {
+            for (key, value) in helperVenueMap
+            {
+                if let venue: Venue = value.venue
+                {
+                    venueMap[key] = venue
+                }
+            }
+        }
+    }
+    
+    func saveTeams()
+    {
+        let teamsFileName = ContentManager.contentPath.stringByAppendingPathComponent("teamMap.ser")
+        
+        do
+        {
+            try FileUtil.ensureFileFolder(teamsFileName)
+        }
+        catch
+        {
+            return
+        }
+        
+        var helperTeamMap: [String: Team.Helper] = Dictionary<String, Team.Helper>()
+        
+        for (key, value) in teamMap
+        {
+            helperTeamMap[key] = Team.Helper(team: value)
+        }
+        
+        NSKeyedArchiver.archiveRootObject(helperTeamMap, toFile: teamsFileName)
+    }
+    
+    func loadTeams()
+    {
+        teamMap.removeAll()
+        
+        let teamsFileName = ContentManager.contentPath.stringByAppendingPathComponent("teamMap.ser")
+        
+        if let helperTeamMap: [String: Team.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(teamsFileName) as? [String: Team.Helper]
+        {
+            for (key, value) in helperTeamMap
+            {
+                if let team: Team = value.team
+                {
+                    teamMap[key] = team
+                }
+            }
+        }
+    }
+    
+    func saveSchedules()
+    {
+        let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
+        
+        do
+        {
+            try FileUtil.ensureFileFolder(schedulesFileName)
+        }
+        catch
+        {
+            return
+        }
+        
+        var helperScheduleMap: [String: Schedule.Helper] = Dictionary<String, Schedule.Helper>()
+        
+        for (key, value) in scheduleMap
+        {
+            helperScheduleMap[key] = Schedule.Helper(schedule: value)
+        }
+        
+        NSKeyedArchiver.archiveRootObject(helperScheduleMap, toFile: schedulesFileName)
+    }
+    
+    func loadSchedules()
+    {
+        scheduleMap.removeAll()
+        
+        let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
+        
+        if let helperScheduleMap: [String: Schedule.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(schedulesFileName) as? [String: Schedule.Helper]
+        {
+            for (key, value) in helperScheduleMap
+            {
+                if let schedule: Schedule = value.schedule
+                {
+                    scheduleMap[key] = schedule
+                }
+            }
+        }
+    }
+    
+    func saveGames()
+    {
+        let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
+        
+        do
+        {
+            try FileUtil.ensureFileFolder(gamesFileName)
+        }
+        catch
+        {
+            return
+        }
+        
+        let helperGames: [Game.Helper] = games.map { Game.Helper(game: $0) }
+        
+        NSKeyedArchiver.archiveRootObject(helperGames, toFile: gamesFileName)
+    }
+    
+    func loadGames()
+    {
+        games.removeAll()
+        gameSections.removeAll()
+        
+        let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
+        
+        if let helperGames: [Game.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(gamesFileName) as? [Game.Helper]
+        {
+            self.games = helperGames.flatMap { $0.game }
+        }
+    }
+    
+    func saveAnnouncements()
+    {
+        let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
+        
+        do
+        {
+            try FileUtil.ensureFileFolder(announcementsFileName)
+        }
+        catch
+        {
+            return
+        }
+        
+        let helperAnnouncements: [Announcement.Helper] = announcements.map { Announcement.Helper(announcement: $0) }
+        
+        NSKeyedArchiver.archiveRootObject(helperAnnouncements, toFile: announcementsFileName)
+    }
+    
+    func loadAnnouncements()
+    {
+        announcements.removeAll()
+        
+        let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
+        
+        if let helperAnnouncements: [Announcement.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(announcementsFileName) as? [Announcement.Helper]
+        {
+            self.announcements = helperAnnouncements.flatMap { $0.announcement }
+        }
+    }
+
     private func dayForDate(date: NSDate) -> NSDate?
     {
         let calendar = NSCalendar.currentCalendar()

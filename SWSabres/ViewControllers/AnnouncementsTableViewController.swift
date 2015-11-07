@@ -10,8 +10,8 @@ import UIKit
 
 class AnnouncementsTableViewController: UITableViewController {
 
-    var announcements: [Announcement] = [Announcement]()
     lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
+    weak var contentManager: ContentManager?
     
     override func viewDidLoad()
     {
@@ -32,47 +32,14 @@ class AnnouncementsTableViewController: UITableViewController {
             self.navigationItem.titleView = logoTitleView
         }
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        {
+            contentManager = delegate.contentManager
             
-            let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-            let jsonCacheFolder = documentFolder.stringByAppendingPathComponent("jsonCacheFolder")
-            
-            do
-            {
-                try FileUtil.ensureFolder(jsonCacheFolder)
-            }
-            catch
-            {
-                return
-            }
-            
-            let announcementsFileName = jsonCacheFolder.stringByAppendingPathComponent("announcements.json")
-            let fileManager: NSFileManager = NSFileManager()
-            
-            if fileManager.fileExistsAtPath(announcementsFileName)
-            {
-                self.announcements =  Announcement.loadObjects(announcementsFileName)
+            delegate.contentManager.loadAnnouncements {
                 
-                dispatch_async(dispatch_get_main_queue()) {
-                    
-                    self.tableView.reloadData()
-                }
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                
-                Announcement.getAnnouncements(announcementsFileName) { (result) -> Void in
-                    
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    
-                    if let fetchedAnnouncements = result.value
-                    {
-                        self.announcements = fetchedAnnouncements
-                        
-                        self.tableView.reloadData()
-                    }
-                }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                self.tableView.reloadData()
             }
         }
         
@@ -98,7 +65,14 @@ class AnnouncementsTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return announcements.count
+        if let contentManager = contentManager
+        {
+            return contentManager.announcements.count
+        }
+        else
+        {
+            return 0
+        }
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -112,12 +86,15 @@ class AnnouncementsTableViewController: UITableViewController {
         
         // Configure the cell...
 
-        let announcement = announcements[indexPath.row]
-        
-        if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
+        if let contentManager = contentManager
         {
-            announcementCell.headlineLabel.text = announcement.title
-            announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
+            let announcement = contentManager.announcements[indexPath.row]
+            
+            if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
+            {
+                announcementCell.headlineLabel.text = announcement.title
+                announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
+            }
         }
 
         //cell.textLabel?.text = announcement.title
@@ -194,9 +171,9 @@ class AnnouncementsTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController, let contentManager = contentManager
         {
-            viewController.announcement = announcements[indexPath.row]
+            viewController.announcement = contentManager.announcements[indexPath.row]
         }
         
     }

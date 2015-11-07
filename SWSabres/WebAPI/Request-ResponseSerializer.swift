@@ -87,7 +87,7 @@ extension Alamofire.Request
         return response(responseSerializer: responseSerializer, completionHandler: completionHandler)
     }
     
-    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(fileName: String, completionHandler: Response<[T], NSError> -> Void) -> Self
+    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(fileName: String? = nil, completionHandler: Response<[T], NSError> -> Void) -> Self
     {
         let responseSerializer = ResponseSerializer<[T], NSError> { request, response, data, error in
             
@@ -110,7 +110,10 @@ extension Alamofire.Request
                 
             case .Success(let value):
                 
-                responseData.writeToFile(fileName, atomically: true)
+                if let fileName = fileName
+                {
+                    responseData.writeToFile(fileName, atomically: true)
+                }
                 
                 let json = SwiftyJSON.JSON(value)
                 

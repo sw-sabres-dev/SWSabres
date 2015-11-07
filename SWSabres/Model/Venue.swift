@@ -132,9 +132,9 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-    static func getVenues(fileName: String, completionHandler: (Result<[Venue], NSError>) -> Void)
+    static func getVenues(completionHandler: (Result<[Venue], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray(fileName) { response in
+        Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }

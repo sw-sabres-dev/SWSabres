@@ -90,9 +90,9 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-    static func getSchedules(fileName: String, completionHandler: (Result<[Schedule], NSError>) -> Void)
+    static func getSchedules(completionHandler: (Result<[Schedule], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray(fileName) { response in
+        Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }

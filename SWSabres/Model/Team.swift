@@ -80,9 +80,9 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-    static func getTeams(fileName: String, completionHandler: (Result<[Team], NSError>) -> Void)
+    static func getTeams(completionHandler: (Result<[Team], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Team.endpoint).getPostsReponseArray(fileName) { response in
+        Alamofire.request(.GET, Team.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
