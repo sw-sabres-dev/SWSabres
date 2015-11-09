@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-struct Team: ResponseJSONObjectSerializable, UniqueObject
+struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
 {
     static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=-1"
     
@@ -106,4 +106,8 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject
             team?.encodeWithCoder(aCoder)
         }
     }
+}
+
+func ==(lhs: Team, rhs: Team) -> Bool {
+    return lhs.teamId == rhs.teamId
 }

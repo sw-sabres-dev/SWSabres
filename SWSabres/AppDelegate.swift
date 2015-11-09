@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         // Override point for customization after application launch.
         
-        let backgroundTintColor: UIColor = ApptTintColors.backgroundTintColor
+        let backgroundTintColor: UIColor = AppTintColors.backgroundTintColor
         
         UINavigationBar.appearance().barTintColor = backgroundTintColor
         UINavigationBar.appearance().barStyle = .Black
@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().barTintColor = backgroundTintColor
         UITabBar.appearance().translucent = false
         
-        self.window?.tintColor = ApptTintColors.primaryTintColor
+        self.window?.tintColor = AppTintColors.primaryTintColor
         
         return true
     }

@@ -22,7 +22,7 @@ class AnnouncementsTableViewController: UITableViewController {
         
         if let logoTitleView: LogoTitleView = LogoTitleView.loadFromNibNamed("LogoTitleView") as? LogoTitleView
         {
-            logoTitleView.backgroundColor = ApptTintColors.backgroundTintColor
+            logoTitleView.backgroundColor = AppTintColors.backgroundTintColor
             logoTitleView.titleLabel.textColor = UIColor.whiteColor()
             
             if let size = self.navigationController?.navigationBar.bounds

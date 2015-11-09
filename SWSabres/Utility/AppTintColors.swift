@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct ApptTintColors
+struct AppTintColors
 {
     static var primaryTintColor: UIColor
     {

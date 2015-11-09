@@ -57,6 +57,20 @@ final class ScheduleTableViewController: UITableViewController
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func prepareForUnwind(segue: UIStoryboardSegue)
+    {
+        if let gameFilterViewController = segue.sourceViewController as? GameFilterTableViewController, let contentManager = contentManager
+        {
+            if gameFilterViewController.filtersChanged
+            {
+                contentManager.refreshGamesWithFilter({ () -> () in
+                    
+                    self.tableView.reloadData()
+                })
+            }
+        }
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int
@@ -247,7 +261,7 @@ final class ScheduleTableViewController: UITableViewController
     {
         if let headerView: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView
         {
-            headerView.contentView.backgroundColor = ApptTintColors.backgroundTintColor
+            headerView.contentView.backgroundColor = AppTintColors.backgroundTintColor
             headerView.textLabel?.textColor = UIColor.whiteColor()
         }
     }

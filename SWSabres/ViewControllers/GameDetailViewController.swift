@@ -215,7 +215,7 @@ class GameDetailViewController: UIViewController
         alertController.addAction(cancelAction)
         
         self.presentViewController(alertController, animated: true, completion: nil)
-        alertController.view.tintColor = ApptTintColors.backgroundTintColor
+        alertController.view.tintColor = AppTintColors.backgroundTintColor
     }
     /*
     // MARK: - Navigation

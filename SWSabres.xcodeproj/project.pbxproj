@@ -24,6 +24,8 @@
 		89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */; };
 		89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */; };
 		89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146D1BE7EC0C006FC782 /* Announcement.swift */; };
+		8F6D5D221BF0010400E3CAAD /* GameFilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */; };
+		8F6D5D241BF0041100E3CAAD /* TeamSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */; };
 		8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */; };
 		8F95C2381BE81A6300126D4C /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F95C2371BE81A6300126D4C /* Team.swift */; };
 		8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9EC55F1BE5A7B500FB60CD /* AppDelegate.swift */; };
@@ -55,6 +57,8 @@
 		89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Request-ResponseSerializer.swift"; path = "SWSabres/WebAPI/Request-ResponseSerializer.swift"; sourceTree = "<group>"; };
 		89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementsTableViewController.swift; path = ViewControllers/AnnouncementsTableViewController.swift; sourceTree = "<group>"; };
 		89FE146D1BE7EC0C006FC782 /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Announcement.swift; path = SWSabres/Model/Announcement.swift; sourceTree = "<group>"; };
+		8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameFilterTableViewController.swift; path = ViewControllers/GameFilterTableViewController.swift; sourceTree = "<group>"; };
+		8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TeamSelectionTableViewController.swift; path = ViewControllers/TeamSelectionTableViewController.swift; sourceTree = "<group>"; };
 		8F9587381BE840DE00B1AE84 /* String-UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String-UtilityExtensions.swift"; path = "SWSabres/Extensions/String-UtilityExtensions.swift"; sourceTree = "<group>"; };
 		8F95C2371BE81A6300126D4C /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Team.swift; path = SWSabres/Model/Team.swift; sourceTree = "<group>"; };
 		8F9EC55C1BE5A7B500FB60CD /* Go Sabres.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Go Sabres.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,7 +133,9 @@
 				89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */,
 				89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */,
 				8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */,
+				8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */,
 				89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */,
+				8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -350,11 +356,13 @@
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
 				89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */,
 				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
+				8F6D5D241BF0041100E3CAAD /* TeamSelectionTableViewController.swift in Sources */,
 				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
 				8FEE52F01BEC5B7D004FBB40 /* ContentManager.swift in Sources */,
 				8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */,
 				897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */,
+				8F6D5D221BF0010400E3CAAD /* GameFilterTableViewController.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
 				897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */,
 				8F95C2381BE81A6300126D4C /* Team.swift in Sources */,
