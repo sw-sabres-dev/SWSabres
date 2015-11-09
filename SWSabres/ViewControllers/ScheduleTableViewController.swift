@@ -47,6 +47,8 @@ final class ScheduleTableViewController: UITableViewController
             
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 self.tableView.reloadData()
+                
+                self.gotoNearestNextGame()
             }
         }
     }
@@ -66,7 +68,24 @@ final class ScheduleTableViewController: UITableViewController
                 contentManager.refreshGamesWithFilter({ () -> () in
                     
                     self.tableView.reloadData()
+                    
+                    self.gotoNearestNextGame()
                 })
+            }
+        }
+    }
+    
+    func gotoNearestNextGame()
+    {
+        if let contentManager = contentManager, let today: NSDate = ContentManager.dayForDate(NSDate())
+        {
+            for var index = 0; index < contentManager.sortedDays.count; ++index
+            {
+                if today.compare(contentManager.sortedDays[index]) == .OrderedAscending
+                {
+                    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: false)
+                    break;
+                }
             }
         }
     }

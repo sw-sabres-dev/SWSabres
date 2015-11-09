@@ -23,7 +23,40 @@ final class ContentManager
     var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
     var sortedDays: [NSDate] = [NSDate]()
     var announcements: [Announcement] = [Announcement]()
-    var teamsFilter: TeamsFilter = .All
+    var teamsFilter: TeamsFilter
+    {
+        get
+        {
+            return teamsFilterStorage
+        }
+        set
+        {
+            teamsFilterStorage = newValue
+            
+            switch teamsFilterStorage
+            {
+                case .All:
+                
+                    let userDefaults = NSUserDefaults.standardUserDefaults()
+                    if userDefaults.objectForKey("teamsFilter") != nil
+                    {
+                        userDefaults.removeObjectForKey("teamsFilter")
+                    }
+                    userDefaults.synchronize()
+                
+                case .Selected(let teams):
+                    
+                    let helperTeamsIds: [String] = teams.map { $0.teamId }
+                    
+                    let userDefaults = NSUserDefaults.standardUserDefaults()
+                    userDefaults.setObject(helperTeamsIds, forKey: "teamsFilter")
+                    userDefaults.synchronize()
+            }
+            
+        }
+    }
+    
+    private var teamsFilterStorage: TeamsFilter = .All
     
     class var contentPath: String
     {
@@ -195,25 +228,9 @@ final class ContentManager
             {
                 self.loadGames()
                 
-                for game in self.games
-                {
-                    if let gameDay: NSDate = self.dayForDate(game.gameDate)
-                    {
-                        if var gamesOnDay: [Game] = self.gameSections[gameDay]
-                        {
-                            gamesOnDay.append(game)
-                            self.gameSections[gameDay] = gamesOnDay
-                        }
-                        else
-                        {
-                            var gamesOnDay: [Game] = [Game]()
-                            gamesOnDay.append(game)
-                            self.gameSections[gameDay] = gamesOnDay
-                        }
-                    }
-                }
+                self.loadPersistedTeamsFilter()
                 
-                self.sortedDays = self.gameSections.keys.sort {$0.compare($1) == .OrderedAscending}
+                self.filterGames()
             }
             else
             {
@@ -225,6 +242,8 @@ final class ContentManager
                     if let fetchedGames = result.value
                     {
                         self.games = fetchedGames
+                        
+                        self.loadPersistedTeamsFilter()
                         
                         self.filterGames()
                     }
@@ -241,6 +260,17 @@ final class ContentManager
             }
         }
 
+    }
+    
+    func loadPersistedTeamsFilter()
+    {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        if let teamIds:[String] = userDefaults.objectForKey("teamsFilter") as? [String]
+        {
+            let selectedTeams: [Team] = teamIds.flatMap { self.teamMap[$0] }
+            
+            self.teamsFilterStorage = .Selected(selectedTeams)
+        }
     }
     
     func filterGames()
@@ -270,7 +300,7 @@ final class ContentManager
         
         for game in filteredGames
         {
-            if let gameDay: NSDate = self.dayForDate(game.gameDate)
+            if let gameDay: NSDate = ContentManager.dayForDate(game.gameDate)
             {
                 if var gamesOnDay: [Game] = self.gameSections[gameDay]
                 {
@@ -485,7 +515,7 @@ final class ContentManager
         }
     }
 
-    private func dayForDate(date: NSDate) -> NSDate?
+    class func dayForDate(date: NSDate) -> NSDate?
     {
         let calendar = NSCalendar.currentCalendar()
         let timeZone = NSTimeZone.localTimeZone()
