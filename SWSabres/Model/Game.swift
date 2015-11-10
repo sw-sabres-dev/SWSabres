@@ -148,7 +148,9 @@ struct Game: ResponseJSONObjectSerializable
     
     static func getAllGames(completionHandler: (Result<[Game], NSError>) -> Void)
     {
-        Alamofire.request(.GET, Game.baseEndpoint).getPostsReponseArray { response in
+        let endpoint: String = String(format: "%@&include=id,slug,modified,custom_fields", Game.baseEndpoint)
+        
+        Alamofire.request(.GET, endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }

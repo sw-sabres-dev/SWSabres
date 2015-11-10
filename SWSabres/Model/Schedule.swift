@@ -12,7 +12,7 @@ import Alamofire
 
 struct Schedule: ResponseJSONObjectSerializable, UniqueObject
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_schedule"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_schedule&include=slug,title,modified,custom_fields&custom_fields=schedule_team"
     
     let scheduleId: String
     let title: String
