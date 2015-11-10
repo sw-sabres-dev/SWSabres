@@ -17,6 +17,7 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
     let scheduleId: String
     let title: String
     let scheduleTeamId: String
+    let modified: NSDate
     
     init?(coder aDecoder: NSCoder)
     {
@@ -37,6 +38,12 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         self.scheduleTeamId = scheduleTeamId
+        
+        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        {
+            return nil
+        }
+        self.modified = decodedModified
     }
     
     func encodeWithCoder(aCoder: NSCoder)
@@ -44,6 +51,7 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         aCoder.encodeObject(scheduleId, forKey: "scheduleId")
         aCoder.encodeObject(title, forKey: "title")
         aCoder.encodeObject(scheduleTeamId, forKey: "scheduleTeamId")
+        aCoder.encodeObject(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -62,6 +70,22 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         {
             return nil
         }
+        
+        guard let schedule_modified = json["modified"].string else // 2015-11-01 00:40:53
+        {
+            return nil
+        }
+        
+        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        
+        guard let parsedModified: NSDate = dateFormatter.dateFromString(schedule_modified) else
+        {
+            return nil
+        }
+        
+        self.modified = parsedModified
         
         let encodedTitle = schedule_title.dataUsingEncoding(NSUTF8StringEncoding)!
         let attributedOptions : [String: AnyObject] = [

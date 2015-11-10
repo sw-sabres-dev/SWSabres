@@ -20,6 +20,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
     let state: String
     let zip: String
     let title: String
+    let modified: NSDate
     
     init?(coder aDecoder: NSCoder)
     {
@@ -58,6 +59,12 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         self.title = title
+        
+        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        {
+            return nil
+        }
+        self.modified = decodedModified
     }
     
     func encodeWithCoder(aCoder: NSCoder)
@@ -68,6 +75,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         aCoder.encodeObject(state, forKey: "state")
         aCoder.encodeObject(zip, forKey: "zip")
         aCoder.encodeObject(title, forKey: "title")
+        aCoder.encodeObject(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -101,6 +109,22 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         {
             return nil
         }
+        
+        guard let venue_modified = json["modified"].string else // 2015-11-01 00:40:53
+        {
+            return nil
+        }
+        
+        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        
+        guard let parsedModified: NSDate = dateFormatter.dateFromString(venue_modified) else
+        {
+            return nil
+        }
+        
+        self.modified = parsedModified
         
         let encodedVenueTitle = venue_title.dataUsingEncoding(NSUTF8StringEncoding)!
         let attributedOptions : [String: AnyObject] = [

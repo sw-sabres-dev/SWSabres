@@ -16,6 +16,7 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
     
     let teamId: String
     let name: String
+    let modified: NSDate
     var logoUrl: String?
     var shortName: String?
     
@@ -33,6 +34,12 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
         }
         self.name = name
         
+        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        {
+            return nil
+        }
+        self.modified = decodedModified
+        
         logoUrl = aDecoder.decodeObjectForKey("logoUrl") as? String
         shortName = aDecoder.decodeObjectForKey("shortName") as? String
     }
@@ -43,6 +50,7 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
         aCoder.encodeObject(name, forKey: "name")
         aCoder.encodeObject(logoUrl, forKey: "logoUrl")
         aCoder.encodeObject(shortName, forKey: "shortName")
+        aCoder.encodeObject(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -56,6 +64,22 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
         {
             return nil
         }
+        
+        guard let team_modified = json["modified"].string else // 2015-11-01 00:40:53
+        {
+            return nil
+        }
+        
+        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        
+        guard let parsedModified: NSDate = dateFormatter.dateFromString(team_modified) else
+        {
+            return nil
+        }
+        
+        self.modified = parsedModified
         
         self.teamId = team_slug
         self.name = team_full_name

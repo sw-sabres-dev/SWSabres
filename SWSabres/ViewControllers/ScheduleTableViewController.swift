@@ -43,13 +43,26 @@ final class ScheduleTableViewController: UITableViewController
         {
             contentManager = delegate.contentManager
             
-            delegate.contentManager.loadContent {
-            
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                self.tableView.reloadData()
+            delegate.contentManager.loadContentCallback = {
                 
+                self.tableView.reloadData()
                 self.gotoNearestNextGame()
             }
+            
+            if !delegate.contentManager.isLoadingContent
+            {
+                dispatch_async(dispatch_get_main_queue()) {
+                    
+                    self.gotoNearestNextGame()
+                }
+            }
+//            delegate.contentManager.loadContent {
+//            
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//                self.tableView.reloadData()
+//                
+//                self.gotoNearestNextGame()
+//            }
         }
     }
 
@@ -81,7 +94,8 @@ final class ScheduleTableViewController: UITableViewController
         {
             for var index = 0; index < contentManager.sortedDays.count; ++index
             {
-                if today.compare(contentManager.sortedDays[index]) == .OrderedAscending
+                let result: NSComparisonResult = today.compare(contentManager.sortedDays[index])
+                if result == .OrderedSame || result == .OrderedAscending
                 {
                     self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: false)
                     break;

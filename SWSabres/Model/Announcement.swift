@@ -18,32 +18,39 @@ struct Announcement: ResponseJSONObjectSerializable
     let title: String
     let content: String
     let date: NSDate
+    let modified: NSDate
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let decodedAnnouncementId = aDecoder.decodeObjectForKey("announcementId") as? String else
+        guard let decodedAnnouncementId: String = aDecoder.decodeObjectForKey("announcementId") as? String else
         {
             return nil
         }
         self.announcementId = decodedAnnouncementId
         
-        guard let decodedTitle = aDecoder.decodeObjectForKey("title") as? String else
+        guard let decodedTitle: String = aDecoder.decodeObjectForKey("title") as? String else
         {
             return nil
         }
         self.title = decodedTitle
         
-        guard let decodedContent = aDecoder.decodeObjectForKey("content") as? String else
+        guard let decodedContent: String = aDecoder.decodeObjectForKey("content") as? String else
         {
             return nil
         }
         self.content = decodedContent
         
-        guard let decodedDate = aDecoder.decodeObjectForKey("date") as? NSDate else
+        guard let decodedDate: NSDate = aDecoder.decodeObjectForKey("date") as? NSDate else
         {
             return nil
         }
         self.date = decodedDate
+        
+        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        {
+            return nil
+        }
+        self.modified = decodedModified
     }
     
     func encodeWithCoder(aCoder: NSCoder)
@@ -52,6 +59,7 @@ struct Announcement: ResponseJSONObjectSerializable
         aCoder.encodeObject(title, forKey: "title")
         aCoder.encodeObject(content, forKey: "content")
         aCoder.encodeObject(date, forKey: "date")
+        aCoder.encodeObject(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -76,6 +84,11 @@ struct Announcement: ResponseJSONObjectSerializable
             return nil
         }
         
+        guard let announcement_modified = json["modified"].string else // 2015-11-01 00:40:53
+        {
+            return nil
+        }
+        
         self.announcementId = announcement_slug
         self.content = announcement_content
 
@@ -89,6 +102,13 @@ struct Announcement: ResponseJSONObjectSerializable
         }
         
         self.date = parsedDate
+        
+        guard let parsedModified: NSDate = dateFormatter.dateFromString(announcement_modified) else
+        {
+            return nil
+        }
+        
+        self.modified = parsedModified
         
         let attributedOptions : [String: AnyObject] = [
             NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,

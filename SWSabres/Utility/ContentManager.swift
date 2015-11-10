@@ -16,6 +16,7 @@ final class ContentManager
         case Selected([Team])
     }
     
+    var isLoadingContent: Bool = false
     var scheduleMap: [String: Schedule] = [String: Schedule]()
     var venueMap: [String: Venue] = [String: Venue]()
     var teamMap: [String: Team] = [String: Team]()
@@ -23,6 +24,9 @@ final class ContentManager
     var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
     var sortedDays: [NSDate] = [NSDate]()
     var announcements: [Announcement] = [Announcement]()
+    var loadContentCallback: (() -> ())?
+    var announcementsLoadedCallback: (() -> ())?
+    
     var teamsFilter: TeamsFilter
     {
         get
@@ -58,6 +62,11 @@ final class ContentManager
     
     private var teamsFilterStorage: TeamsFilter = .All
     
+    init()
+    {
+        self.loadContent()
+    }
+    
     class var contentPath: String
     {
         get
@@ -66,7 +75,8 @@ final class ContentManager
             return documentFolder.stringByAppendingPathComponent("contentCache")
         }
     }
-    
+
+    /*
     func loadAnnouncements(completionBlock: () -> ())
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -115,9 +125,12 @@ final class ContentManager
             }
         }
     }
+    */
     
-    func loadContent(completionBlock: () -> ())
+    func loadContent()
     {
+        isLoadingContent = true
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
             let fileManager: NSFileManager = NSFileManager()
@@ -131,124 +144,507 @@ final class ContentManager
                 return
             }
             
-            let queueGroup = dispatch_group_create()
-            
+            let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
             let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
-            
-            if fileManager.fileExistsAtPath(venuesFileName)
-            {
-                self.loadVenues()
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                dispatch_group_enter(queueGroup)
-                
-                Venue.getVenues { (result) -> Void in
-                    
-                    if let venues = result.value
-                    {
-                        self.venueMap.removeAll()
-                        
-                        for venue in venues
-                        {
-                            self.venueMap[venue.venueId] = venue
-                        }
-                    }
-                    
-                    self.saveVenues()
-                    
-                    dispatch_group_leave(queueGroup)
-                }
-            }
-            
             let teamsFileName = ContentManager.contentPath.stringByAppendingPathComponent("teamMap.ser")
-            
-            if fileManager.fileExistsAtPath(teamsFileName)
-            {
-                self.loadTeams()
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                dispatch_group_enter(queueGroup)
-                
-                Team.getTeams { (result) -> Void in
-                    
-                    if let teams = result.value
-                    {
-                        self.teamMap.removeAll()
-                        
-                        for team in teams
-                        {
-                            self.teamMap[team.teamId] = team
-                        }
-                    }
-                    
-                    self.saveTeams()
-                    
-                    dispatch_group_leave(queueGroup)
-                }
-            }
-            
             let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
-            
-            if fileManager.fileExistsAtPath(schedulesFileName)
-            {
-                self.loadSchedules()
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                dispatch_group_enter(queueGroup)
-                
-                Schedule.getSchedules { (result) -> Void in
-                    
-                    if let schedules = result.value
-                    {
-                        self.scheduleMap.removeAll()
-                        
-                        for schedule in schedules
-                        {
-                            self.scheduleMap[schedule.scheduleId] = schedule
-                        }
-                    }
-                    
-                    self.saveSchedules()
-                    
-                    dispatch_group_leave(queueGroup)
-                }
-            }
-            
-            
-            
             let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
             
-            if fileManager.fileExistsAtPath(gamesFileName)
+            if fileManager.fileExistsAtPath(announcementsFileName) && fileManager.fileExistsAtPath(venuesFileName) && fileManager.fileExistsAtPath(teamsFileName) && fileManager.fileExistsAtPath(schedulesFileName) && fileManager.fileExistsAtPath(gamesFileName)
             {
-                self.loadGames()
-                
-                self.loadPersistedTeamsFilter()
-                
-                self.filterGames()
+                do
+                {
+                    try self.loadAnnouncements()
+                    try self.loadVenues()
+                    try self.loadTeams()
+                    try self.loadSchedules()
+                    try self.loadGames()
+                    
+                    self.loadPersistedTeamsFilter()
+                    
+                    self.filterGames()
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        
+                        self.isLoadingContent = false
+                        
+                        if let announcementsLoadedCallback = self.announcementsLoadedCallback
+                        {
+                            announcementsLoadedCallback()
+                        }
+                        
+                        if let loadContentCallback = self.loadContentCallback
+                        {
+                            loadContentCallback()
+                        }
+                        
+                        self.checkforUpdates()
+                    }
+                }
+                catch
+                {
+                    do
+                    {
+                        // The local data failed to load so wack it.
+                        try fileManager.removeItemAtPath(announcementsFileName)
+                        try fileManager.removeItemAtPath(venuesFileName)
+                        try fileManager.removeItemAtPath(teamsFileName)
+                        try fileManager.removeItemAtPath(schedulesFileName)
+                        try fileManager.removeItemAtPath(gamesFileName)
+                        
+                        let userDefaults = NSUserDefaults.standardUserDefaults()
+                        if userDefaults.objectForKey("teamsFilter") != nil
+                        {
+                            userDefaults.removeObjectForKey("teamsFilter")
+                        }
+                        
+                        self.downloadContent {
+                            
+                            self.isLoadingContent = false
+                            
+                            if let loadContentCallback = self.loadContentCallback
+                            {
+                                loadContentCallback()
+                            }
+                        }
+                    }
+                    catch{}
+                }
             }
             else
             {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                self.downloadContent {
+                    
+                    self.isLoadingContent = false
+                    
+                    if let loadContentCallback = self.loadContentCallback
+                    {
+                        loadContentCallback()
+                    }
+                }
+            }
+        }
+        
+    }
+
+    func downloadContent(completionBlock: () -> ())
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            do
+            {
+                try FileUtil.ensureFolder(ContentManager.contentPath)
+            }
+            catch
+            {
+                return
+            }
+            
+            let queueGroup = dispatch_group_create()
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            
+            dispatch_group_enter(queueGroup)
+            
+            Announcement.getAnnouncements { (result) -> Void in
+                
+                if let fetchedAnnouncements = result.value
+                {
+                    self.announcements = fetchedAnnouncements
+                    
+                    self.saveAnnouncements()
+                    
+                    if let announcementsLoadedCallback = self.announcementsLoadedCallback
+                    {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            
+                            announcementsLoadedCallback()
+                        }
+                    }
+                    
+                    dispatch_group_leave(queueGroup)
+                }
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Venue.getVenues { (result) -> Void in
+                
+                if let venues = result.value
+                {
+                    self.venueMap.removeAll()
+                    
+                    for venue in venues
+                    {
+                        self.venueMap[venue.venueId] = venue
+                    }
+                }
+                
+                self.saveVenues()
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Team.getTeams { (result) -> Void in
+                
+                if let teams = result.value
+                {
+                    self.teamMap.removeAll()
+                    
+                    for team in teams
+                    {
+                        self.teamMap[team.teamId] = team
+                    }
+                }
+                
+                self.saveTeams()
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Schedule.getSchedules { (result) -> Void in
+                
+                if let schedules = result.value
+                {
+                    self.scheduleMap.removeAll()
+                    
+                    for schedule in schedules
+                    {
+                        self.scheduleMap[schedule.scheduleId] = schedule
+                    }
+                }
+                
+                self.saveSchedules()
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Game.getAllGames { (result) -> Void in
+                
+                if let fetchedGames = result.value
+                {
+                    self.games = fetchedGames
+                    
+                    self.loadPersistedTeamsFilter()
+                    
+                    self.filterGames()
+                }
+                
+                self.saveGames()
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                ContentManager.lastCheckForContentUpdate = NSDate()
+                completionBlock()
+            }
+        }
+    }
+    
+    func checkforUpdates()
+    {
+        if let lastCheckForContentUpdate: NSDate = ContentManager.lastCheckForContentUpdate
+        {
+            let interval: NSTimeInterval = NSDate().timeIntervalSinceDate(lastCheckForContentUpdate)
+            if interval < (1 * 60 * 2)
+            {
+                return
+            }
+        }
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            let queueGroup = dispatch_group_create()
+            
+            let contentUpdate: ContentUpdate = ContentUpdate()
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            
+            dispatch_group_enter(queueGroup)
+            
+            Announcement.getAnnouncements { (result) -> Void in
+                
+                if let fetchedAnnouncements = result.value
+                {
+                    var fetchedAnnouncementMap: [String: Announcement] = [String: Announcement]()
+                    var updatedAnnouncements: [Announcement] = [Announcement]()
+                    var deletedAnnouncements: [Announcement] = [Announcement]()
+                    
+                    for fetchedAnnouncement in fetchedAnnouncements
+                    {
+                        fetchedAnnouncementMap[fetchedAnnouncement.announcementId] = fetchedAnnouncement
+                        
+                        var found: Bool = false
+                        
+                        for announcement in self.announcements
+                        {
+                            if announcement.announcementId == fetchedAnnouncement.announcementId
+                            {
+                                found = true
+                                break;
+                            }
+                        }
+                        
+                        if !found
+                        {
+                            updatedAnnouncements.append(fetchedAnnouncement)
+                        }
+                    }
+                    
+                    for announcement in self.announcements
+                    {
+                        if let fetchedAnnouncement: Announcement = fetchedAnnouncementMap[announcement.announcementId]
+                        {
+                            if !announcement.modified.isEqualToDate(fetchedAnnouncement.modified)
+                            {
+                                updatedAnnouncements.append(fetchedAnnouncement)
+                            }
+                        }
+                        else
+                        {
+                            deletedAnnouncements.append(announcement)
+                        }
+                    }
+                    
+                    if !updatedAnnouncements.isEmpty
+                    {
+                        contentUpdate.updatedAnnouncements = updatedAnnouncements
+                    }
+                    
+                    if !deletedAnnouncements.isEmpty
+                    {
+                        contentUpdate.deletedAnnouncements = deletedAnnouncements
+                    }
+                    
+                    dispatch_group_leave(queueGroup)
+                }
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Venue.getVenues { (result) -> Void in
+                
+                if let fetchedVenues = result.value
+                {
+                    var fetchedVenueMap: [String: Venue] = [String: Venue]()
+                    var updatedVenues: [Venue] = [Venue]()
+                    var deletedVenues: [Venue] = [Venue]()
+                    
+                    for fetchedVenue in fetchedVenues
+                    {
+                        fetchedVenueMap[fetchedVenue.venueId] = fetchedVenue
+                        
+                        if self.venueMap[fetchedVenue.venueId] == nil
+                        {
+                            updatedVenues.append(fetchedVenue)
+                        }
+                    }
+                    
+                    for venue in self.venueMap.values
+                    {
+                        if let fetchedVenue: Venue = fetchedVenueMap[venue.venueId]
+                        {
+                            if !venue.modified.isEqualToDate(fetchedVenue.modified)
+                            {
+                                updatedVenues.append(fetchedVenue)
+                            }
+                        }
+                        else
+                        {
+                            deletedVenues.append(venue)
+                        }
+                    }
+                    
+                    if !updatedVenues.isEmpty
+                    {
+                        contentUpdate.updatedVenues = updatedVenues
+                    }
+                    
+                    if !deletedVenues.isEmpty
+                    {
+                        contentUpdate.deletedVenues = deletedVenues
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Team.getTeams { (result) -> Void in
+                
+                if let fetchedTeams = result.value
+                {
+                    var fetchedTeamsMap: [String: Team] = [String: Team]()
+                    var updatedTeams: [Team] = [Team]()
+                    var deletedTeams: [Team] = [Team]()
+                    
+                    for fetchedTeam in fetchedTeams
+                    {
+                        fetchedTeamsMap[fetchedTeam.teamId] = fetchedTeam
+                        
+                        if self.teamMap[fetchedTeam.teamId] == nil
+                        {
+                            updatedTeams.append(fetchedTeam)
+                        }
+                    }
+                    
+                    for team in self.teamMap.values
+                    {
+                        if let fetchedTeam: Team = fetchedTeamsMap[team.teamId]
+                        {
+                            if !team.modified.isEqualToDate(fetchedTeam.modified)
+                            {
+                                updatedTeams.append(fetchedTeam)
+                            }
+                        }
+                        else
+                        {
+                            deletedTeams.append(team)
+                        }
+                    }
+                    
+                    if !updatedTeams.isEmpty
+                    {
+                        contentUpdate.updatedTeams = updatedTeams
+                    }
+                    
+                    if !deletedTeams.isEmpty
+                    {
+                        contentUpdate.deletedTeams = deletedTeams
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            Schedule.getSchedules { (result) -> Void in
+                
+                if let fetchedSchedules = result.value
+                {
+                    var fetchedSchedulesMap: [String: Schedule] = [String: Schedule]()
+                    var updatedSchedules: [Schedule] = [Schedule]()
+                    var deletedSchedules: [Schedule] = [Schedule]()
+                    
+                    for fetchedSchedule in fetchedSchedules
+                    {
+                        fetchedSchedulesMap[fetchedSchedule.scheduleId] = fetchedSchedule
+                        
+                        if self.scheduleMap[fetchedSchedule.scheduleId] == nil
+                        {
+                            updatedSchedules.append(fetchedSchedule)
+                        }
+                    }
+                    
+                    for schedule in self.scheduleMap.values
+                    {
+                        if let fetchedSchedule: Schedule = fetchedSchedulesMap[schedule.scheduleId]
+                        {
+                            if !schedule.modified.isEqualToDate(fetchedSchedule.modified)
+                            {
+                                updatedSchedules.append(fetchedSchedule)
+                            }
+                        }
+                        else
+                        {
+                            deletedSchedules.append(schedule)
+                        }
+                    }
+                    
+                    if !updatedSchedules.isEmpty
+                    {
+                        contentUpdate.updatedSchedules = updatedSchedules
+                    }
+                    
+                    if !deletedSchedules.isEmpty
+                    {
+                        contentUpdate.deletedSchedules = deletedSchedules
+                    }
+                }
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            dispatch_group_enter(queueGroup)
+            
+            GameInfo.getAllGameInfo { (result) -> Void in
+                
+                if let fetchedGameInfos = result.value
+                {
+                    var fetchedGameInfoMap: [Int: GameInfo] = [Int: GameInfo]()
+                    var gameMap: [Int: Game] = [Int: Game]()
+                    var deletedGames: [Game] = [Game]()
+                    var updatedKeys: [Int] = [Int]()
+                    
+                    for game in self.games
+                    {
+                        gameMap[game.gamePostId] = game
+                    }
+                    
+                    for fetchedGameInfo in fetchedGameInfos
+                    {
+                        fetchedGameInfoMap[fetchedGameInfo.gamePostId] = fetchedGameInfo
+                        
+                        if gameMap[fetchedGameInfo.gamePostId] == nil
+                        {
+                            updatedKeys.append(fetchedGameInfo.gamePostId)
+                        }
+                    }
+                    
+                    for game in self.games
+                    {
+                        if let fetchedGameInfo: GameInfo = fetchedGameInfoMap[game.gamePostId]
+                        {
+                            if !game.modified.isEqualToDate(fetchedGameInfo.modified)
+                            {
+                                updatedKeys.append(fetchedGameInfo.gamePostId)
+                            }
+                        }
+                        else
+                        {
+                            deletedGames.append(game)
+                        }
+                    }
+                    
+                    if !deletedGames.isEmpty
+                    {
+                        contentUpdate.deletedGames = deletedGames
+                    }
+                    
+                    if !updatedKeys.isEmpty
+                    {
+                        contentUpdate.updatedGameKeys = updatedKeys
+                    }
+                }
+                
+                
+                dispatch_group_leave(queueGroup)
+            }
+            
+            
+            dispatch_group_wait(queueGroup, DISPATCH_TIME_FOREVER)
+            
+            if let gameKeys = contentUpdate.updatedGameKeys where gameKeys.count > 0
+            {
                 dispatch_group_enter(queueGroup)
                 
-                Game.getAllGames { (result) -> Void in
+                Game.getGamesForKeys(gameKeys) { (result) -> Void in
                     
                     if let fetchedGames = result.value
                     {
-                        self.games = fetchedGames
-                        
-                        self.loadPersistedTeamsFilter()
-                        
-                        self.filterGames()
+                        contentUpdate.updatedGames = fetchedGames
                     }
-                    
-                    self.saveGames()
                     
                     dispatch_group_leave(queueGroup)
                 }
@@ -256,10 +652,173 @@ final class ContentManager
             
             dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
                 
-                completionBlock()
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                ContentManager.lastCheckForContentUpdate = NSDate()
+                
+                if contentUpdate.isContentUpdated
+                {
+                    self.isLoadingContent = true
+                    self.handleContentUpdate(contentUpdate)
+                    //completionBlock()
+                }
             }
         }
-
+    }
+    
+    private func handleContentUpdate(contentUpdate: ContentUpdate)
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            if (contentUpdate.updatedAnnouncements != nil || contentUpdate.deletedAnnouncements != nil)
+            {
+                var announcementSet: Set<String> = Set<String>()
+                
+                if let updatedAnnouncements = contentUpdate.updatedAnnouncements
+                {
+                    for announcement in updatedAnnouncements
+                    {
+                        announcementSet.insert(announcement.announcementId)
+                    }
+                }
+                
+                if let deletedAnnouncements = contentUpdate.deletedAnnouncements
+                {
+                    for announcement in deletedAnnouncements
+                    {
+                        announcementSet.insert(announcement.announcementId)
+                    }
+                }
+                
+                if announcementSet.count > 0
+                {
+                    var filteredAnnouncements = self.announcements.filter { return !announcementSet.contains($0.announcementId) }
+                    if let updatedAnnouncements = contentUpdate.updatedAnnouncements
+                    {
+                        filteredAnnouncements.appendContentsOf(updatedAnnouncements)
+                    }
+                    
+                    if !filteredAnnouncements.isEmpty
+                    {
+                        self.announcements = filteredAnnouncements.sort { $0.modified.compare($1.modified) == .OrderedDescending}
+                        
+                        self.saveAnnouncements()
+                    }
+                }
+            }
+            
+            if contentUpdate.updatedVenues != nil || contentUpdate.deletedVenues != nil
+            {
+                if let updatedVenues = contentUpdate.updatedVenues
+                {
+                    for venue in updatedVenues
+                    {
+                        self.venueMap[venue.venueId] = venue
+                    }
+                }
+                
+                if let deletedVenues = contentUpdate.deletedVenues
+                {
+                    for venue in deletedVenues
+                    {
+                        self.venueMap.removeValueForKey(venue.venueId)
+                    }
+                }
+                
+                self.saveVenues()
+            }
+            
+            if contentUpdate.updatedTeams != nil || contentUpdate.deletedTeams != nil
+            {
+                if let updatedTeams = contentUpdate.updatedTeams
+                {
+                    for team in updatedTeams
+                    {
+                        self.teamMap[team.teamId] = team
+                    }
+                }
+                
+                if let deletedTeams = contentUpdate.deletedTeams
+                {
+                    for team in deletedTeams
+                    {
+                        self.teamMap.removeValueForKey(team.teamId)
+                    }
+                }
+                
+                self.saveTeams()
+            }
+            
+            if contentUpdate.updatedSchedules != nil || contentUpdate.deletedSchedules != nil
+            {
+                if let updatedSchedules = contentUpdate.updatedSchedules
+                {
+                    for schedule in updatedSchedules
+                    {
+                        self.scheduleMap[schedule.scheduleId] = schedule
+                    }
+                }
+                
+                if let deletedSchedules = contentUpdate.deletedSchedules
+                {
+                    for schedule in deletedSchedules
+                    {
+                        self.scheduleMap.removeValueForKey(schedule.scheduleId)
+                    }
+                }
+                
+                self.saveSchedules()
+            }
+            
+            if (contentUpdate.updatedGames != nil || contentUpdate.deletedGames != nil)
+            {
+                var gameSet: Set<String> = Set<String>()
+                
+                if let updatedGames = contentUpdate.updatedGames
+                {
+                    for game in updatedGames
+                    {
+                        gameSet.insert(game.gameId)
+                    }
+                }
+                
+                if let deletedGames = contentUpdate.deletedGames
+                {
+                    for game in deletedGames
+                    {
+                        gameSet.insert(game.gameId)
+                    }
+                }
+                
+                if gameSet.count > 0
+                {
+                    var filteredGames = self.games.filter { return !gameSet.contains($0.gameId) }
+                    if let updatedGames = contentUpdate.updatedGames
+                    {
+                        filteredGames.appendContentsOf(updatedGames)
+                    }
+                    
+                    if !filteredGames.isEmpty
+                    {
+                        self.games = filteredGames.sort { $0.modified.compare($1.modified) == .OrderedAscending}
+                    }
+                    
+                    self.saveGames()
+                    
+                    self.filterGames()
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                
+                self.isLoadingContent = false
+                
+                if let loadContentCallback = self.loadContentCallback
+                {
+                    loadContentCallback()
+                }
+            }
+        }
     }
     
     func loadPersistedTeamsFilter()
@@ -354,7 +913,7 @@ final class ContentManager
         NSKeyedArchiver.archiveRootObject(helperVenueMap, toFile: venuesFileName)
     }
     
-    func loadVenues()
+    func loadVenues() throws
     {
         venueMap.removeAll()
         
@@ -369,6 +928,11 @@ final class ContentManager
                     venueMap[key] = venue
                 }
             }
+            
+        }
+        else
+        {
+            throw NSError(domain: "ContentManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to unarchive venues"])
         }
     }
     
@@ -395,7 +959,7 @@ final class ContentManager
         NSKeyedArchiver.archiveRootObject(helperTeamMap, toFile: teamsFileName)
     }
     
-    func loadTeams()
+    func loadTeams() throws
     {
         teamMap.removeAll()
         
@@ -410,6 +974,10 @@ final class ContentManager
                     teamMap[key] = team
                 }
             }
+        }
+        else
+        {
+            throw NSError(domain: "ContentManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to unarchive teams"])
         }
     }
     
@@ -436,7 +1004,7 @@ final class ContentManager
         NSKeyedArchiver.archiveRootObject(helperScheduleMap, toFile: schedulesFileName)
     }
     
-    func loadSchedules()
+    func loadSchedules() throws
     {
         scheduleMap.removeAll()
         
@@ -451,6 +1019,10 @@ final class ContentManager
                     scheduleMap[key] = schedule
                 }
             }
+        }
+        else
+        {
+            throw NSError(domain: "ContentManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to unarchive schedules"])
         }
     }
     
@@ -472,7 +1044,7 @@ final class ContentManager
         NSKeyedArchiver.archiveRootObject(helperGames, toFile: gamesFileName)
     }
     
-    func loadGames()
+    func loadGames() throws
     {
         games.removeAll()
         gameSections.removeAll()
@@ -482,6 +1054,10 @@ final class ContentManager
         if let helperGames: [Game.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(gamesFileName) as? [Game.Helper]
         {
             self.games = helperGames.flatMap { $0.game }
+        }
+        else
+        {
+            throw NSError(domain: "ContentManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to unarchive games"])
         }
     }
     
@@ -503,7 +1079,7 @@ final class ContentManager
         NSKeyedArchiver.archiveRootObject(helperAnnouncements, toFile: announcementsFileName)
     }
     
-    func loadAnnouncements()
+    func loadAnnouncements() throws
     {
         announcements.removeAll()
         
@@ -512,6 +1088,10 @@ final class ContentManager
         if let helperAnnouncements: [Announcement.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(announcementsFileName) as? [Announcement.Helper]
         {
             self.announcements = helperAnnouncements.flatMap { $0.announcement }
+        }
+        else
+        {
+            throw NSError(domain: "ContentManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to unarchive announcements"])
         }
     }
 
@@ -528,5 +1108,23 @@ final class ContentManager
         dateComps.second = 0
         
         return calendar.dateFromComponents(dateComps)
+    }
+    
+    class var lastCheckForContentUpdate: NSDate?
+    {
+        get
+        {
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            return userDefaults.objectForKey("lastCheckForContentUpdate") as? NSDate
+        }
+        set
+        {
+            if let validDate: NSDate = newValue
+            {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setObject(validDate, forKey: "lastCheckForContentUpdate")
+                userDefaults.synchronize()
+            }
+        }
     }
 }

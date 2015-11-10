@@ -36,11 +36,20 @@ class AnnouncementsTableViewController: UITableViewController {
         {
             contentManager = delegate.contentManager
             
-            delegate.contentManager.loadAnnouncements {
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                self.tableView.reloadData()
+            if delegate.contentManager.isLoadingContent
+            {
+                delegate.contentManager.announcementsLoadedCallback = {
+                    
+                    //delegate.contentManager.announcementsLoadedCallback = nil
+                    self.tableView.reloadData()
+                }
             }
+            
+//            delegate.contentManager.loadAnnouncements {
+//                
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//                self.tableView.reloadData()
+//            }
         }
         
         // Uncomment the following line to preserve selection between presentations
