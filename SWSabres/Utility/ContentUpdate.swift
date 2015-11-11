@@ -21,13 +21,14 @@ final class ContentUpdate
     var updatedGames: [Game]?
     var deletedGames: [Game]?
     var updatedGameKeys: [Int]?
+    var allGames: [Game]?
     
     var isContentUpdated: Bool
     {
         get
         {
             return updatedAnnouncements != nil || deletedAnnouncements != nil || updatedVenues != nil || deletedVenues != nil || updatedTeams != nil || deletedTeams != nil ||
-                   updatedSchedules != nil || deletedSchedules != nil || updatedGames != nil || deletedGames != nil
+                   updatedSchedules != nil || deletedSchedules != nil || updatedGames != nil || deletedGames != nil || allGames != nil
         }
     }
 }

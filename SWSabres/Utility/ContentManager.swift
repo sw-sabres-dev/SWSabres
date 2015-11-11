@@ -639,15 +639,33 @@ final class ContentManager
             {
                 dispatch_group_enter(queueGroup)
                 
-                Game.getGamesForKeys(gameKeys) { (result) -> Void in
-                    
-                    if let fetchedGames = result.value
-                    {
-                        contentUpdate.updatedGames = fetchedGames
+                if gameKeys.count < 25
+                {
+                    Game.getGamesForKeys(gameKeys) { (result) -> Void in
+                        
+                        if let fetchedGames = result.value
+                        {
+                            contentUpdate.updatedGames = fetchedGames
+                        }
+                        
+                        dispatch_group_leave(queueGroup)
                     }
-                    
-                    dispatch_group_leave(queueGroup)
                 }
+                else
+                {
+                    // There are too many updates to retreive by key just get all the games.
+                    
+                    Game.getAllGames { (result) -> Void in
+                        
+                        if let fetchedGames = result.value
+                        {
+                            contentUpdate.allGames = fetchedGames
+                        }
+                        
+                        dispatch_group_leave(queueGroup)
+                    }
+                }
+                
             }
             
             dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
@@ -770,7 +788,7 @@ final class ContentManager
                 self.saveSchedules()
             }
             
-            if (contentUpdate.updatedGames != nil || contentUpdate.deletedGames != nil)
+            if contentUpdate.updatedGames != nil || contentUpdate.deletedGames != nil
             {
                 var gameSet: Set<String> = Set<String>()
                 
@@ -807,6 +825,14 @@ final class ContentManager
                     
                     self.filterGames()
                 }
+            }
+            else if let allGames: [Game] = contentUpdate.allGames where allGames.count > 0
+            {
+                self.games = allGames
+                
+                self.saveGames()
+                
+                self.filterGames()
             }
             
             dispatch_async(dispatch_get_main_queue()) {
