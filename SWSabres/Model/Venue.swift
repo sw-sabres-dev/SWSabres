@@ -12,7 +12,7 @@ import Alamofire
 
 struct Venue: ResponseJSONObjectSerializable, UniqueObject
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_venue&count=500"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_venue&count=-1&include=slug,title,modified,custom_fields&custom_fields=venue_street,venue_city,venue_state,venue_zip"
     
     let venueId: String
     let address: String
