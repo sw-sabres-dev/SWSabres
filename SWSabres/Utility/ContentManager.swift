@@ -800,7 +800,7 @@ final class ContentManager
                     
                     if !filteredGames.isEmpty
                     {
-                        self.games = filteredGames.sort { $0.modified.compare($1.modified) == .OrderedAscending}
+                        self.games = filteredGames.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending}
                     }
                     
                     self.saveGames()
