@@ -12,7 +12,7 @@ import Alamofire
 
 struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=-1"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=-1&include=slug,modified,custom_fields&custom_fields=team_full_name,team_alt_logo,team_short_name"
     
     let teamId: String
     let name: String

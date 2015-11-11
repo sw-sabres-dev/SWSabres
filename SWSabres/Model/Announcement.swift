@@ -12,7 +12,7 @@ import Alamofire
 
 struct Announcement: ResponseJSONObjectSerializable
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=1"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=1&count=-1&include=slug,title,content,date,modified"
     
     let announcementId: String
     let title: String
