@@ -112,36 +112,57 @@ final class ScheduleTableViewController: UITableViewController
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return self.contentManager!.sortedDays.count
+        if let contentManager = contentManager
+        {
+            return contentManager.sortedDays.count
+        }
+        else
+        {
+            return 0
+        }
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        let dayDate: NSDate = self.contentManager!.sortedDays[section]
-        let gamesOnDay: [Game]? = self.contentManager!.gameSections[dayDate]
-        
-        return gamesOnDay != nil ? gamesOnDay!.count : 0
+        if let contentManager = contentManager
+        {
+            let dayDate: NSDate = contentManager.sortedDays[section]
+            let gamesOnDay: [Game]? = contentManager.gameSections[dayDate]
+            
+            return gamesOnDay != nil ? gamesOnDay!.count : 0
+        }
+        else
+        {
+            return 0
+        }
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-        let dayDate: NSDate = self.contentManager!.sortedDays[section]
+        if let contentManager = contentManager
+        {
+            let dayDate: NSDate = contentManager.sortedDays[section]
         
-        return sectionDateFormatter.stringFromDate(dayDate)
+            return sectionDateFormatter.stringFromDate(dayDate)
+        }
+        else
+        {
+            return nil
+        }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let baseCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath)
         
-        if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
+        if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell, let contentManager = contentManager
         {
-            let dayDate: NSDate = self.contentManager!.sortedDays[indexPath.section]
-            if let gamesOnDay: [Game] = self.contentManager!.gameSections[dayDate]
+            let dayDate: NSDate = contentManager.sortedDays[indexPath.section]
+            if let gamesOnDay: [Game] = contentManager.gameSections[dayDate]
             {
                 let game = gamesOnDay[indexPath.row]
              
-                if let schedule: Schedule = contentManager!.scheduleMap[game.gameScheduleId], let team: Team = contentManager!.teamMap[schedule.scheduleTeamId], let shortName = team.shortName
+                if let schedule: Schedule = contentManager.scheduleMap[game.gameScheduleId], let team: Team = contentManager.teamMap[schedule.scheduleTeamId], let shortName = team.shortName
                 {
                     if game.isHomeGame
                     {
@@ -155,7 +176,7 @@ final class ScheduleTableViewController: UITableViewController
                     }
                 }
                 
-                if let teamId: String = game.teamId, let team: Team = contentManager!.teamMap[teamId], let teamName: String = team.shortName ?? team.name
+                if let teamId: String = game.teamId, let team: Team = contentManager.teamMap[teamId], let teamName: String = team.shortName ?? team.name
                 {
                     var logoUrl: NSURL? = nil
                     
@@ -206,7 +227,7 @@ final class ScheduleTableViewController: UITableViewController
 
                     cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
                     
-                    if let gameVenueId = game.gameVenueId, let venue: Venue = self.contentManager!.venueMap[gameVenueId]
+                    if let gameVenueId = game.gameVenueId, let venue: Venue = contentManager.venueMap[gameVenueId]
                     {
                         cell.venueLabel.text = venue.title
                         cell.addressLabel.text = "\(venue.address) \(venue.city) \(venue.state) \(venue.zip)"
@@ -346,10 +367,10 @@ final class ScheduleTableViewController: UITableViewController
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: GameDetailViewController = segue.destinationViewController as? GameDetailViewController
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: GameDetailViewController = segue.destinationViewController as? GameDetailViewController, let contentManager = contentManager
         {
-            let dayDate: NSDate = self.contentManager!.sortedDays[indexPath.section]
-            if let gamesOnDay: [Game] = self.contentManager!.gameSections[dayDate]
+            let dayDate: NSDate = contentManager.sortedDays[indexPath.section]
+            if let gamesOnDay: [Game] = contentManager.gameSections[dayDate]
             {
                 viewController.game = gamesOnDay[indexPath.row]
             }
