@@ -65,6 +65,10 @@ final class ScheduleTableViewController: UITableViewController
 //            }
         }
     }
+    @IBAction func todayButtonPressed(sender: UIBarButtonItem)
+    {
+        self.gotoNearestNextGame(true)
+    }
 
     override func didReceiveMemoryWarning()
     {
@@ -88,7 +92,7 @@ final class ScheduleTableViewController: UITableViewController
         }
     }
     
-    func gotoNearestNextGame()
+    func gotoNearestNextGame(animate: Bool = false)
     {
         if let contentManager = contentManager, let today: NSDate = ContentManager.dayForDate(NSDate())
         {
@@ -97,7 +101,7 @@ final class ScheduleTableViewController: UITableViewController
                 let result: NSComparisonResult = today.compare(contentManager.sortedDays[index])
                 if result == .OrderedSame || result == .OrderedAscending
                 {
-                    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: false)
+                    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: animate)
                     break;
                 }
             }
