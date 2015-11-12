@@ -9,12 +9,14 @@ PODS:
   - PINRemoteImage/FLAnimatedImage (1.2.2):
     - FLAnimatedImage (>= 1.0)
     - PINRemoteImage/Core
+  - RSDayFlow (1.2.0)
   - SwiftyJSON (2.3.1)
   - THLabel (1.4.6)
 
 DEPENDENCIES:
   - Alamofire (~> 3.1)
   - PINRemoteImage (~> 1.2)
+  - RSDayFlow (~> 1.2)
   - SwiftyJSON (~> 2.3)
   - THLabel (~> 1.4)
 
@@ -23,6 +25,7 @@ SPEC CHECKSUMS:
   FLAnimatedImage: f9422f796135aff80d8c00b2afc48015bb746e24
   PINCache: 0581b0a7578fc0bbc6c7a8b70b0615388bea064c
   PINRemoteImage: 9f6f484bbceee15e2df5aee0beeac2e261e4ac81
+  RSDayFlow: 5eeed1aac1ef4c47efc69bdbc8664afb64f74c60
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
   THLabel: 27890d10123514ffe74b6e023b57b2ece55304af
 

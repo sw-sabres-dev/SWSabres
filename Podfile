@@ -6,5 +6,6 @@ target 'SWSabres' do
 	pod 'SwiftyJSON', '~> 2.3'
 	pod 'PINRemoteImage', '~> 1.2'
 	pod 'THLabel', '~> 1.4'
+	pod 'RSDayFlow', '~> 1.2'
 end
 

@@ -43,7 +43,7 @@ final class ScheduleTableViewController: UITableViewController
         {
             contentManager = delegate.contentManager
             
-            delegate.contentManager.loadContentCallback = {
+            delegate.contentManager.loadContentScheduleCallback = {
                 
                 self.tableView.reloadData()
                 self.gotoNearestNextGame()
@@ -82,12 +82,7 @@ final class ScheduleTableViewController: UITableViewController
         {
             if gameFilterViewController.filtersChanged
             {
-                contentManager.refreshGamesWithFilter({ () -> () in
-                    
-                    self.tableView.reloadData()
-                    
-                    self.gotoNearestNextGame()
-                })
+                contentManager.refreshGamesWithFilter()
             }
         }
     }

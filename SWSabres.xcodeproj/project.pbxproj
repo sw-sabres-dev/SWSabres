@@ -24,7 +24,10 @@
 		89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */; };
 		89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */; };
 		89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146D1BE7EC0C006FC782 /* Announcement.swift */; };
+		8F281A8D1BF3D7350091EA67 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */; };
 		8F4C7AD81BF1A18800B81FE5 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4C7AD71BF1A18800B81FE5 /* GameInfo.swift */; };
+		8F58A4071BF429F900CCE069 /* GameCalendarDatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */; };
+		8F58A4091BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */; };
 		8F593EC01BF17EE100F02D54 /* ContentUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F593EBF1BF17EE100F02D54 /* ContentUpdate.swift */; };
 		8F6D5D221BF0010400E3CAAD /* GameFilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */; };
 		8F6D5D241BF0041100E3CAAD /* TeamSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */; };
@@ -59,7 +62,10 @@
 		89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Request-ResponseSerializer.swift"; path = "SWSabres/WebAPI/Request-ResponseSerializer.swift"; sourceTree = "<group>"; };
 		89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementsTableViewController.swift; path = ViewControllers/AnnouncementsTableViewController.swift; sourceTree = "<group>"; };
 		89FE146D1BE7EC0C006FC782 /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Announcement.swift; path = SWSabres/Model/Announcement.swift; sourceTree = "<group>"; };
+		8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarViewController.swift; path = ViewControllers/CalendarViewController.swift; sourceTree = "<group>"; };
 		8F4C7AD71BF1A18800B81FE5 /* GameInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameInfo.swift; path = SWSabres/Model/GameInfo.swift; sourceTree = "<group>"; };
+		8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerView.swift; path = Views/CalendarViews/GameCalendarDatePickerView.swift; sourceTree = "<group>"; };
+		8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerCollectionView.swift; path = Views/CalendarViews/GameCalendarDatePickerCollectionView.swift; sourceTree = "<group>"; };
 		8F593EBF1BF17EE100F02D54 /* ContentUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentUpdate.swift; path = Utility/ContentUpdate.swift; sourceTree = "<group>"; };
 		8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameFilterTableViewController.swift; path = ViewControllers/GameFilterTableViewController.swift; sourceTree = "<group>"; };
 		8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TeamSelectionTableViewController.swift; path = ViewControllers/TeamSelectionTableViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +143,7 @@
 			children = (
 				89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */,
 				89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */,
+				8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */,
 				8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */,
 				8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */,
 				89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */,
@@ -169,6 +176,15 @@
 			);
 			name = WebAPI;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		8F58A4051BF4296200CCE069 /* CalendarViews */ = {
+			isa = PBXGroup;
+			children = (
+				8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */,
+				8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */,
+			);
+			name = CalendarViews;
 			sourceTree = "<group>";
 		};
 		8F9587371BE8409E00B1AE84 /* Extensions */ = {
@@ -220,6 +236,7 @@
 		8FD26B901BEB9E7900322DDD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8F58A4051BF4296200CCE069 /* CalendarViews */,
 				8FD26B911BEB9ECC00322DDD /* LogoTitleView.swift */,
 				8FD26B931BEB9EE600322DDD /* LogoTitleView.xib */,
 			);
@@ -349,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F58A4071BF429F900CCE069 /* GameCalendarDatePickerView.swift in Sources */,
 				8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */,
 				89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */,
 				891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */,
@@ -361,6 +379,7 @@
 				89E9FB591BE79FB200D031CE /* Game.swift in Sources */,
 				89D194551BEBEDF6007639BA /* AnnouncementTableViewCell.swift in Sources */,
 				89E9FB621BE7CBC300D031CE /* Request-ResponseSerializer.swift in Sources */,
+				8F58A4091BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift in Sources */,
 				89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */,
 				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
 				8F6D5D241BF0041100E3CAAD /* TeamSelectionTableViewController.swift in Sources */,
@@ -373,6 +392,7 @@
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
 				897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */,
 				8F95C2381BE81A6300126D4C /* Team.swift in Sources */,
+				8F281A8D1BF3D7350091EA67 /* CalendarViewController.swift in Sources */,
 				8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */,
 				8F4C7AD81BF1A18800B81FE5 /* GameInfo.swift in Sources */,
 			);

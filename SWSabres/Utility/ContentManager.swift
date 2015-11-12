@@ -24,7 +24,8 @@ final class ContentManager
     var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
     var sortedDays: [NSDate] = [NSDate]()
     var announcements: [Announcement] = [Announcement]()
-    var loadContentCallback: (() -> ())?
+    var loadContentScheduleCallback: (() -> ())?
+    var loadContentCalendarCallback: (() -> ())?
     var announcementsLoadedCallback: (() -> ())?
     
     var teamsFilter: TeamsFilter
@@ -173,9 +174,14 @@ final class ContentManager
                             announcementsLoadedCallback()
                         }
                         
-                        if let loadContentCallback = self.loadContentCallback
+                        if let loadContentCallback = self.loadContentScheduleCallback
                         {
                             loadContentCallback()
+                        }
+                        
+                        if let calendarCallback = self.loadContentCalendarCallback
+                        {
+                            calendarCallback()
                         }
                         
                         self.checkforUpdates()
@@ -202,9 +208,14 @@ final class ContentManager
                             
                             self.isLoadingContent = false
                             
-                            if let loadContentCallback = self.loadContentCallback
+                            if let loadContentCallback = self.loadContentScheduleCallback
                             {
                                 loadContentCallback()
+                            }
+                            
+                            if let calendarCallback = self.loadContentCalendarCallback
+                            {
+                                calendarCallback()
                             }
                         }
                     }
@@ -217,9 +228,14 @@ final class ContentManager
                     
                     self.isLoadingContent = false
                     
-                    if let loadContentCallback = self.loadContentCallback
+                    if let loadContentCallback = self.loadContentScheduleCallback
                     {
                         loadContentCallback()
+                    }
+                    
+                    if let calendarCallback = self.loadContentCalendarCallback
+                    {
+                        calendarCallback()
                     }
                 }
             }
@@ -839,9 +855,14 @@ final class ContentManager
                 
                 self.isLoadingContent = false
                 
-                if let loadContentCallback = self.loadContentCallback
+                if let loadContentCallback = self.loadContentScheduleCallback
                 {
                     loadContentCallback()
+                }
+                
+                if let calendarCallback = self.loadContentCalendarCallback
+                {
+                    calendarCallback()
                 }
             }
         }
@@ -904,7 +925,7 @@ final class ContentManager
         self.sortedDays = self.gameSections.keys.sort {$0.compare($1) == .OrderedAscending}
     }
     
-    func refreshGamesWithFilter(completionBlock: () -> ())
+    func refreshGamesWithFilter()
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
          
@@ -912,10 +933,19 @@ final class ContentManager
             
             dispatch_async(dispatch_get_main_queue()) {
                 
-                completionBlock()
+                if let loadContentCallback = self.loadContentScheduleCallback
+                {
+                    loadContentCallback()
+                }
+                
+                if let calendarCallback = self.loadContentCalendarCallback
+                {
+                    calendarCallback()
+                }
             }
         }
     }
+    
     func saveVenues()
     {
         let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
