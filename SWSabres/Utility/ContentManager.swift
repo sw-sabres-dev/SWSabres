@@ -655,7 +655,7 @@ final class ContentManager
             {
                 dispatch_group_enter(queueGroup)
                 
-                if gameKeys.count < 25
+                if gameKeys.count < 10
                 {
                     Game.getGamesForKeys(gameKeys) { (result) -> Void in
                         
