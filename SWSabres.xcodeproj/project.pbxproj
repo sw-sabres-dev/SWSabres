@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
 		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
+		892AF9691BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */; };
 		89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */; };
 		8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */; };
 		8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */; };
@@ -47,6 +48,7 @@
 /* Begin PBXFileReference section */
 		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
+		892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerDayCell.swift; path = Views/CalendarViews/GameCalendarDatePickerDayCell.swift; sourceTree = "<group>"; };
 		89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementDetailsViewController.swift; path = ViewControllers/AnnouncementDetailsViewController.swift; sourceTree = "<group>"; };
 		8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTintColors.swift; path = Utility/AppTintColors.swift; sourceTree = "<group>"; };
 		8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameLogoTableViewCell.swift; path = Cells/GameLogoTableViewCell.swift; sourceTree = "<group>"; };
@@ -181,8 +183,9 @@
 		8F58A4051BF4296200CCE069 /* CalendarViews */ = {
 			isa = PBXGroup;
 			children = (
-				8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */,
 				8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */,
+				892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */,
+				8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */,
 			);
 			name = CalendarViews;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				8F58A4091BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift in Sources */,
 				89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */,
 				897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */,
+				892AF9691BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift in Sources */,
 				8F6D5D241BF0041100E3CAAD /* TeamSelectionTableViewController.swift in Sources */,
 				8F9587391BE840DE00B1AE84 /* String-UtilityExtensions.swift in Sources */,
 				89E9FB5D1BE7BE6400D031CE /* Venue.swift in Sources */,
