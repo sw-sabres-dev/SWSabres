@@ -732,6 +732,7 @@
                                             <outlet property="secondLogo" destination="duU-VE-4G2" id="iG8-kC-2cj"/>
                                             <outlet property="secondLogoLabel" destination="j7z-I3-dpZ" id="OGs-XK-xaA"/>
                                             <outlet property="venueLabel" destination="Zb8-wV-kQr" id="Hkh-bK-gUK"/>
+                                            <segue destination="hJv-ZB-B5r" kind="show" id="E1L-Kd-qV6"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -860,5 +861,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="UHP-ou-wzs"/>
+        <segue reference="E1L-Kd-qV6"/>
     </inferredMetricsTieBreakers>
 </document>

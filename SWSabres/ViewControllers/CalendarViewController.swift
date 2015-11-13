@@ -136,15 +136,19 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         
         return UIColor.lightGrayColor()
     }
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = gameTableView.indexPathForCell(cell), let viewController: GameDetailViewController = segue.destinationViewController as? GameDetailViewController
+        {
+            viewController.game = selectedDaysGames[indexPath.row]
+        }
     }
-    */
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
