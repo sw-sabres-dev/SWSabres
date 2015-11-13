@@ -69,6 +69,14 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(animated: Bool)
+    {
+        if let indexPath = gameTableView.indexPathForSelectedRow
+        {
+            gameTableView.deselectRowAtIndexPath(indexPath, animated: animated)
+        }
+    }
+    
     func gotoToday(animate: Bool = false)
     {
         if let today: NSDate = ContentManager.dayForDate(NSDate())
