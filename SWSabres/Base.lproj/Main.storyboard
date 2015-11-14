@@ -209,7 +209,7 @@
                                                 <animations/>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="sht-Xj-oGz">
-                                                <rect key="frame" x="-8" y="70" width="560" height="54"/>
+                                                <rect key="frame" x="-8" y="70" width="560" height="92"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Venue" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="JjC-Bt-CtC">
                                                         <rect key="frame" x="0.0" y="0.0" width="560" height="23"/>
@@ -225,11 +225,25 @@
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Lhq-yN-cxN">
+                                                        <rect key="frame" x="0.0" y="62" width="560" height="30"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NhL-V1-iva">
+                                                                <rect key="frame" x="245" y="0.0" width="70" height="30"/>
+                                                                <animations/>
+                                                                <state key="normal" title="Directions"/>
+                                                                <connections>
+                                                                    <action selector="directionsButtonPressed:" destination="hJv-ZB-B5r" eventType="touchUpInside" id="rpa-dQ-kp8"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                        <animations/>
+                                                    </stackView>
                                                 </subviews>
                                                 <animations/>
                                             </stackView>
                                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tHe-kK-UxJ">
-                                                <rect key="frame" x="-8" y="138" width="560" height="329"/>
+                                                <rect key="frame" x="-8" y="161" width="560" height="306"/>
                                                 <animations/>
                                                 <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                     <rect key="frame" x="-8" y="138" width="360" height="317"/>
@@ -279,6 +293,7 @@
                         <outlet property="addressLabel" destination="add-SF-6fY" id="Y6G-eH-2mC"/>
                         <outlet property="containerView" destination="71A-IZ-1V4" id="kco-0d-WMb"/>
                         <outlet property="dateLabel" destination="zBd-8O-spa" id="rD9-o8-RbJ"/>
+                        <outlet property="directionsButton" destination="NhL-V1-iva" id="2Jz-Rv-a83"/>
                         <outlet property="firstLogo" destination="cKZ-Dt-0u5" id="6tq-Ta-okx"/>
                         <outlet property="firstLogoLabel" destination="nms-vu-FvA" id="1Q9-xX-dr3"/>
                         <outlet property="mapView" destination="tHe-kK-UxJ" id="zZ6-n6-mSo"/>

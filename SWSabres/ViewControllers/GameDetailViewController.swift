@@ -23,8 +23,11 @@ class GameDetailViewController: UIViewController
     @IBOutlet weak var venueTitleLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var directionsButton: UIButton!
     
     var game: Game?
+    var venuePlacemark: MKPlacemark?
+    
     weak var contentManager: ContentManager?
     
     override func viewDidLoad()
@@ -59,6 +62,8 @@ class GameDetailViewController: UIViewController
         */
         
         //self.scrollView.contentSize = CGSizeMake(200, 200)
+        
+        self.directionsButton.tintColor = UIColor(red: 0.0, green:122.0/255.0, blue:1.0, alpha:1.0)
         
         if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
         {
@@ -197,10 +202,14 @@ class GameDetailViewController: UIViewController
             }
             if let placemark = placemarks?.first
             {
-                self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+                let mkPlacemark = MKPlacemark(placemark: placemark)
+                self.venuePlacemark = mkPlacemark
+                
+                self.mapView.addAnnotation(mkPlacemark)
                 dispatch_async(dispatch_get_main_queue()) {
                     
                     self.mapView.showAnnotations(self.mapView.annotations, animated: false)
+                    self.mapView.camera.altitude *= 3
                 }
             }
         })
@@ -216,6 +225,16 @@ class GameDetailViewController: UIViewController
         
         self.presentViewController(alertController, animated: true, completion: nil)
         alertController.view.tintColor = AppTintColors.backgroundTintColor
+    }
+    
+    @IBAction func directionsButtonPressed(sender: AnyObject)
+    {
+        if let venuePlacemark = self.venuePlacemark
+        {
+            let mapItem = MKMapItem(placemark: venuePlacemark)
+            
+            MKMapItem.openMapsWithItems([mapItem], launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        }
     }
     /*
     // MARK: - Navigation
