@@ -855,6 +855,11 @@ final class ContentManager
                 
                 self.isLoadingContent = false
                 
+                if let announcementsLoadedCallback = self.announcementsLoadedCallback where contentUpdate.updatedAnnouncements != nil || contentUpdate.deletedAnnouncements != nil
+                {
+                    announcementsLoadedCallback()
+                }
+                
                 if let loadContentCallback = self.loadContentScheduleCallback
                 {
                     loadContentCallback()
