@@ -89,6 +89,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-SWSabres/PINCache.framework"
   install_framework "Pods-SWSabres/PINRemoteImage.framework"
   install_framework "Pods-SWSabres/RSDayFlow.framework"
+  install_framework "Pods-SWSabres/ReachabilitySwift.framework"
   install_framework "Pods-SWSabres/SwiftyJSON.framework"
   install_framework "Pods-SWSabres/THLabel.framework"
 fi
@@ -98,6 +99,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-SWSabres/PINCache.framework"
   install_framework "Pods-SWSabres/PINRemoteImage.framework"
   install_framework "Pods-SWSabres/RSDayFlow.framework"
+  install_framework "Pods-SWSabres/ReachabilitySwift.framework"
   install_framework "Pods-SWSabres/SwiftyJSON.framework"
   install_framework "Pods-SWSabres/THLabel.framework"
 fi

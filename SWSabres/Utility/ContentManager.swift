@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ReachabilitySwift
 
 final class ContentManager
 {
@@ -14,6 +15,13 @@ final class ContentManager
     {
         case All
         case Selected([Team])
+    }
+    
+    enum DownloadContentError: ErrorType
+    {
+        case None
+        case NoConnectivity
+        case Error(ErrorType)
     }
     
     var isLoadingContent: Bool = false
@@ -27,6 +35,7 @@ final class ContentManager
     var loadContentScheduleCallback: (() -> ())?
     var loadContentCalendarCallback: (() -> ())?
     var announcementsLoadedCallback: (() -> ())?
+    var downloadContentError: DownloadContentError = .None
     
     var teamsFilter: TeamsFilter
     {
@@ -245,127 +254,177 @@ final class ContentManager
 
     func downloadContent(completionBlock: () -> ())
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        dispatch_async(dispatch_get_main_queue()) {
             
             do
             {
-                try FileUtil.ensureFolder(ContentManager.contentPath)
-            }
-            catch
-            {
-                return
-            }
-            
-            let queueGroup = dispatch_group_create()
-            
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            
-            dispatch_group_enter(queueGroup)
-            
-            Announcement.getAnnouncements { (result) -> Void in
-                
-                if let fetchedAnnouncements = result.value
+                let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
+                if reachability.currentReachabilityStatus == .NotReachable
                 {
-                    self.announcements = fetchedAnnouncements
-                    
-                    self.saveAnnouncements()
+                    self.downloadContentError = .NoConnectivity
                     
                     if let announcementsLoadedCallback = self.announcementsLoadedCallback
                     {
+                        announcementsLoadedCallback()
+                    }
+                    
+                    return
+                }
+            }
+            catch
+            {
+                self.downloadContentError = .Error(error)
+                
+                if let announcementsLoadedCallback = self.announcementsLoadedCallback
+                {
+                    announcementsLoadedCallback()
+                }
+                
+                return
+            }
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                
+                do
+                {
+                    let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
+                    if reachability.currentReachabilityStatus == .NotReachable
+                    {
                         dispatch_async(dispatch_get_main_queue()) {
                             
-                            announcementsLoadedCallback()
+                            self.downloadContentError = .NoConnectivity
+                            
+                            completionBlock()
+                        }
+                        
+                        return
+                    }
+                    try FileUtil.ensureFolder(ContentManager.contentPath)
+                }
+                catch
+                {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        
+                        self.downloadContentError = .Error(error)
+                        
+                        completionBlock()
+                    }
+                    
+                    return
+                }
+                
+                let queueGroup = dispatch_group_create()
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                
+                dispatch_group_enter(queueGroup)
+                
+                Announcement.getAnnouncements { (result) -> Void in
+                    
+                    if let fetchedAnnouncements = result.value
+                    {
+                        self.announcements = fetchedAnnouncements
+                        
+                        self.saveAnnouncements()
+                        
+                        if let announcementsLoadedCallback = self.announcementsLoadedCallback
+                        {
+                            dispatch_async(dispatch_get_main_queue()) {
+                                
+                                announcementsLoadedCallback()
+                            }
+                        }
+                        
+                        dispatch_group_leave(queueGroup)
+                    }
+                }
+                
+                dispatch_group_enter(queueGroup)
+                
+                Venue.getVenues { (result) -> Void in
+                    
+                    if let venues = result.value
+                    {
+                        self.venueMap.removeAll()
+                        
+                        for venue in venues
+                        {
+                            self.venueMap[venue.venueId] = venue
                         }
                     }
                     
+                    self.saveVenues()
+                    
                     dispatch_group_leave(queueGroup)
                 }
-            }
-            
-            dispatch_group_enter(queueGroup)
-            
-            Venue.getVenues { (result) -> Void in
                 
-                if let venues = result.value
-                {
-                    self.venueMap.removeAll()
+                dispatch_group_enter(queueGroup)
+                
+                Team.getTeams { (result) -> Void in
                     
-                    for venue in venues
+                    if let teams = result.value
                     {
-                        self.venueMap[venue.venueId] = venue
+                        self.teamMap.removeAll()
+                        
+                        for team in teams
+                        {
+                            self.teamMap[team.teamId] = team
+                        }
                     }
+                    
+                    self.saveTeams()
+                    
+                    dispatch_group_leave(queueGroup)
                 }
                 
-                self.saveVenues()
+                dispatch_group_enter(queueGroup)
                 
-                dispatch_group_leave(queueGroup)
-            }
-            
-            dispatch_group_enter(queueGroup)
-            
-            Team.getTeams { (result) -> Void in
-                
-                if let teams = result.value
-                {
-                    self.teamMap.removeAll()
+                Schedule.getSchedules { (result) -> Void in
                     
-                    for team in teams
+                    if let schedules = result.value
                     {
-                        self.teamMap[team.teamId] = team
+                        self.scheduleMap.removeAll()
+                        
+                        for schedule in schedules
+                        {
+                            self.scheduleMap[schedule.scheduleId] = schedule
+                        }
                     }
+                    
+                    self.saveSchedules()
+                    
+                    dispatch_group_leave(queueGroup)
                 }
                 
-                self.saveTeams()
+                dispatch_group_enter(queueGroup)
                 
-                dispatch_group_leave(queueGroup)
-            }
-            
-            dispatch_group_enter(queueGroup)
-            
-            Schedule.getSchedules { (result) -> Void in
-                
-                if let schedules = result.value
-                {
-                    self.scheduleMap.removeAll()
+                Game.getAllGames { (result) -> Void in
                     
-                    for schedule in schedules
+                    if let fetchedGames = result.value
                     {
-                        self.scheduleMap[schedule.scheduleId] = schedule
+                        self.games = fetchedGames
+                        
+                        self.loadPersistedTeamsFilter()
+                        
+                        self.filterGames()
                     }
+                    
+                    self.saveGames()
+                    
+                    dispatch_group_leave(queueGroup)
                 }
                 
-                self.saveSchedules()
-                
-                dispatch_group_leave(queueGroup)
-            }
-            
-            dispatch_group_enter(queueGroup)
-            
-            Game.getAllGames { (result) -> Void in
-                
-                if let fetchedGames = result.value
-                {
-                    self.games = fetchedGames
+                dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
                     
-                    self.loadPersistedTeamsFilter()
-                    
-                    self.filterGames()
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    ContentManager.lastCheckForContentUpdate = NSDate()
+                    completionBlock()
                 }
-                
-                self.saveGames()
-                
-                dispatch_group_leave(queueGroup)
-            }
-            
-            dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                ContentManager.lastCheckForContentUpdate = NSDate()
-                completionBlock()
             }
         }
     }
-    
+
+        
     func checkforUpdates()
     {
         if let lastCheckForContentUpdate: NSDate = ContentManager.lastCheckForContentUpdate
@@ -376,6 +435,8 @@ final class ContentManager
                 return
             }
         }
+        
+        self.downloadContentError = .None
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             

@@ -11,7 +11,7 @@ import UIKit
 class AnnouncementsTableViewController: UITableViewController {
 
     lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
-    weak var contentManager: ContentManager?
+    var announcements: [Announcement] = [Announcement]()
     
     override func viewDidLoad()
     {
@@ -34,22 +34,31 @@ class AnnouncementsTableViewController: UITableViewController {
         
         if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
         {
-            contentManager = delegate.contentManager
-            
-            if delegate.contentManager.isLoadingContent
-            {
-                delegate.contentManager.announcementsLoadedCallback = {
+            delegate.contentManager.announcementsLoadedCallback = {
+                
+                
+                switch delegate.contentManager.downloadContentError
+                {
+                    case .NoConnectivity:
+                    self.showErrorMessage("No Internet Connectivity found!")
+                    return
                     
-                    //delegate.contentManager.announcementsLoadedCallback = nil
-                    self.tableView.reloadData()
+                    case .Error(let error):
+                    self.showErrorMessage("Failed to retrieve web site data: \(error)")
+                    return
+                    
+                    default:
+                    break;
                 }
+                
+                self.announcements = delegate.contentManager.announcements
+                self.tableView.reloadData()
             }
             
-//            delegate.contentManager.loadAnnouncements {
-//                
-//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                self.tableView.reloadData()
-//            }
+            if !delegate.contentManager.isLoadingContent
+            {
+                self.announcements = delegate.contentManager.announcements
+            }
         }
         
         // Uncomment the following line to preserve selection between presentations
@@ -74,14 +83,7 @@ class AnnouncementsTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        if let contentManager = contentManager
-        {
-            return contentManager.announcements.count
-        }
-        else
-        {
-            return 0
-        }
+        return announcements.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -95,15 +97,12 @@ class AnnouncementsTableViewController: UITableViewController {
         
         // Configure the cell...
 
-        if let contentManager = contentManager
+        let announcement = announcements[indexPath.row]
+        
+        if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
         {
-            let announcement = contentManager.announcements[indexPath.row]
-            
-            if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
-            {
-                announcementCell.headlineLabel.text = announcement.title
-                announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
-            }
+            announcementCell.headlineLabel.text = announcement.title
+            announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
         }
 
         //cell.textLabel?.text = announcement.title
@@ -180,11 +179,28 @@ class AnnouncementsTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController, let contentManager = contentManager
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController, let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
         {
-            viewController.announcement = contentManager.announcements[indexPath.row]
+            viewController.announcement = delegate.contentManager.announcements[indexPath.row]
         }
-        
     }
+    
+    private func showErrorMessage(message: String)
+    {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        let retryAction = UIAlertAction(title: "Retry", style: .Default) { (alertAction) -> Void in
+            
+            if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+            {
+                delegate.contentManager.loadContent()
+            }
+        }
+        alertController.addAction(retryAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+        alertController.view.tintColor = AppTintColors.backgroundTintColor
 
+    }
 }

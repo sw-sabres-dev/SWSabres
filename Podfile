@@ -7,5 +7,6 @@ target 'SWSabres' do
 	pod 'PINRemoteImage', '~> 1.2'
 	pod 'THLabel', '~> 1.4'
 	pod 'RSDayFlow', '~> 1.2'
+	pod 'ReachabilitySwift', '~> 2.3'
 end
 
