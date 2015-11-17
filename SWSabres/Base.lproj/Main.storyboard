@@ -228,7 +228,7 @@
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Lhq-yN-cxN">
                                                         <rect key="frame" x="0.0" y="62" width="560" height="30"/>
                                                         <subviews>
-                                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NhL-V1-iva">
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NhL-V1-iva">
                                                                 <rect key="frame" x="245" y="0.0" width="70" height="30"/>
                                                                 <animations/>
                                                                 <state key="normal" title="Directions"/>
@@ -525,12 +525,61 @@
                     <connections>
                         <segue destination="s71-B7-LZn" kind="show" identifier="teamsFilterSegue" id="p7M-Qi-Vd1"/>
                         <segue destination="2ol-tr-UDl" kind="unwind" unwindAction="prepareForUnwind:" id="p0a-iO-ODe"/>
+                        <segue destination="n4M-Dd-3UG" kind="show" identifier="gameLocationFilterSegue" id="fqM-Wj-BMP"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oGS-Yh-WoP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="mha-tb-KKb" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3217" y="1188"/>
+        </scene>
+        <!--Game Location Filter Table View Controller-->
+        <scene sceneID="V37-Dj-Swf">
+            <objects>
+                <tableViewController id="n4M-Dd-3UG" customClass="GameLocationFilterTableViewController" customModule="SWSabres" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="zvf-ZE-TeF">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="gameLocationCellIdentifier" textLabel="zPG-X5-LvM" style="IBUITableViewCellStyleDefault" id="tJ0-5p-VcR">
+                                <rect key="frame" x="0.0" y="114" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tJ0-5p-VcR" id="9fG-5T-YuC">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zPG-X5-LvM">
+                                            <rect key="frame" x="15" y="0.0" width="570" height="43"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <animations/>
+                                </tableViewCellContentView>
+                                <animations/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="n4M-Dd-3UG" id="0vt-S9-n4b"/>
+                            <outlet property="delegate" destination="n4M-Dd-3UG" id="aaY-aa-Dvo"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="YyE-U7-aJd">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="NKB-8s-cRC">
+                            <connections>
+                                <segue destination="mha-tb-KKb" kind="unwind" unwindAction="prepareForUnwind:" id="eor-Pq-niz"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pdZ-ei-iLL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3217" y="1933"/>
         </scene>
         <!--Team Selection Table View Controller-->
         <scene sceneID="PcQ-ho-FRO">

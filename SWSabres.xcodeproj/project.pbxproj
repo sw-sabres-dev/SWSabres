@@ -13,6 +13,7 @@
 		89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */; };
 		8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */; };
 		8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */; };
+		896B27521BFB8B5B00D5C1C9 /* GameLocationFilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896B27511BFB8B5B00D5C1C9 /* GameLocationFilterTableViewController.swift */; };
 		897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84001BE9525800CBEB90 /* FileUtil.swift */; };
 		897B84031BE9529600CBEB90 /* StringPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84021BE9529600CBEB90 /* StringPathExtensions.swift */; };
 		897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897B84041BE959B000CBEB90 /* UniqueObject.swift */; };
@@ -52,6 +53,7 @@
 		89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementDetailsViewController.swift; path = ViewControllers/AnnouncementDetailsViewController.swift; sourceTree = "<group>"; };
 		8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTintColors.swift; path = Utility/AppTintColors.swift; sourceTree = "<group>"; };
 		8963C2841BEA62A700DF4B0A /* GameLogoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameLogoTableViewCell.swift; path = Cells/GameLogoTableViewCell.swift; sourceTree = "<group>"; };
+		896B27511BFB8B5B00D5C1C9 /* GameLocationFilterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameLocationFilterTableViewController.swift; path = ViewControllers/GameLocationFilterTableViewController.swift; sourceTree = "<group>"; };
 		897B84001BE9525800CBEB90 /* FileUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileUtil.swift; path = Utility/FileUtil.swift; sourceTree = "<group>"; };
 		897B84021BE9529600CBEB90 /* StringPathExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringPathExtensions.swift; path = Utility/StringPathExtensions.swift; sourceTree = "<group>"; };
 		897B84041BE959B000CBEB90 /* UniqueObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UniqueObject.swift; path = SWSabres/WebAPI/UniqueObject.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */,
 				8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */,
 				8F6D5D211BF0010400E3CAAD /* GameFilterTableViewController.swift */,
+				896B27511BFB8B5B00D5C1C9 /* GameLocationFilterTableViewController.swift */,
 				89E9FB541BE79D7F00D031CE /* ScheduleTableViewController.swift */,
 				8F6D5D231BF0041100E3CAAD /* TeamSelectionTableViewController.swift */,
 			);
@@ -392,6 +395,7 @@
 				8FEE52F01BEC5B7D004FBB40 /* ContentManager.swift in Sources */,
 				8FD26B921BEB9ECC00322DDD /* LogoTitleView.swift in Sources */,
 				897B84051BE959B000CBEB90 /* UniqueObject.swift in Sources */,
+				896B27521BFB8B5B00D5C1C9 /* GameLocationFilterTableViewController.swift in Sources */,
 				8F6D5D221BF0010400E3CAAD /* GameFilterTableViewController.swift in Sources */,
 				89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */,
 				897B84011BE9525800CBEB90 /* FileUtil.swift in Sources */,

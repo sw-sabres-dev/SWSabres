@@ -17,6 +17,13 @@ final class ContentManager
         case Selected([Team])
     }
     
+    enum GameLocationFilter : Int
+    {
+        case All = 0
+        case Home = 1
+        case Away = 2
+    }
+    
     enum DownloadContentError: ErrorType
     {
         case None
@@ -71,6 +78,39 @@ final class ContentManager
     }
     
     private var teamsFilterStorage: TeamsFilter = .All
+    
+    var gameLocationFilter: GameLocationFilter
+    {
+        get
+        {
+            return gameLocationFilterStorage
+        }
+        set
+        {
+            gameLocationFilterStorage = newValue
+            
+            switch gameLocationFilterStorage
+            {
+            case .All:
+                
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                if userDefaults.objectForKey("gameLocationFilter") != nil
+                {
+                    userDefaults.removeObjectForKey("gameLocationFilter")
+                }
+                userDefaults.synchronize()
+                
+            default:
+                
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setObject(NSNumber(integer: newValue.rawValue), forKey: "gameLocationFilter")
+                userDefaults.synchronize()
+            }
+            
+        }
+    }
+    
+    private var gameLocationFilterStorage: GameLocationFilter = .All
     
     init()
     {
@@ -170,7 +210,9 @@ final class ContentManager
                     try self.loadSchedules()
                     try self.loadGames()
                     
-                    self.loadPersistedTeamsFilter()
+                    let userDefaults = NSUserDefaults.standardUserDefaults()
+                    self.loadPersistedTeamsFilter(userDefaults)
+                    self.loadGameLocationFiler(userDefaults)
                     
                     self.filterGames()
                     
@@ -404,7 +446,9 @@ final class ContentManager
                     {
                         self.games = fetchedGames
                         
-                        self.loadPersistedTeamsFilter()
+                        let userDefaults = NSUserDefaults.standardUserDefaults()
+                        self.loadPersistedTeamsFilter(userDefaults)
+                        self.loadGameLocationFiler(userDefaults)
                         
                         self.filterGames()
                     }
@@ -934,14 +978,21 @@ final class ContentManager
         }
     }
     
-    func loadPersistedTeamsFilter()
+    func loadPersistedTeamsFilter(userDefaults: NSUserDefaults)
     {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
         if let teamIds:[String] = userDefaults.objectForKey("teamsFilter") as? [String]
         {
             let selectedTeams: [Team] = teamIds.flatMap { self.teamMap[$0] }
             
             self.teamsFilterStorage = .Selected(selectedTeams)
+        }
+    }
+    
+    func loadGameLocationFiler(userDefaults: NSUserDefaults)
+    {
+        if let gameLocationNumber: NSNumber = userDefaults.objectForKey("gameLocationFilter") as? NSNumber, let filter: GameLocationFilter = GameLocationFilter(rawValue: gameLocationNumber.integerValue)
+        {
+            self.gameLocationFilterStorage = filter
         }
     }
     
@@ -953,7 +1004,29 @@ final class ContentManager
         switch teamsFilter
         {
             case .All:
-            filteredGames = games
+                
+            if gameLocationFilter != .All
+            {
+                filteredGames = games.filter {
+                    
+                    if gameLocationFilter == .Home && $0.isHomeGame
+                    {
+                        return true
+                    }
+                    else if gameLocationFilter == .Away && !$0.isHomeGame
+                    {
+                        return true
+                    }
+                    else
+                    {
+                        return false
+                    }
+                }
+            }
+            else
+            {
+                filteredGames = games
+            }
             
             case .Selected(let teams):
                 filteredGames = games.filter {
@@ -962,6 +1035,22 @@ final class ContentManager
                     {
                         if teams.contains(scheduledTeam)
                         {
+                            if gameLocationFilter != .All
+                            {
+                                if gameLocationFilter == .Home && $0.isHomeGame
+                                {
+                                    return true
+                                }
+                                else if gameLocationFilter == .Away && !$0.isHomeGame
+                                {
+                                    return true
+                                }
+                                else
+                                {
+                                    return false
+                                }
+                            }
+                            
                             return true
                         }
                     }
