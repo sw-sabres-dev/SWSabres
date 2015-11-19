@@ -978,6 +978,22 @@ final class ContentManager
         }
     }
     
+    func fireGameContentCallbacks()
+    {
+        dispatch_async(dispatch_get_main_queue()) {
+            
+            if let loadContentCallback = self.loadContentScheduleCallback
+            {
+                loadContentCallback()
+            }
+            
+            if let calendarCallback = self.loadContentCalendarCallback
+            {
+                calendarCallback()
+            }
+        }
+    }
+    
     func loadPersistedTeamsFilter(userDefaults: NSUserDefaults)
     {
         if let teamIds:[String] = userDefaults.objectForKey("teamsFilter") as? [String]

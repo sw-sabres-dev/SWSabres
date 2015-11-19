@@ -13,6 +13,7 @@ import Alamofire
 struct Game: ResponseJSONObjectSerializable
 {
     static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&meta_key=game_unix_dtg&orderby=meta_value&order=ASC"
+    static let baseUpdateGameScoreEndPoint = "http://www.southwakesabres.org/updateGameResults.php"
     
     let gameId: String
     let gamePostId: Int
@@ -196,6 +197,44 @@ struct Game: ResponseJSONObjectSerializable
         }
         
         Alamofire.request(.GET, endpoint).getPostsReponseArray { response in
+            completionHandler(response.result)
+        }
+    }
+    
+    static func updateGameScore(game: Game, completionHandler: (Result<UpdateGameScoreResult, NSError>) -> Void)
+    {
+        guard let components = NSURLComponents(string: baseUpdateGameScoreEndPoint) else
+        {
+            return
+        }
+        
+        var gameOurScoreString: String = ""
+        var gameOppScoreString: String = ""
+        var gameResultString: String = ""
+        
+        if let gameOurScore: Int = game.gameOurScore
+        {
+            gameOurScoreString = String(gameOurScore)
+        }
+        
+        if let gameOppScore: Int = game.gameOppScore
+        {
+            gameOppScoreString = String(gameOppScore)
+        }
+        
+        if let gameResult = game.gameResult
+        {
+            gameResultString = gameResult
+        }
+        
+        components.queryItems = [
+            NSURLQueryItem(name: "post_id", value: String(game.gamePostId)),
+            NSURLQueryItem(name: "game_our_score", value: gameOurScoreString),
+            NSURLQueryItem(name: "game_opp_score", value: gameOppScoreString),
+            NSURLQueryItem(name: "game_result", value: gameResultString)
+        ]
+        
+        Alamofire.request(.GET, components.URLString).responseObject { response in
             completionHandler(response.result)
         }
     }
