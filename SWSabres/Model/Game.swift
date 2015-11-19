@@ -24,6 +24,8 @@ struct Game: ResponseJSONObjectSerializable
     var teamId: String?
     var gameVenueId: String?
     var gameResult: String?
+    var gameOurScore: Int?
+    var gameOppScore: Int?
     
     init?(coder aDecoder: NSCoder)
     {
@@ -67,6 +69,15 @@ struct Game: ResponseJSONObjectSerializable
         self.teamId = aDecoder.decodeObjectForKey("teamId") as? String
         self.gameVenueId = aDecoder.decodeObjectForKey("gameVenueId") as? String
         self.gameResult = aDecoder.decodeObjectForKey("gameResult") as? String
+        
+        if let gameOurScoreNumber = aDecoder.decodeObjectForKey("gameOurScore") as? NSNumber
+        {
+            self.gameOurScore = gameOurScoreNumber.integerValue
+        }
+        if let gameOppScoreNumber = aDecoder.decodeObjectForKey("gameOppScore") as? NSNumber
+        {
+            self.gameOppScore = gameOppScoreNumber.integerValue
+        }
     }
     
     func encodeWithCoder(aCoder: NSCoder)
@@ -81,6 +92,16 @@ struct Game: ResponseJSONObjectSerializable
         aCoder.encodeObject(gameVenueId, forKey: "gameVenueId")
         aCoder.encodeObject(gameResult, forKey: "gameResult")
         aCoder.encodeObject(modified, forKey: "modified")
+        
+        if let gameOurScore = gameOurScore
+        {
+            aCoder.encodeObject(NSNumber(integer: gameOurScore), forKey: "gameOurScore")
+        }
+        
+        if let gameOppScore = gameOppScore
+        {
+            aCoder.encodeObject(NSNumber(integer: gameOppScore), forKey: "gameOppScore")
+        }
     }
 
     init?(json: SwiftyJSON.JSON)
@@ -130,6 +151,16 @@ struct Game: ResponseJSONObjectSerializable
         let result = json["custom_fields"]["game_result"][0].string
         
         self.gameResult = !String.isNilOrEmpty(result) ? result : nil
+        
+        if let game_our_scoreString = json["custom_fields"]["game_our_score"][0].string where !game_our_scoreString.isEmpty
+        {
+            self.gameOurScore = Int(game_our_scoreString)
+        }
+        
+        if let game_opp_scoreString = json["custom_fields"]["game_opp_score"][0].string where !game_opp_scoreString.isEmpty
+        {
+            self.gameOppScore = Int(game_opp_scoreString)
+        }
         
         // Fix the timezone offset.
         game_unix_dtg -= Double(NSTimeZone.localTimeZone().secondsFromGMT)
