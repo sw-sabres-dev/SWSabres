@@ -15,15 +15,18 @@ class GameDetailViewController: UIViewController
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var firstLogo: UIImageView!
     @IBOutlet weak var firstLogoLabel: UILabel!
+    @IBOutlet weak var firstScoreLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var secondLogo: UIImageView!
     @IBOutlet weak var secondLogoLabel: UILabel!
+    @IBOutlet weak var secondScoreLabel: UILabel!
     
     @IBOutlet weak var venueTitleLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var directionsButton: UIButton!
+    @IBOutlet weak var addScoreButton: UIBarButtonItem!
     
     var game: Game?
     var venuePlacemark: MKPlacemark?
@@ -63,7 +66,8 @@ class GameDetailViewController: UIViewController
         
         //self.scrollView.contentSize = CGSizeMake(200, 200)
         
-        self.directionsButton.tintColor = UIColor(red: 0.0, green:122.0/255.0, blue:1.0, alpha:1.0)
+        let actionButtonColor = UIColor(red: 0.0, green:122.0/255.0, blue:1.0, alpha:1.0)
+        self.directionsButton.tintColor = actionButtonColor
         
         if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
         {
@@ -83,11 +87,27 @@ class GameDetailViewController: UIViewController
                 {
                     firstLogo.image = UIImage(named: "logo")
                     firstLogoLabel.text = shortName
+                    if let score = game.gameOurScore
+                    {
+                        firstScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        firstScoreLabel.hidden = true
+                    }
                 }
                 else
                 {
                     secondLogo.image = UIImage(named: "logo")
                     secondLogoLabel.text = shortName
+                    if let score = game.gameOurScore
+                    {
+                        secondScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        secondScoreLabel.hidden = true
+                    }
                 }
             }
             
@@ -105,12 +125,28 @@ class GameDetailViewController: UIViewController
                     secondLogo.image = nil
                     secondLogo.pin_setImageFromURL(logoUrl)
                     secondLogoLabel.text = teamName
+                    if let score = game.gameOppScore
+                    {
+                        secondScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        secondScoreLabel.hidden = true
+                    }
                 }
                 else
                 {
                     firstLogo.image = nil
                     firstLogo.pin_setImageFromURL(logoUrl)
                     firstLogoLabel.text = teamName
+                    if let score = game.gameOppScore
+                    {
+                        firstScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        firstScoreLabel.hidden = true
+                    }
                 }
             }
             else if let opponent = game.opponent
@@ -120,14 +156,42 @@ class GameDetailViewController: UIViewController
                     secondLogo.pin_setImageFromURL(nil)
                     secondLogo.image = nil
                     secondLogoLabel.text = opponent
+                    if let score = game.gameOppScore
+                    {
+                        secondScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        secondScoreLabel.hidden = true
+                    }
                 }
                 else
                 {
                     firstLogo.pin_setImageFromURL(nil)
                     firstLogo.image = nil
                     firstLogoLabel.text = opponent
+                    if let score = game.gameOppScore
+                    {
+                        firstScoreLabel.text = String(score)
+                    }
+                    else
+                    {
+                        firstScoreLabel.hidden = true
+                    }
                 }
             }
+            
+            let compareResult = game.gameDate.compare(NSDate())
+            addScoreButton.enabled = compareResult == .OrderedAscending || compareResult == .OrderedSame
+            
+            if game.gameOurScore != nil && game.gameOppScore != nil
+            {
+                addScoreButton.title = "Edit Score"
+            }
+            
+//            firstScoreTextField.hidden = compareResult == .OrderedDescending
+//            secondScoreTextField.hidden = compareResult == .OrderedDescending
+
             
             if let firstText: String = firstLogoLabel.text, let secondText: String = secondLogoLabel.text
             {
@@ -221,6 +285,17 @@ class GameDetailViewController: UIViewController
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         
         let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+        alertController.view.tintColor = AppTintColors.backgroundTintColor
+    }
+    
+    @IBAction func addScoreButtonPressed(sender: UIBarButtonItem)
+    {
+        let alertController = UIAlertController(title: addScoreButton.title, message: nil, preferredStyle: .Alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         alertController.addAction(cancelAction)
         
         self.presentViewController(alertController, animated: true, completion: nil)

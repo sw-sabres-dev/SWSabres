@@ -135,10 +135,10 @@
                                         <rect key="frame" x="8" y="8" width="544" height="475"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="f5i-NM-NVe" userLabel="Overall Stack View">
-                                                <rect key="frame" x="-8" y="-8" width="560" height="70"/>
+                                                <rect key="frame" x="-8" y="-8" width="560" height="90"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="h1a-Mn-F5x">
-                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="70"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="90"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cKZ-Dt-0u5">
                                                                 <rect key="frame" x="25" y="0.0" width="50" height="50"/>
@@ -155,6 +155,13 @@
                                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="ZAr-Do-7bM">
+                                                                <rect key="frame" x="34" y="70" width="32" height="20"/>
+                                                                <animations/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
                                                         </subviews>
                                                         <animations/>
                                                         <constraints>
@@ -162,7 +169,7 @@
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="fnX-Bf-ufZ">
-                                                        <rect key="frame" x="100" y="21" width="360" height="49"/>
+                                                        <rect key="frame" x="100" y="41" width="360" height="49"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="November 21" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.59999999999999998" translatesAutoresizingMaskIntoConstraints="NO" id="zBd-8O-spa">
                                                                 <rect key="frame" x="0.0" y="0.0" width="360" height="23"/>
@@ -182,7 +189,7 @@
                                                         <animations/>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1b2-Tf-tLe">
-                                                        <rect key="frame" x="460" y="0.0" width="100" height="70"/>
+                                                        <rect key="frame" x="460" y="0.0" width="100" height="90"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lr0-sW-Tcm">
                                                                 <rect key="frame" x="25" y="0.0" width="50" height="50"/>
@@ -197,6 +204,13 @@
                                                                 <animations/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="Q7R-oM-MY3">
+                                                                <rect key="frame" x="34" y="70" width="32" height="20"/>
+                                                                <animations/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                         </subviews>
@@ -289,17 +303,27 @@
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="q2o-Sk-gsn">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Add Score" id="FFx-Mi-IUA">
+                            <connections>
+                                <action selector="addScoreButtonPressed:" destination="hJv-ZB-B5r" id="JWZ-9m-CLA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="addScoreButton" destination="FFx-Mi-IUA" id="hHl-nT-4ea"/>
                         <outlet property="addressLabel" destination="add-SF-6fY" id="Y6G-eH-2mC"/>
                         <outlet property="containerView" destination="71A-IZ-1V4" id="kco-0d-WMb"/>
                         <outlet property="dateLabel" destination="zBd-8O-spa" id="rD9-o8-RbJ"/>
                         <outlet property="directionsButton" destination="NhL-V1-iva" id="2Jz-Rv-a83"/>
                         <outlet property="firstLogo" destination="cKZ-Dt-0u5" id="6tq-Ta-okx"/>
                         <outlet property="firstLogoLabel" destination="nms-vu-FvA" id="1Q9-xX-dr3"/>
+                        <outlet property="firstScoreLabel" destination="ZAr-Do-7bM" id="5Mg-Tp-9YS"/>
                         <outlet property="mapView" destination="tHe-kK-UxJ" id="zZ6-n6-mSo"/>
                         <outlet property="scrollView" destination="kmn-Sf-JIC" id="qJk-vg-pa2"/>
                         <outlet property="secondLogo" destination="Lr0-sW-Tcm" id="mXd-RP-P43"/>
                         <outlet property="secondLogoLabel" destination="Ugc-JT-xAm" id="Xs4-dd-9gu"/>
+                        <outlet property="secondScoreLabel" destination="Q7R-oM-MY3" id="4c6-Ut-HKr"/>
                         <outlet property="timeLabel" destination="hcZ-XQ-LOK" id="2qK-lN-n20"/>
                         <outlet property="venueTitleLabel" destination="JjC-Bt-CtC" id="TF8-jC-WeK"/>
                     </connections>
