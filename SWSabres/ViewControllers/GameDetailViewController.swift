@@ -483,25 +483,25 @@ class GameDetailViewController: UIViewController
                     gameToUpdate.gameOppScore = gameToUpdate.isHomeGame ? secondScore : firstScore
                     gameToUpdate.gameResult = String(format: "%@: %@-%@", gameToUpdate.gameOurScore > gameToUpdate.gameOppScore ? "W" : "L", firstScoreString, secondScoreString)
                     
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    self.navigationController?.view.userInteractionEnabled = false
                     
                     Game.updateGameScore(gameToUpdate, completionHandler: { (result) -> Void in
                         
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        self.navigationController?.view.userInteractionEnabled = true
                         
                         if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, contentManager: ContentManager = delegate.contentManager, let updateGameScoreResult = result.value, let dayOfGame: NSDate = ContentManager.dayForDate(gameToUpdate.gameDate), var gamesOnDay: [Game] = contentManager.gameSections[dayOfGame] where updateGameScoreResult.success
                         {
                             gamesOnDay = gamesOnDay.filter { return $0.gamePostId != gameToUpdate.gamePostId }
                             gamesOnDay.append(gameToUpdate)
                             
-                            contentManager.gameSections[dayOfGame] = gamesOnDay
+                            contentManager.gameSections[dayOfGame] = gamesOnDay.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending}
                             self.game = gameToUpdate
                             
                             self.populateControlsWithGame()
                             
                             contentManager.fireGameContentCallbacks()
-                            
-                            alertController.dismissViewControllerAnimated(true, completion: nil)
                             
                         }
                         else
