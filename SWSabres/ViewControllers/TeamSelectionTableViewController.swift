@@ -162,6 +162,8 @@ class TeamSelectionTableViewController: UITableViewController
                                 contentManager.teamsFilter = .All
                             }
                             
+                            updatedTeamFilter = true
+                            
                             tableView.reloadData()
                         }
                         else
