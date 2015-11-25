@@ -909,7 +909,15 @@ final class ContentManager
                 self.saveSchedules()
             }
             
-            if contentUpdate.updatedGames != nil || contentUpdate.deletedGames != nil
+            if let allGames: [Game] = contentUpdate.allGames where allGames.count > 0
+            {
+                self.games = allGames
+                
+                self.saveGames()
+                
+                self.filterGames()
+            }
+            else if contentUpdate.updatedGames != nil || contentUpdate.deletedGames != nil
             {
                 var gameSet: Set<String> = Set<String>()
                 
@@ -946,14 +954,6 @@ final class ContentManager
                     
                     self.filterGames()
                 }
-            }
-            else if let allGames: [Game] = contentUpdate.allGames where allGames.count > 0
-            {
-                self.games = allGames
-                
-                self.saveGames()
-                
-                self.filterGames()
             }
             
             dispatch_async(dispatch_get_main_queue()) {
