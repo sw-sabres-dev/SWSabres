@@ -81,8 +81,8 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
     {
         if let today: NSDate = ContentManager.dayForDate(NSDate())
         {
-            calendarView.selectDate(today)
-            calendarView.scrollToDate(today, animated: animate)
+            calendarView?.selectDate(today)
+            calendarView?.scrollToDate(today, animated: animate)
             
             if let games: [Game] = self.gameSections[today]
             {
@@ -93,7 +93,7 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
                 selectedDaysGames.removeAll()
             }
             
-            self.gameTableView.reloadData()
+            self.gameTableView?.reloadData()
         }
     }
     

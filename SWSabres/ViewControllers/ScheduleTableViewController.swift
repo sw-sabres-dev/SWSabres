@@ -58,7 +58,7 @@ final class ScheduleTableViewController: UITableViewController
                 self.teamMap = delegate.contentManager.teamMap
                 self.sortedDays = delegate.contentManager.sortedDays
                 
-                self.tableView.reloadData()
+                self.tableView?.reloadData()
                 self.gotoNearestNextGame()
             }
             
@@ -115,7 +115,7 @@ final class ScheduleTableViewController: UITableViewController
                 let result: NSComparisonResult = today.compare(sortedDays[index])
                 if result == .OrderedSame || result == .OrderedAscending
                 {
-                    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: animate)
+                    self.tableView?.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: animate)
                     break;
                 }
             }

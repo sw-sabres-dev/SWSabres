@@ -52,7 +52,7 @@ class AnnouncementsTableViewController: UITableViewController {
                 }
                 
                 self.announcements = delegate.contentManager.announcements
-                self.tableView.reloadData()
+                self.tableView?.reloadData()
             }
             
             if !delegate.contentManager.isLoadingContent
