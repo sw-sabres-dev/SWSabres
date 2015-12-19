@@ -839,7 +839,7 @@ final class ContentManager
                     
                     if !filteredAnnouncements.isEmpty
                     {
-                        self.announcements = filteredAnnouncements.sort { $0.modified.compare($1.modified) == .OrderedDescending}
+                        self.announcements = filteredAnnouncements.sort { $0.date.compare($1.date) == .OrderedDescending}
                         
                         self.saveAnnouncements()
                     }
