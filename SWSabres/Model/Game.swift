@@ -163,9 +163,17 @@ struct Game: ResponseJSONObjectSerializable
             self.gameOppScore = Int(game_opp_scoreString)
         }
         
-        // Fix the timezone offset.
-        game_unix_dtg -= Double(NSTimeZone.localTimeZone().secondsFromGMT)
+        // The game time is stored in local unix time not GMT.
+        // Use seconds from GMT to get the unix time for the day of the game.
+        let tempGameUnixDate = game_unix_dtg - Double(NSTimeZone.localTimeZone().secondsFromGMT)
+        // Get the date for the game.
+        let tempGameDate = NSDate(timeIntervalSince1970: tempGameUnixDate)
+        // Calculate what the offset from GMT will be on that day.  This will take into account daylight savings.
+        let offset = NSTimeZone.localTimeZone().secondsFromGMTForDate(tempGameDate)
         
+        // Fix the timezone offset
+        game_unix_dtg -= Double(offset)
+
         self.gameDate = NSDate(timeIntervalSince1970: game_unix_dtg)
         
         self.gameId = game_slug

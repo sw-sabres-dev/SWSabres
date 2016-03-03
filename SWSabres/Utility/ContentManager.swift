@@ -181,6 +181,26 @@ final class ContentManager
     {
         isLoadingContent = true
         
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        if userDefaults.integerForKey("resetContentCount") == 0
+        {
+            let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
+            let fileManager: NSFileManager = NSFileManager()
+            if fileManager.fileExistsAtPath(gamesFileName)
+            {
+                do
+                {
+                    try fileManager.removeItemAtPath(gamesFileName)
+                }
+                catch
+                {
+                }
+            }
+            
+            userDefaults.setInteger(1, forKey: "resetContentCount")
+            userDefaults.synchronize()
+        }
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
             let fileManager: NSFileManager = NSFileManager()
