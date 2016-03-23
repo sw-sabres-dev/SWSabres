@@ -71,10 +71,10 @@ class GameDetailViewController: UIViewController
         self.firstScoreLabel.text = nil
         self.secondScoreLabel.text = nil
         
-        var gesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "addressLabelPressed:")
+        var gesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameDetailViewController.addressLabelPressed(_:)))
         self.addressLabel.addGestureRecognizer(gesture)
         
-        gesture = UITapGestureRecognizer(target: self, action: "addressLabelPressed:")
+        gesture = UITapGestureRecognizer(target: self, action: #selector(GameDetailViewController.addressLabelPressed(_:)))
         self.venueTitleLabel.addGestureRecognizer(gesture)
         
         self.populateControlsWithGame()

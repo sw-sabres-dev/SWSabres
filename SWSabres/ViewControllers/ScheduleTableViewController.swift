@@ -110,7 +110,7 @@ final class ScheduleTableViewController: UITableViewController
     {
         if let today: NSDate = ContentManager.dayForDate(NSDate())
         {
-            for var index = 0; index < sortedDays.count; ++index
+            for index in 0 ..< sortedDays.count
             {
                 let result: NSComparisonResult = today.compare(sortedDays[index])
                 if result == .OrderedSame || result == .OrderedAscending
