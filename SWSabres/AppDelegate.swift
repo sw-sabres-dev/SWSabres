@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let contentManager: ContentManager = ContentManager()
+    let tabBarDelegate = AppTabControllerDelegate()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
@@ -28,6 +29,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().translucent = false
         
         self.window?.tintColor = AppTintColors.primaryTintColor
+        
+        if let tabBarController =  self.window?.rootViewController as? UITabBarController
+        {
+            tabBarController.delegate  = tabBarDelegate
+            let defaults = NSUserDefaults.standardUserDefaults()
+            tabBarController.selectedIndex = defaults.integerForKey("appSelectedTabBarIndex")
+        }
         
         return true
     }
