@@ -22,7 +22,7 @@ class TeamSelectionTableViewController: UITableViewController
         
         if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
-            self.teams = contentManager.scheduleMap.values.flatMap { contentManager.teamMap[$0.scheduleTeamId] }
+            self.teams = contentManager.scheduleMap.values.compactMap { contentManager.teamMap[$0.scheduleTeamId] }
             self.teams.sort {
                 
                 if let shortName1 = $0.shortName, let shortName2 = $1.shortName
@@ -138,7 +138,7 @@ class TeamSelectionTableViewController: UITableViewController
                     case .selected(var selectedTeams):
                     
                         let team = teams[indexPath.row-1]
-                        if let index = selectedTeams.index(of: team)
+                        if let index = selectedTeams.firstIndex(of: team)
                         {
                             selectedTeams.remove(at: index)
                             if selectedTeams.count > 0

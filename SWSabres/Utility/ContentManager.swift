@@ -962,7 +962,7 @@ final class ContentManager
     {
         if let teamIds:[String] = userDefaults.object(forKey: "teamsFilter") as? [String]
         {
-            let selectedTeams: [Team] = teamIds.flatMap { self.teamMap[$0] }
+            let selectedTeams: [Team] = teamIds.compactMap { self.teamMap[$0] }
             
             self.teamsFilterStorage = .selected(selectedTeams)
         }
@@ -1244,7 +1244,7 @@ final class ContentManager
         
         if let helperGames: [Game.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: gamesFileName) as? [Game.Helper]
         {
-            self.games = helperGames.flatMap { $0.game }
+            self.games = helperGames.compactMap { $0.game }
         }
         else
         {
@@ -1278,7 +1278,7 @@ final class ContentManager
         
         if let helperAnnouncements: [Announcement.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: announcementsFileName) as? [Announcement.Helper]
         {
-            self.announcements = helperAnnouncements.flatMap { $0.announcement }
+            self.announcements = helperAnnouncements.compactMap { $0.announcement }
         }
         else
         {

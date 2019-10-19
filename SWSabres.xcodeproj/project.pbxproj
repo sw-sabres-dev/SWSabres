@@ -284,13 +284,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = swdev.net;
 				TargetAttributes = {
 					8F9EC55B1BE5A7B500FB60CD = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = 9Q7555LQY8;
-						LastSwiftMigration = 0940;
+						LastSwiftMigration = 1110;
 					};
 				};
 			};
@@ -548,6 +548,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 71748425912148E8E02A6693 /* Pods-SWSabres.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
@@ -557,7 +558,7 @@
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -565,6 +566,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7B82AFF3085E572D4919553C /* Pods-SWSabres.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
@@ -574,7 +576,7 @@
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
