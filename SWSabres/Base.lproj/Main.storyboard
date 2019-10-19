@@ -112,14 +112,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="725"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmn-Sf-JIC">
-                                <rect key="frame" x="20" y="8" width="374" height="471"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmn-Sf-JIC">
+                                <rect key="frame" x="20" y="0.0" width="374" height="725"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71A-IZ-1V4">
-                                        <rect key="frame" x="8" y="8" width="544" height="475"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="71A-IZ-1V4">
+                                        <rect key="frame" x="0.0" y="8" width="374" height="475"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="f5i-NM-NVe" userLabel="Overall Stack View">
-                                                <rect key="frame" x="-8" y="-8" width="374" height="89"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="f5i-NM-NVe" userLabel="Overall Stack View">
+                                                <rect key="frame" x="0.0" y="0.0" width="374" height="89"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="h1a-Mn-F5x">
                                                         <rect key="frame" x="0.0" y="0.0" width="100" height="89"/>
@@ -194,8 +194,8 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="sht-Xj-oGz">
-                                                <rect key="frame" x="-8" y="70" width="374" height="92"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="sht-Xj-oGz">
+                                                <rect key="frame" x="0.0" y="97" width="374" height="92"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Venue" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="JjC-Bt-CtC">
                                                         <rect key="frame" x="0.0" y="0.0" width="374" height="23"/>
@@ -223,17 +223,18 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tHe-kK-UxJ">
-                                                <rect key="frame" x="-8" y="161" width="560" height="306"/>
+                                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tHe-kK-UxJ">
+                                                <rect key="frame" x="0.0" y="189" width="374" height="286"/>
                                             </mapView>
                                         </subviews>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="sht-Xj-oGz" firstAttribute="leading" secondItem="71A-IZ-1V4" secondAttribute="leading" id="48W-K6-fQn"/>
                                             <constraint firstAttribute="trailing" secondItem="sht-Xj-oGz" secondAttribute="trailing" id="5uo-rf-Fmy"/>
-                                            <constraint firstItem="tHe-kK-UxJ" firstAttribute="top" secondItem="sht-Xj-oGz" secondAttribute="bottom" constant="8" id="I6J-wl-ALf"/>
+                                            <constraint firstAttribute="height" constant="475" id="8ZK-7x-DkZ"/>
                                             <constraint firstItem="f5i-NM-NVe" firstAttribute="top" secondItem="71A-IZ-1V4" secondAttribute="top" id="LVA-dg-V81"/>
                                             <constraint firstItem="f5i-NM-NVe" firstAttribute="leading" secondItem="71A-IZ-1V4" secondAttribute="leading" id="Qkz-0l-XKU"/>
+                                            <constraint firstItem="tHe-kK-UxJ" firstAttribute="top" secondItem="NhL-V1-iva" secondAttribute="bottom" id="X9l-t2-r6v"/>
                                             <constraint firstAttribute="trailing" secondItem="f5i-NM-NVe" secondAttribute="trailing" id="biK-BB-XQS"/>
                                             <constraint firstAttribute="trailing" secondItem="tHe-kK-UxJ" secondAttribute="trailing" id="bla-hE-Rac"/>
                                             <constraint firstItem="tHe-kK-UxJ" firstAttribute="leading" secondItem="71A-IZ-1V4" secondAttribute="leading" id="gYV-UX-D0a"/>
@@ -332,19 +333,19 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="MFO-Kp-Pc4">
                                                     <rect key="frame" x="100" y="6" width="174" height="54.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:00 AM" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RBc-Ds-OS0">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="12:00 AM" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RBc-Ds-OS0">
                                                             <rect key="frame" x="0.0" y="0.0" width="174" height="25.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Venue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="deO-ga-PU5">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Venue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="deO-ga-PU5">
                                                             <rect key="frame" x="0.0" y="25.5" width="174" height="14.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="OVx-oZ-zoW">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Address" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="OVx-oZ-zoW">
                                                             <rect key="frame" x="0.0" y="40" width="174" height="14.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
