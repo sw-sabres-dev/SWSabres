@@ -11,7 +11,7 @@ import UIKit
 class TeamSelectionTableViewController: UITableViewController
 {
     var teams: [Team] = [Team]()
-    var updatedTeamFilter: Bool = false
+    @objc var updatedTeamFilter: Bool = false
     
     override func viewDidLoad()
     {
@@ -20,14 +20,14 @@ class TeamSelectionTableViewController: UITableViewController
         self.tableView.tintColor = AppTintColors.backgroundTintColor
         self.title = "Teams"
         
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
-            self.teams = contentManager.scheduleMap.values.flatMap { contentManager.teamMap[$0.scheduleTeamId] }
-            self.teams.sortInPlace {
+            self.teams = contentManager.scheduleMap.values.compactMap { contentManager.teamMap[$0.scheduleTeamId] }
+            self.teams.sort {
                 
                 if let shortName1 = $0.shortName, let shortName2 = $1.shortName
                 {
-                    return shortName1.compare(shortName2) == .OrderedAscending
+                    return shortName1.compare(shortName2) == .orderedAscending
                 }
                 else
                 {
@@ -50,23 +50,23 @@ class TeamSelectionTableViewController: UITableViewController
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    override func numberOfSections(in tableView: UITableView) -> Int
     {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return teams.count + 1 // +1 is for all teams.
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("teamCellIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "teamCellIdentifier", for: indexPath)
 
         // Configure the cell...
 
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             if indexPath.row == 0
             {
@@ -74,10 +74,10 @@ class TeamSelectionTableViewController: UITableViewController
 
                 switch contentManager.teamsFilter
                 {
-                    case .All:
-                        cell.accessoryType = .Checkmark
+                    case .all:
+                        cell.accessoryType = .checkmark
                     default:
-                        cell.accessoryType = .None
+                        cell.accessoryType = .none
                     break
                 }
             }
@@ -88,11 +88,11 @@ class TeamSelectionTableViewController: UITableViewController
                 
                 switch contentManager.teamsFilter
                 {
-                case .Selected(let selectedTeams):
-                    cell.accessoryType = selectedTeams.contains(team) ? .Checkmark : .None
+                case .selected(let selectedTeams):
+                    cell.accessoryType = selectedTeams.contains(team) ? .checkmark : .none
                     
                 default:
-                    cell.accessoryType = .None
+                    cell.accessoryType = .none
                     break
                 }
             }
@@ -101,21 +101,21 @@ class TeamSelectionTableViewController: UITableViewController
         return cell
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             if indexPath.row == 0
             {
                 switch contentManager.teamsFilter
                 {
-                    case .All:
+                    case .all:
                     return
                     
                     default:
-                    contentManager.teamsFilter = .All
+                    contentManager.teamsFilter = .all
                     updatedTeamFilter = true
 
                     tableView.reloadData()
@@ -126,28 +126,28 @@ class TeamSelectionTableViewController: UITableViewController
             {
                 switch contentManager.teamsFilter
                 {
-                    case .All:
+                    case .all:
                     
                         var selectedTeams: [Team] = [Team]()
                         selectedTeams.append(teams[indexPath.row-1])
-                        contentManager.teamsFilter = .Selected(selectedTeams)
+                        contentManager.teamsFilter = .selected(selectedTeams)
                         updatedTeamFilter = true
                     
                         tableView.reloadData()
                     
-                    case .Selected(var selectedTeams):
+                    case .selected(var selectedTeams):
                     
                         let team = teams[indexPath.row-1]
-                        if let index = selectedTeams.indexOf(team)
+                        if let index = selectedTeams.firstIndex(of: team)
                         {
-                            selectedTeams.removeAtIndex(index)
+                            selectedTeams.remove(at: index)
                             if selectedTeams.count > 0
                             {
-                                selectedTeams.sortInPlace {
+                                selectedTeams.sort {
                                     
                                     if let shortName1 = $0.shortName, let shortName2 = $1.shortName
                                     {
-                                        return shortName1.compare(shortName2) == .OrderedAscending
+                                        return shortName1.compare(shortName2) == .orderedAscending
                                     }
                                     else
                                     {
@@ -155,11 +155,11 @@ class TeamSelectionTableViewController: UITableViewController
                                     }
                                 }
                                 
-                                contentManager.teamsFilter = .Selected(selectedTeams)
+                                contentManager.teamsFilter = .selected(selectedTeams)
                             }
                             else
                             {
-                                contentManager.teamsFilter = .All
+                                contentManager.teamsFilter = .all
                             }
                             
                             updatedTeamFilter = true
@@ -170,23 +170,23 @@ class TeamSelectionTableViewController: UITableViewController
                         {
                             if teams.count > 0 && selectedTeams.count == teams.count - 1
                             {
-                                contentManager.teamsFilter = .All
+                                contentManager.teamsFilter = .all
                             }
                             else
                             {
                                 selectedTeams.append(team)
-                                selectedTeams.sortInPlace {
+                                selectedTeams.sort {
                                     
                                     if let shortName1 = $0.shortName, let shortName2 = $1.shortName
                                     {
-                                        return shortName1.compare(shortName2) == .OrderedAscending
+                                        return shortName1.compare(shortName2) == .orderedAscending
                                     }
                                     else
                                     {
                                         return false
                                     }
                                 }
-                                contentManager.teamsFilter = .Selected(selectedTeams)
+                                contentManager.teamsFilter = .selected(selectedTeams)
                             }
                             updatedTeamFilter = true
                             

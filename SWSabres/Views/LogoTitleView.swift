@@ -11,9 +11,9 @@ import THLabel
 
 extension UIView
 {
-    class func loadFromNibNamed(nibNamed: String, bundle : NSBundle? = nil) -> UIView?
+    @objc class func loadFromNibNamed(_ nibNamed: String, bundle : Bundle? = nil) -> UIView?
     {
-        return UINib(nibName: nibNamed, bundle: bundle).instantiateWithOwner(nil, options: nil)[0] as? UIView
+        return UINib(nibName: nibNamed, bundle: bundle).instantiate(withOwner: nil, options: nil)[0] as? UIView
     }
 }
 
@@ -26,8 +26,8 @@ class LogoTitleView: UIView {
         super.awakeFromNib()
         titleLabel.gradientStartColor = UIColor(red: 219/255, green: 221/255, blue: 222/255, alpha: 1)
         titleLabel.gradientEndColor = UIColor(red: 137/255, green: 140/255, blue: 144/255, alpha: 1)//137,140,144
-        titleLabel.shadowColor = UIColor.blackColor()
-        titleLabel.shadowOffset = CGSizeMake(2.0, 2.0)
+        titleLabel.shadowColor = UIColor.black
+        titleLabel.shadowOffset = CGSize(width: 2.0, height: 2.0)
     }
     /*
     // Only override drawRect: if you perform custom drawing.

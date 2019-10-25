@@ -7,28 +7,27 @@
 //
 
 import UIKit
-import ReachabilitySwift
 
 final class ContentManager
 {
     enum TeamsFilter
     {
-        case All
-        case Selected([Team])
+        case all
+        case selected([Team])
     }
     
     enum GameLocationFilter : Int
     {
-        case All = 0
-        case Home = 1
-        case Away = 2
+        case all = 0
+        case home = 1
+        case away = 2
     }
     
-    enum DownloadContentError: ErrorType
+    enum DownloadContentError: Error
     {
-        case None
-        case NoConnectivity
-        case Error(ErrorType)
+        case none
+        case noConnectivity
+        case error(Error)
     }
     
     var isLoadingContent: Bool = false
@@ -36,13 +35,13 @@ final class ContentManager
     var venueMap: [String: Venue] = [String: Venue]()
     var teamMap: [String: Team] = [String: Team]()
     var games: [Game] = [Game]()
-    var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
-    var sortedDays: [NSDate] = [NSDate]()
+    var gameSections: [Date: [Game]] = [Date: [Game]]()
+    var sortedDays: [Date] = [Date]()
     var announcements: [Announcement] = [Announcement]()
     var loadContentScheduleCallback: (() -> ())?
     var loadContentCalendarCallback: (() -> ())?
     var announcementsLoadedCallback: (() -> ())?
-    var downloadContentError: DownloadContentError = .None
+    var downloadContentError: DownloadContentError = .none
     
     var teamsFilter: TeamsFilter
     {
@@ -56,28 +55,28 @@ final class ContentManager
             
             switch teamsFilterStorage
             {
-                case .All:
+                case .all:
                 
-                    let userDefaults = NSUserDefaults.standardUserDefaults()
-                    if userDefaults.objectForKey("teamsFilter") != nil
+                    let userDefaults = UserDefaults.standard
+                    if userDefaults.object(forKey: "teamsFilter") != nil
                     {
-                        userDefaults.removeObjectForKey("teamsFilter")
+                        userDefaults.removeObject(forKey: "teamsFilter")
                     }
                     userDefaults.synchronize()
                 
-                case .Selected(let teams):
+                case .selected(let teams):
                     
                     let helperTeamsIds: [String] = teams.map { $0.teamId }
                     
-                    let userDefaults = NSUserDefaults.standardUserDefaults()
-                    userDefaults.setObject(helperTeamsIds, forKey: "teamsFilter")
+                    let userDefaults = UserDefaults.standard
+                    userDefaults.set(helperTeamsIds, forKey: "teamsFilter")
                     userDefaults.synchronize()
             }
             
         }
     }
     
-    private var teamsFilterStorage: TeamsFilter = .All
+    fileprivate var teamsFilterStorage: TeamsFilter = .all
     
     var gameLocationFilter: GameLocationFilter
     {
@@ -91,26 +90,26 @@ final class ContentManager
             
             switch gameLocationFilterStorage
             {
-            case .All:
+            case .all:
                 
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                if userDefaults.objectForKey("gameLocationFilter") != nil
+                let userDefaults = UserDefaults.standard
+                if userDefaults.object(forKey: "gameLocationFilter") != nil
                 {
-                    userDefaults.removeObjectForKey("gameLocationFilter")
+                    userDefaults.removeObject(forKey: "gameLocationFilter")
                 }
                 userDefaults.synchronize()
                 
             default:
                 
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.setObject(NSNumber(integer: newValue.rawValue), forKey: "gameLocationFilter")
+                let userDefaults = UserDefaults.standard
+                userDefaults.set(NSNumber(value: newValue.rawValue as Int), forKey: "gameLocationFilter")
                 userDefaults.synchronize()
             }
             
         }
     }
     
-    private var gameLocationFilterStorage: GameLocationFilter = .All
+    fileprivate var gameLocationFilterStorage: GameLocationFilter = .all
     
     init()
     {
@@ -121,7 +120,7 @@ final class ContentManager
     {
         get
         {
-            let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            let documentFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             return documentFolder.stringByAppendingPathComponent("contentCache")
         }
     }
@@ -181,29 +180,29 @@ final class ContentManager
     {
         isLoadingContent = true
         
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        if userDefaults.integerForKey("resetContentCount") == 0
+        let userDefaults = UserDefaults.standard
+        if userDefaults.integer(forKey: "resetContentCount") == 0
         {
             let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
-            let fileManager: NSFileManager = NSFileManager()
-            if fileManager.fileExistsAtPath(gamesFileName)
+            let fileManager: FileManager = FileManager()
+            if fileManager.fileExists(atPath: gamesFileName)
             {
                 do
                 {
-                    try fileManager.removeItemAtPath(gamesFileName)
+                    try fileManager.removeItem(atPath: gamesFileName)
                 }
                 catch
                 {
                 }
             }
             
-            userDefaults.setInteger(1, forKey: "resetContentCount")
+            userDefaults.set(1, forKey: "resetContentCount")
             userDefaults.synchronize()
         }
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global().async {
             
-            let fileManager: NSFileManager = NSFileManager()
+            let fileManager: FileManager = FileManager()
             
             do
             {
@@ -220,7 +219,7 @@ final class ContentManager
             let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
             let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
             
-            if fileManager.fileExistsAtPath(announcementsFileName) && fileManager.fileExistsAtPath(venuesFileName) && fileManager.fileExistsAtPath(teamsFileName) && fileManager.fileExistsAtPath(schedulesFileName) && fileManager.fileExistsAtPath(gamesFileName)
+            if fileManager.fileExists(atPath: announcementsFileName) && fileManager.fileExists(atPath: venuesFileName) && fileManager.fileExists(atPath: teamsFileName) && fileManager.fileExists(atPath: schedulesFileName) && fileManager.fileExists(atPath: gamesFileName)
             {
                 do
                 {
@@ -230,13 +229,13 @@ final class ContentManager
                     try self.loadSchedules()
                     try self.loadGames()
                     
-                    let userDefaults = NSUserDefaults.standardUserDefaults()
+                    let userDefaults = UserDefaults.standard
                     self.loadPersistedTeamsFilter(userDefaults)
                     self.loadGameLocationFiler(userDefaults)
                     
                     self.filterGames()
                     
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         
                         self.isLoadingContent = false
                         
@@ -263,16 +262,16 @@ final class ContentManager
                     do
                     {
                         // The local data failed to load so wack it.
-                        try fileManager.removeItemAtPath(announcementsFileName)
-                        try fileManager.removeItemAtPath(venuesFileName)
-                        try fileManager.removeItemAtPath(teamsFileName)
-                        try fileManager.removeItemAtPath(schedulesFileName)
-                        try fileManager.removeItemAtPath(gamesFileName)
+                        try fileManager.removeItem(atPath: announcementsFileName)
+                        try fileManager.removeItem(atPath: venuesFileName)
+                        try fileManager.removeItem(atPath: teamsFileName)
+                        try fileManager.removeItem(atPath: schedulesFileName)
+                        try fileManager.removeItem(atPath: gamesFileName)
                         
-                        let userDefaults = NSUserDefaults.standardUserDefaults()
-                        if userDefaults.objectForKey("teamsFilter") != nil
+                        let userDefaults = UserDefaults.standard
+                        if userDefaults.object(forKey: "teamsFilter") != nil
                         {
-                            userDefaults.removeObjectForKey("teamsFilter")
+                            userDefaults.removeObject(forKey: "teamsFilter")
                         }
                         
                         self.downloadContent {
@@ -314,176 +313,119 @@ final class ContentManager
         
     }
 
-    func downloadContent(completionBlock: () -> ())
+    func downloadContent(_ completionBlock: @escaping () -> ())
     {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.global().async {
+            let queueGroup = DispatchGroup()
             
-            do
-            {
-                let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
-                if reachability.currentReachabilityStatus == .NotReachable
+            queueGroup.notify(queue: DispatchQueue.main) {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            }
+
+            queueGroup.enter()
+            
+            Announcement.getAnnouncements { (result) -> Void in
+                
+                if let fetchedAnnouncements = result.value
                 {
-                    self.downloadContentError = .NoConnectivity
+                    self.announcements = fetchedAnnouncements
+                    
+                    self.saveAnnouncements()
                     
                     if let announcementsLoadedCallback = self.announcementsLoadedCallback
                     {
-                        announcementsLoadedCallback()
+                        DispatchQueue.main.async {
+                            
+                            announcementsLoadedCallback()
+                        }
                     }
                     
-                    return
+                    queueGroup.leave()
                 }
-            }
-            catch
-            {
-                self.downloadContentError = .Error(error)
-                
-                if let announcementsLoadedCallback = self.announcementsLoadedCallback
-                {
-                    announcementsLoadedCallback()
-                }
-                
-                return
             }
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            queueGroup.enter()
+            
+            Venue.getVenues { (result) -> Void in
                 
-                do
+                if let venues = result.value
                 {
-                    let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
-                    if reachability.currentReachabilityStatus == .NotReachable
+                    self.venueMap.removeAll()
+                    
+                    for venue in venues
                     {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            
-                            self.downloadContentError = .NoConnectivity
-                            
-                            completionBlock()
-                        }
-                        
-                        return
+                        self.venueMap[venue.venueId] = venue
                     }
-                    try FileUtil.ensureFolder(ContentManager.contentPath)
                 }
-                catch
+                
+                self.saveVenues()
+                
+                queueGroup.leave()
+            }
+            
+            queueGroup.enter()
+            
+            Team.getTeams { (result) -> Void in
+                
+                if let teams = result.value
                 {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        
-                        self.downloadContentError = .Error(error)
-                        
-                        completionBlock()
-                    }
+                    self.teamMap.removeAll()
                     
-                    return
-                }
-                
-                let queueGroup = dispatch_group_create()
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                
-                dispatch_group_enter(queueGroup)
-                
-                Announcement.getAnnouncements { (result) -> Void in
-                    
-                    if let fetchedAnnouncements = result.value
+                    for team in teams
                     {
-                        self.announcements = fetchedAnnouncements
-                        
-                        self.saveAnnouncements()
-                        
-                        if let announcementsLoadedCallback = self.announcementsLoadedCallback
-                        {
-                            dispatch_async(dispatch_get_main_queue()) {
-                                
-                                announcementsLoadedCallback()
-                            }
-                        }
-                        
-                        dispatch_group_leave(queueGroup)
+                        self.teamMap[team.teamId] = team
                     }
                 }
                 
-                dispatch_group_enter(queueGroup)
+                self.saveTeams()
                 
-                Venue.getVenues { (result) -> Void in
+                queueGroup.leave()
+            }
+            
+            queueGroup.enter()
+            
+            Schedule.getSchedules { (result) -> Void in
+                
+                if let schedules = result.value
+                {
+                    self.scheduleMap.removeAll()
                     
-                    if let venues = result.value
+                    for schedule in schedules
                     {
-                        self.venueMap.removeAll()
-                        
-                        for venue in venues
-                        {
-                            self.venueMap[venue.venueId] = venue
-                        }
+                        self.scheduleMap[schedule.scheduleId] = schedule
                     }
-                    
-                    self.saveVenues()
-                    
-                    dispatch_group_leave(queueGroup)
                 }
                 
-                dispatch_group_enter(queueGroup)
+                self.saveSchedules()
                 
-                Team.getTeams { (result) -> Void in
+                queueGroup.leave()
+            }
+            
+            queueGroup.enter()
+            
+            Game.getAllGames { (result) -> Void in
+                
+                if let fetchedGames = result.value
+                {
+                    self.games = fetchedGames
                     
-                    if let teams = result.value
-                    {
-                        self.teamMap.removeAll()
-                        
-                        for team in teams
-                        {
-                            self.teamMap[team.teamId] = team
-                        }
-                    }
+                    let userDefaults = UserDefaults.standard
+                    self.loadPersistedTeamsFilter(userDefaults)
+                    self.loadGameLocationFiler(userDefaults)
                     
-                    self.saveTeams()
-                    
-                    dispatch_group_leave(queueGroup)
+                    self.filterGames()
                 }
                 
-                dispatch_group_enter(queueGroup)
+                self.saveGames()
                 
-                Schedule.getSchedules { (result) -> Void in
-                    
-                    if let schedules = result.value
-                    {
-                        self.scheduleMap.removeAll()
-                        
-                        for schedule in schedules
-                        {
-                            self.scheduleMap[schedule.scheduleId] = schedule
-                        }
-                    }
-                    
-                    self.saveSchedules()
-                    
-                    dispatch_group_leave(queueGroup)
-                }
+                queueGroup.leave()
+            }
+            
+            queueGroup.notify(queue: DispatchQueue.main) {
                 
-                dispatch_group_enter(queueGroup)
-                
-                Game.getAllGames { (result) -> Void in
-                    
-                    if let fetchedGames = result.value
-                    {
-                        self.games = fetchedGames
-                        
-                        let userDefaults = NSUserDefaults.standardUserDefaults()
-                        self.loadPersistedTeamsFilter(userDefaults)
-                        self.loadGameLocationFiler(userDefaults)
-                        
-                        self.filterGames()
-                    }
-                    
-                    self.saveGames()
-                    
-                    dispatch_group_leave(queueGroup)
-                }
-                
-                dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
-                    
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    ContentManager.lastCheckForContentUpdate = NSDate()
-                    completionBlock()
-                }
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                ContentManager.lastCheckForContentUpdate = Date()
+                completionBlock()
             }
         }
     }
@@ -491,26 +433,28 @@ final class ContentManager
         
     func checkforUpdates()
     {
-        if let lastCheckForContentUpdate: NSDate = ContentManager.lastCheckForContentUpdate
+        if let lastCheckForContentUpdate: Date = ContentManager.lastCheckForContentUpdate
         {
-            let interval: NSTimeInterval = NSDate().timeIntervalSinceDate(lastCheckForContentUpdate)
+            let interval: TimeInterval = Date().timeIntervalSince(lastCheckForContentUpdate)
             if interval < (1 * 60 * 2)
             {
                 return
             }
         }
         
-        self.downloadContentError = .None
+        self.downloadContentError = .none
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global().async {
             
-            let queueGroup = dispatch_group_create()
+            let queueGroup = DispatchGroup()
+            
+            queueGroup.notify(queue: DispatchQueue.main) {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            }
             
             let contentUpdate: ContentUpdate = ContentUpdate()
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            
-            dispatch_group_enter(queueGroup)
+            queueGroup.enter()
             
             Announcement.getAnnouncements { (result) -> Void in
                 
@@ -545,7 +489,7 @@ final class ContentManager
                     {
                         if let fetchedAnnouncement: Announcement = fetchedAnnouncementMap[announcement.announcementId]
                         {
-                            if !announcement.modified.isEqualToDate(fetchedAnnouncement.modified)
+                            if announcement.modified != fetchedAnnouncement.modified
                             {
                                 updatedAnnouncements.append(fetchedAnnouncement)
                             }
@@ -566,11 +510,11 @@ final class ContentManager
                         contentUpdate.deletedAnnouncements = deletedAnnouncements
                     }
                     
-                    dispatch_group_leave(queueGroup)
+                    queueGroup.leave()
                 }
             }
             
-            dispatch_group_enter(queueGroup)
+            queueGroup.enter()
             
             Venue.getVenues { (result) -> Void in
                 
@@ -594,7 +538,7 @@ final class ContentManager
                     {
                         if let fetchedVenue: Venue = fetchedVenueMap[venue.venueId]
                         {
-                            if !venue.modified.isEqualToDate(fetchedVenue.modified)
+                            if venue.modified != fetchedVenue.modified
                             {
                                 updatedVenues.append(fetchedVenue)
                             }
@@ -616,10 +560,10 @@ final class ContentManager
                     }
                 }
                 
-                dispatch_group_leave(queueGroup)
+                queueGroup.leave()
             }
             
-            dispatch_group_enter(queueGroup)
+            queueGroup.enter()
             
             Team.getTeams { (result) -> Void in
                 
@@ -643,7 +587,7 @@ final class ContentManager
                     {
                         if let fetchedTeam: Team = fetchedTeamsMap[team.teamId]
                         {
-                            if !team.modified.isEqualToDate(fetchedTeam.modified)
+                            if team.modified != fetchedTeam.modified
                             {
                                 updatedTeams.append(fetchedTeam)
                             }
@@ -665,10 +609,10 @@ final class ContentManager
                     }
                 }
                 
-                dispatch_group_leave(queueGroup)
+                queueGroup.leave()
             }
             
-            dispatch_group_enter(queueGroup)
+            queueGroup.enter()
             
             Schedule.getSchedules { (result) -> Void in
                 
@@ -692,7 +636,7 @@ final class ContentManager
                     {
                         if let fetchedSchedule: Schedule = fetchedSchedulesMap[schedule.scheduleId]
                         {
-                            if !schedule.modified.isEqualToDate(fetchedSchedule.modified)
+                            if schedule.modified != fetchedSchedule.modified
                             {
                                 updatedSchedules.append(fetchedSchedule)
                             }
@@ -714,10 +658,10 @@ final class ContentManager
                     }
                 }
                 
-                dispatch_group_leave(queueGroup)
+                queueGroup.leave()
             }
             
-            dispatch_group_enter(queueGroup)
+            queueGroup.enter()
             
             GameInfo.getAllGameInfo { (result) -> Void in
                 
@@ -747,7 +691,7 @@ final class ContentManager
                     {
                         if let fetchedGameInfo: GameInfo = fetchedGameInfoMap[game.gamePostId]
                         {
-                            if !game.modified.isEqualToDate(fetchedGameInfo.modified)
+                            if game.modified != fetchedGameInfo.modified
                             {
                                 updatedKeys.append(fetchedGameInfo.gamePostId)
                             }
@@ -770,15 +714,15 @@ final class ContentManager
                 }
                 
                 
-                dispatch_group_leave(queueGroup)
+                queueGroup.leave()
             }
             
             
-            dispatch_group_wait(queueGroup, DISPATCH_TIME_FOREVER)
+            queueGroup.wait(timeout: DispatchTime.distantFuture)
             
-            if let gameKeys = contentUpdate.updatedGameKeys where gameKeys.count > 0
+            if let gameKeys = contentUpdate.updatedGameKeys, gameKeys.count > 0
             {
-                dispatch_group_enter(queueGroup)
+                queueGroup.enter()
                 
                 if gameKeys.count < 10
                 {
@@ -789,7 +733,7 @@ final class ContentManager
                             contentUpdate.updatedGames = fetchedGames
                         }
                         
-                        dispatch_group_leave(queueGroup)
+                        queueGroup.leave()
                     }
                 }
                 else
@@ -803,17 +747,17 @@ final class ContentManager
                             contentUpdate.allGames = fetchedGames
                         }
                         
-                        dispatch_group_leave(queueGroup)
+                        queueGroup.leave()
                     }
                 }
                 
             }
             
-            dispatch_group_notify(queueGroup, dispatch_get_main_queue()) {
+            queueGroup.notify(queue: DispatchQueue.main) {
                 
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                ContentManager.lastCheckForContentUpdate = NSDate()
+                ContentManager.lastCheckForContentUpdate = Date()
                 
                 if contentUpdate.isContentUpdated
                 {
@@ -825,9 +769,9 @@ final class ContentManager
         }
     }
     
-    private func handleContentUpdate(contentUpdate: ContentUpdate)
+    fileprivate func handleContentUpdate(_ contentUpdate: ContentUpdate)
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global().async {
             
             if (contentUpdate.updatedAnnouncements != nil || contentUpdate.deletedAnnouncements != nil)
             {
@@ -854,12 +798,12 @@ final class ContentManager
                     var filteredAnnouncements = self.announcements.filter { return !announcementSet.contains($0.announcementId) }
                     if let updatedAnnouncements = contentUpdate.updatedAnnouncements
                     {
-                        filteredAnnouncements.appendContentsOf(updatedAnnouncements)
+                        filteredAnnouncements.append(contentsOf: updatedAnnouncements)
                     }
                     
                     if !filteredAnnouncements.isEmpty
                     {
-                        self.announcements = filteredAnnouncements.sort { $0.date.compare($1.date) == .OrderedDescending}
+                        self.announcements = filteredAnnouncements.sorted { $0.date.compare($1.date as Date) == .orderedDescending}
                         
                         self.saveAnnouncements()
                     }
@@ -880,7 +824,7 @@ final class ContentManager
                 {
                     for venue in deletedVenues
                     {
-                        self.venueMap.removeValueForKey(venue.venueId)
+                        self.venueMap.removeValue(forKey: venue.venueId)
                     }
                 }
                 
@@ -901,7 +845,7 @@ final class ContentManager
                 {
                     for team in deletedTeams
                     {
-                        self.teamMap.removeValueForKey(team.teamId)
+                        self.teamMap.removeValue(forKey: team.teamId)
                     }
                 }
                 
@@ -922,14 +866,14 @@ final class ContentManager
                 {
                     for schedule in deletedSchedules
                     {
-                        self.scheduleMap.removeValueForKey(schedule.scheduleId)
+                        self.scheduleMap.removeValue(forKey: schedule.scheduleId)
                     }
                 }
                 
                 self.saveSchedules()
             }
             
-            if let allGames: [Game] = contentUpdate.allGames where allGames.count > 0
+            if let allGames: [Game] = contentUpdate.allGames, allGames.count > 0
             {
                 self.games = allGames
                 
@@ -962,12 +906,12 @@ final class ContentManager
                     var filteredGames = self.games.filter { return !gameSet.contains($0.gameId) }
                     if let updatedGames = contentUpdate.updatedGames
                     {
-                        filteredGames.appendContentsOf(updatedGames)
+                        filteredGames.append(contentsOf: updatedGames)
                     }
                     
                     if !filteredGames.isEmpty
                     {
-                        self.games = filteredGames.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending}
+                        self.games = filteredGames.sorted { $0.gameDate.compare($1.gameDate as Date) == .orderedAscending}
                     }
                     
                     self.saveGames()
@@ -976,11 +920,11 @@ final class ContentManager
                 }
             }
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 
                 self.isLoadingContent = false
                 
-                if let announcementsLoadedCallback = self.announcementsLoadedCallback where contentUpdate.updatedAnnouncements != nil || contentUpdate.deletedAnnouncements != nil
+                if let announcementsLoadedCallback = self.announcementsLoadedCallback, contentUpdate.updatedAnnouncements != nil || contentUpdate.deletedAnnouncements != nil
                 {
                     announcementsLoadedCallback()
                 }
@@ -1000,7 +944,7 @@ final class ContentManager
     
     func fireGameContentCallbacks()
     {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             
             if let loadContentCallback = self.loadContentScheduleCallback
             {
@@ -1014,19 +958,19 @@ final class ContentManager
         }
     }
     
-    func loadPersistedTeamsFilter(userDefaults: NSUserDefaults)
+    func loadPersistedTeamsFilter(_ userDefaults: UserDefaults)
     {
-        if let teamIds:[String] = userDefaults.objectForKey("teamsFilter") as? [String]
+        if let teamIds:[String] = userDefaults.object(forKey: "teamsFilter") as? [String]
         {
-            let selectedTeams: [Team] = teamIds.flatMap { self.teamMap[$0] }
+            let selectedTeams: [Team] = teamIds.compactMap { self.teamMap[$0] }
             
-            self.teamsFilterStorage = .Selected(selectedTeams)
+            self.teamsFilterStorage = .selected(selectedTeams)
         }
     }
     
-    func loadGameLocationFiler(userDefaults: NSUserDefaults)
+    func loadGameLocationFiler(_ userDefaults: UserDefaults)
     {
-        if let gameLocationNumber: NSNumber = userDefaults.objectForKey("gameLocationFilter") as? NSNumber, let filter: GameLocationFilter = GameLocationFilter(rawValue: gameLocationNumber.integerValue)
+        if let gameLocationNumber: NSNumber = userDefaults.object(forKey: "gameLocationFilter") as? NSNumber, let filter: GameLocationFilter = GameLocationFilter(rawValue: gameLocationNumber.intValue)
         {
             self.gameLocationFilterStorage = filter
         }
@@ -1039,17 +983,17 @@ final class ContentManager
 
         switch teamsFilter
         {
-            case .All:
+            case .all:
                 
-            if gameLocationFilter != .All
+            if gameLocationFilter != .all
             {
                 filteredGames = games.filter {
                     
-                    if gameLocationFilter == .Home && $0.isHomeGame
+                    if gameLocationFilter == .home && $0.isHomeGame
                     {
                         return true
                     }
-                    else if gameLocationFilter == .Away && !$0.isHomeGame
+                    else if gameLocationFilter == .away && !$0.isHomeGame
                     {
                         return true
                     }
@@ -1064,20 +1008,20 @@ final class ContentManager
                 filteredGames = games
             }
             
-            case .Selected(let teams):
+            case .selected(let teams):
                 filteredGames = games.filter {
                     
                     if let schedule: Schedule = scheduleMap[$0.gameScheduleId], let scheduledTeam: Team = teamMap[schedule.scheduleTeamId]
                     {
                         if teams.contains(scheduledTeam)
                         {
-                            if gameLocationFilter != .All
+                            if gameLocationFilter != .all
                             {
-                                if gameLocationFilter == .Home && $0.isHomeGame
+                                if gameLocationFilter == .home && $0.isHomeGame
                                 {
                                     return true
                                 }
-                                else if gameLocationFilter == .Away && !$0.isHomeGame
+                                else if gameLocationFilter == .away && !$0.isHomeGame
                                 {
                                     return true
                                 }
@@ -1097,7 +1041,7 @@ final class ContentManager
         
         for game in filteredGames
         {
-            if let gameDay: NSDate = ContentManager.dayForDate(game.gameDate)
+            if let gameDay: Date = ContentManager.dayForDate(game.gameDate as Date)
             {
                 if var gamesOnDay: [Game] = self.gameSections[gameDay]
                 {
@@ -1113,16 +1057,16 @@ final class ContentManager
             }
         }
         
-        self.sortedDays = self.gameSections.keys.sort {$0.compare($1) == .OrderedAscending}
+        self.sortedDays = self.gameSections.keys.sorted {$0.compare($1) == .orderedAscending}
     }
     
     func refreshGamesWithFilter()
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.main.async {
          
             self.filterGames()
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 
                 if let loadContentCallback = self.loadContentScheduleCallback
                 {
@@ -1166,7 +1110,7 @@ final class ContentManager
         
         let venuesFileName = ContentManager.contentPath.stringByAppendingPathComponent("venueMap.ser")
         
-        if let helperVenueMap: [String: Venue.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(venuesFileName) as? [String: Venue.Helper]
+        if let helperVenueMap: [String: Venue.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: venuesFileName) as? [String: Venue.Helper]
         {
             for (key, value) in helperVenueMap
             {
@@ -1212,7 +1156,7 @@ final class ContentManager
         
         let teamsFileName = ContentManager.contentPath.stringByAppendingPathComponent("teamMap.ser")
         
-        if let helperTeamMap: [String: Team.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(teamsFileName) as? [String: Team.Helper]
+        if let helperTeamMap: [String: Team.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: teamsFileName) as? [String: Team.Helper]
         {
             for (key, value) in helperTeamMap
             {
@@ -1257,7 +1201,7 @@ final class ContentManager
         
         let schedulesFileName = ContentManager.contentPath.stringByAppendingPathComponent("scheduleMap.ser")
         
-        if let helperScheduleMap: [String: Schedule.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(schedulesFileName) as? [String: Schedule.Helper]
+        if let helperScheduleMap: [String: Schedule.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: schedulesFileName) as? [String: Schedule.Helper]
         {
             for (key, value) in helperScheduleMap
             {
@@ -1298,9 +1242,9 @@ final class ContentManager
         
         let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
         
-        if let helperGames: [Game.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(gamesFileName) as? [Game.Helper]
+        if let helperGames: [Game.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: gamesFileName) as? [Game.Helper]
         {
-            self.games = helperGames.flatMap { $0.game }
+            self.games = helperGames.compactMap { $0.game }
         }
         else
         {
@@ -1332,9 +1276,9 @@ final class ContentManager
         
         let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
         
-        if let helperAnnouncements: [Announcement.Helper] = NSKeyedUnarchiver.unarchiveObjectWithFile(announcementsFileName) as? [Announcement.Helper]
+        if let helperAnnouncements: [Announcement.Helper] = NSKeyedUnarchiver.unarchiveObject(withFile: announcementsFileName) as? [Announcement.Helper]
         {
-            self.announcements = helperAnnouncements.flatMap { $0.announcement }
+            self.announcements = helperAnnouncements.compactMap { $0.announcement }
         }
         else
         {
@@ -1342,34 +1286,34 @@ final class ContentManager
         }
     }
 
-    class func dayForDate(date: NSDate) -> NSDate?
+    class func dayForDate(_ date: Date) -> Date?
     {
-        let calendar = NSCalendar.currentCalendar()
-        let timeZone = NSTimeZone.localTimeZone()
+        var calendar = Calendar.current
+        let timeZone = TimeZone.autoupdatingCurrent
         calendar.timeZone = timeZone
         
-        let dateComps = calendar.components([.Year, .Month, .Day], fromDate: date)
+        var dateComps = (calendar as NSCalendar).components([.year, .month, .day], from: date)
         
         dateComps.hour = 0
         dateComps.minute = 0
         dateComps.second = 0
         
-        return calendar.dateFromComponents(dateComps)
+        return calendar.date(from: dateComps)
     }
     
-    class var lastCheckForContentUpdate: NSDate?
+    class var lastCheckForContentUpdate: Date?
     {
         get
         {
-            let userDefaults = NSUserDefaults.standardUserDefaults()
-            return userDefaults.objectForKey("lastCheckForContentUpdate") as? NSDate
+            let userDefaults = UserDefaults.standard
+            return userDefaults.object(forKey: "lastCheckForContentUpdate") as? Date
         }
         set
         {
-            if let validDate: NSDate = newValue
+            if let validDate: Date = newValue
             {
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.setObject(validDate, forKey: "lastCheckForContentUpdate")
+                let userDefaults = UserDefaults.standard
+                userDefaults.set(validDate, forKey: "lastCheckForContentUpdate")
                 userDefaults.synchronize()
             }
         }

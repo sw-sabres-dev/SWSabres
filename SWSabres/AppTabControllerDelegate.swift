@@ -11,10 +11,10 @@ import UIKit
 
 final class AppTabControllerDelegate: NSObject, UITabBarControllerDelegate
 {
-    func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController)
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController)
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
-        defaults.setInteger(tabBarController.selectedIndex, forKey: "appSelectedTabBarIndex")
+        let defaults = UserDefaults.standard
+        defaults.set(tabBarController.selectedIndex, forKey: "appSelectedTabBarIndex")
         defaults.synchronize()
     }
 }

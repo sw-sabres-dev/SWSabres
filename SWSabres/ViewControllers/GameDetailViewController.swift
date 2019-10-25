@@ -8,7 +8,32 @@
 
 import UIKit
 import MapKit
-import ReachabilitySwift
+import Reachability
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class GameDetailViewController: UIViewController
 {
@@ -30,9 +55,11 @@ class GameDetailViewController: UIViewController
     @IBOutlet weak var addScoreButton: UIBarButtonItem!
     
     var game: Game?
-    var venuePlacemark: MKPlacemark?
-    weak var saveAction: UIAlertAction?
+    @objc var venuePlacemark: MKPlacemark?
+    @objc weak var saveAction: UIAlertAction?
     
+    var reachability: Reachability?
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -71,17 +98,18 @@ class GameDetailViewController: UIViewController
         self.firstScoreLabel.text = nil
         self.secondScoreLabel.text = nil
         
-        let gesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "addressLabelPressed:")
+        let gesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(GameDetailViewController.addressLabelPressed(_:)))
         self.addressLabel.addGestureRecognizer(gesture)
         
         self.populateControlsWithGame()
 
         // Do any additional setup after loading the view.
+        self.reachability = Reachability()
     }
 
-    func populateControlsWithGame()
+    @objc func populateControlsWithGame()
     {
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, contentManager: ContentManager = delegate.contentManager, let game = game
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager, let game = game
         {
             if let schedule: Schedule = contentManager.scheduleMap[game.gameScheduleId], let team: Team = contentManager.teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
@@ -92,11 +120,11 @@ class GameDetailViewController: UIViewController
                     if let score = game.gameOurScore
                     {
                         firstScoreLabel.text = String(score)
-                        firstScoreLabel.hidden = false
+                        firstScoreLabel.isHidden = false
                     }
                     else
                     {
-                        firstScoreLabel.hidden = true
+                        firstScoreLabel.isHidden = true
                     }
                 }
                 else
@@ -106,52 +134,52 @@ class GameDetailViewController: UIViewController
                     if let score = game.gameOurScore
                     {
                         secondScoreLabel.text = String(score)
-                        secondScoreLabel.hidden = false
+                        secondScoreLabel.isHidden = false
                     }
                     else
                     {
-                        secondScoreLabel.hidden = true
+                        secondScoreLabel.isHidden = true
                     }
                 }
             }
             
             if let teamId: String = game.teamId, let team: Team = contentManager.teamMap[teamId], let teamName: String = team.shortName ?? team.name
             {
-                var logoUrl: NSURL? = nil
+                var logoUrl: URL? = nil
                 
                 if let teamLogoUrlString: String = team.logoUrl
                 {
-                    logoUrl = NSURL(string: teamLogoUrlString)
+                    logoUrl = URL(string: teamLogoUrlString)
                 }
                 
                 if game.isHomeGame
                 {
                     secondLogo.image = nil
-                    secondLogo.pin_setImageFromURL(logoUrl)
+                    secondLogo.pin_setImage(from: logoUrl)
                     secondLogoLabel.text = teamName
                     if let score = game.gameOppScore
                     {
                         secondScoreLabel.text = String(score)
-                        secondScoreLabel.hidden = false
+                        secondScoreLabel.isHidden = false
                     }
                     else
                     {
-                        secondScoreLabel.hidden = true
+                        secondScoreLabel.isHidden = true
                     }
                 }
                 else
                 {
                     firstLogo.image = nil
-                    firstLogo.pin_setImageFromURL(logoUrl)
+                    firstLogo.pin_setImage(from: logoUrl)
                     firstLogoLabel.text = teamName
                     if let score = game.gameOppScore
                     {
                         firstScoreLabel.text = String(score)
-                        firstScoreLabel.hidden = false
+                        firstScoreLabel.isHidden = false
                     }
                     else
                     {
-                        firstScoreLabel.hidden = true
+                        firstScoreLabel.isHidden = true
                     }
                 }
             }
@@ -159,42 +187,42 @@ class GameDetailViewController: UIViewController
             {
                 if game.isHomeGame
                 {
-                    secondLogo.pin_setImageFromURL(nil)
+                    secondLogo.pin_setImage(from: nil)
                     secondLogo.image = nil
                     secondLogoLabel.text = opponent
                     if let score = game.gameOppScore
                     {
                         secondScoreLabel.text = String(score)
-                        secondScoreLabel.hidden = false
+                        secondScoreLabel.isHidden = false
                     }
                     else
                     {
-                        secondScoreLabel.hidden = true
+                        secondScoreLabel.isHidden = true
                     }
                 }
                 else
                 {
-                    firstLogo.pin_setImageFromURL(nil)
+                    firstLogo.pin_setImage(from: nil)
                     firstLogo.image = nil
                     firstLogoLabel.text = opponent
                     if let score = game.gameOppScore
                     {
                         firstScoreLabel.text = String(score)
-                        firstScoreLabel.hidden = false
+                        firstScoreLabel.isHidden = false
                     }
                     else
                     {
-                        firstScoreLabel.hidden = true
+                        firstScoreLabel.isHidden = true
                     }
                 }
             }
             
-            let now = NSDate()
+            let now = Date()
             let compareResult = game.gameDate.compare(now)
             
-            if let gameDatePlusOneDay = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: game.gameDate, options:[])
+            if let gameDatePlusOneDay = (Calendar.current as NSCalendar).date(byAdding: .day, value: 1, to: game.gameDate as Date, options:[])
             {
-                addScoreButton.enabled = compareResult != .OrderedDescending && now.compare(gameDatePlusOneDay) != .OrderedDescending
+                addScoreButton.isEnabled = compareResult != .orderedDescending && now.compare(gameDatePlusOneDay) != .orderedDescending
             }
             
             if game.gameOurScore != nil && game.gameOppScore != nil
@@ -207,10 +235,10 @@ class GameDetailViewController: UIViewController
                 self.title = "\(firstText) vs. \(secondText)"
             }
             
-            let dateFormatter: NSDateFormatter = NSDateFormatter()
+            let dateFormatter: DateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM dd"
             
-            self.dateLabel.text = dateFormatter.stringFromDate(game.gameDate)
+            self.dateLabel.text = dateFormatter.string(from: game.gameDate as Date)
             
             
             if let gameResult = game.gameResult
@@ -220,9 +248,9 @@ class GameDetailViewController: UIViewController
             else
             {
                 dateFormatter.dateFormat = nil
-                dateFormatter.timeStyle = .ShortStyle
+                dateFormatter.timeStyle = .short
                 
-                timeLabel.text = dateFormatter.stringFromDate(game.gameDate)
+                timeLabel.text = dateFormatter.string(from: game.gameDate as Date)
             }
             
             if let gameVenueId = game.gameVenueId, let venue: Venue = contentManager.venueMap[gameVenueId]
@@ -241,11 +269,11 @@ class GameDetailViewController: UIViewController
         }
     }
     
-    func addressLabelPressed(gesture: UIGestureRecognizer)
+    @objc func addressLabelPressed(_ gesture: UIGestureRecognizer)
     {
         if let address: String = addressLabel.text
         {
-            let pasteBoard = UIPasteboard.generalPasteboard()
+            let pasteBoard = UIPasteboard.general
             pasteBoard.string = address
             
             showMessageBox(venueTitleLabel.text, message: "Address copied to clipboard.")
@@ -258,7 +286,7 @@ class GameDetailViewController: UIViewController
         // Dispose of any resources that can be recreated.
     }
     
-    func showAddressOnMap(address: String)
+    @objc func showAddressOnMap(_ address: String)
     {
         let geocoder = CLGeocoder()
         
@@ -273,7 +301,7 @@ class GameDetailViewController: UIViewController
                 self.venuePlacemark = mkPlacemark
                 
                 self.mapView.addAnnotation(mkPlacemark)
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
                     self.mapView.showAnnotations(self.mapView.annotations, animated: false)
                     self.mapView.camera.altitude *= 3
@@ -283,45 +311,37 @@ class GameDetailViewController: UIViewController
 
     }
 
-    private func showMessageBox(title: String?, message: String)
+    fileprivate func showMessageBox(_ title: String?, message: String)
     {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
         alertController.view.tintColor = AppTintColors.backgroundTintColor
     }
     
-    @IBAction func addScoreButtonPressed(sender: UIBarButtonItem)
+    @IBAction func addScoreButtonPressed(_ sender: UIBarButtonItem)
     {
-        do
+        if reachability?.connection == Reachability.Connection.none
         {
-            let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
-            if reachability.currentReachabilityStatus == .NotReachable
-            {
-                self.showMessageBox("Error", message: "No Internet Connectivity found!")
-            }
-            else
-            {
-                self.showScoreEditAlert()
-            }
+            self.showMessageBox("Error", message: "No Internet Connectivity found!")
         }
-        catch
+        else
         {
-            self.showMessageBox("Error", message: "\(error)")
+            self.showScoreEditAlert()
         }
     }
     
-    func showScoreEditAlert(message: String? = nil)
+    @objc func showScoreEditAlert(_ message: String? = nil)
     {
-        let alertController = UIAlertController(title: addScoreButton.title, message: message, preferredStyle: .Alert)
+        let alertController = UIAlertController(title: addScoreButton.title, message: message, preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         
-        let action = UIAlertAction(title: "Save", style: .Default) { (action) -> Void in
+        let action = UIAlertAction(title: "Save", style: .default) { (action) -> Void in
             
             if let firstScoreField: UITextField = alertController.textFields?[0], let secondScoreField: UITextField = alertController.textFields?[1]
             {
@@ -331,20 +351,20 @@ class GameDetailViewController: UIViewController
                     gameToUpdate.gameOppScore = gameToUpdate.isHomeGame ? secondScore : firstScore
                     gameToUpdate.gameResult = String(format: "%@: %@-%@", gameToUpdate.gameOurScore > gameToUpdate.gameOppScore ? "W" : "L", firstScoreString, secondScoreString)
                     
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                    self.navigationController?.view.userInteractionEnabled = false
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    self.navigationController?.view.isUserInteractionEnabled = false
                     
                     Game.updateGameScore(gameToUpdate, completionHandler: { (result) -> Void in
                         
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                        self.navigationController?.view.userInteractionEnabled = true
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                        self.navigationController?.view.isUserInteractionEnabled = true
                         
-                        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, contentManager: ContentManager = delegate.contentManager, let updateGameScoreResult = result.value, let dayOfGame: NSDate = ContentManager.dayForDate(gameToUpdate.gameDate), var gamesOnDay: [Game] = contentManager.gameSections[dayOfGame] where updateGameScoreResult.success
+                        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager, let updateGameScoreResult = result.value, let dayOfGame: Date = ContentManager.dayForDate(gameToUpdate.gameDate), var gamesOnDay: [Game] = contentManager.gameSections[dayOfGame], updateGameScoreResult.success
                         {
                             gamesOnDay = gamesOnDay.filter { return $0.gamePostId != gameToUpdate.gamePostId }
                             gamesOnDay.append(gameToUpdate)
                             
-                            contentManager.gameSections[dayOfGame] = gamesOnDay.sort { $0.gameDate.compare($1.gameDate) == .OrderedAscending}
+                            contentManager.gameSections[dayOfGame] = gamesOnDay.sorted { $0.gameDate.compare($1.gameDate) == .orderedAscending}
                             self.game = gameToUpdate
                             
                             self.populateControlsWithGame()
@@ -354,7 +374,7 @@ class GameDetailViewController: UIViewController
                         }
                         else
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 
                                 self.showScoreEditAlert("Updating the score failed. Please try again.")
                             }
@@ -363,7 +383,7 @@ class GameDetailViewController: UIViewController
                 }
                 else
                 {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         
                         self.showScoreEditAlert("Score is invalid. Please try again.")
                     }
@@ -375,29 +395,29 @@ class GameDetailViewController: UIViewController
         
         alertController.addAction(action)
         
-        alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
-            textField.keyboardType = .NumberPad
+        alertController.addTextField { (textField) -> Void in
+            textField.keyboardType = .numberPad
             textField.placeholder = self.firstLogoLabel.text
             textField.text = self.firstScoreLabel.text
         }
         
-        alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
-            textField.keyboardType = .NumberPad
+        alertController.addTextField { (textField) -> Void in
+            textField.keyboardType = .numberPad
             textField.placeholder = self.secondLogoLabel.text
             textField.text = self.secondScoreLabel.text
         }
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
         alertController.view.tintColor = AppTintColors.backgroundTintColor
     }
     
-    @IBAction func directionsButtonPressed(sender: AnyObject)
+    @IBAction func directionsButtonPressed(_ sender: AnyObject)
     {
         if let venuePlacemark = self.venuePlacemark
         {
             let mapItem = MKMapItem(placemark: venuePlacemark)
             
-            MKMapItem.openMapsWithItems([mapItem], launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+            MKMapItem.openMaps(with: [mapItem], launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
         }
     }
 }

@@ -15,7 +15,7 @@ struct GameInfo: ResponseJSONObjectSerializable
     static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&meta_key=game_unix_dtg&orderby=meta_value&order=ASC&include=id,modified"
     
     let gamePostId: Int
-    let modified: NSDate
+    let modified: Date
     
     init?(json: SwiftyJSON.JSON)
     {
@@ -31,11 +31,11 @@ struct GameInfo: ResponseJSONObjectSerializable
             return nil
         }
         
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(game_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: game_modified) else
         {
             return nil
         }
@@ -43,9 +43,9 @@ struct GameInfo: ResponseJSONObjectSerializable
         self.modified = parsedModified
     }
     
-    static func getAllGameInfo(completionHandler: (Result<[GameInfo], NSError>) -> Void)
+    static func getAllGameInfo(_ completionHandler: @escaping (Result<[GameInfo]>) -> Void)
     {
-        Alamofire.request(.GET, GameInfo.baseEndpoint).getPostsReponseArray { response in
+        Alamofire.request(GameInfo.baseEndpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }

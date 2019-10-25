@@ -20,62 +20,62 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
     let state: String
     let zip: String
     let title: String
-    let modified: NSDate
+    let modified: Date
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let venueId = aDecoder.decodeObjectForKey("venueId") as? String else
+        guard let venueId = aDecoder.decodeObject(forKey: "venueId") as? String else
         {
             return nil
         }
         self.venueId = venueId
         
-        guard let address = aDecoder.decodeObjectForKey("address") as? String else
+        guard let address = aDecoder.decodeObject(forKey: "address") as? String else
         {
             return nil
         }
         self.address = address
         
-        guard let city = aDecoder.decodeObjectForKey("city") as? String else
+        guard let city = aDecoder.decodeObject(forKey: "city") as? String else
         {
             return nil
         }
         self.city = city
         
-        guard let state = aDecoder.decodeObjectForKey("state") as? String else
+        guard let state = aDecoder.decodeObject(forKey: "state") as? String else
         {
             return nil
         }
         self.state = state
         
-        guard let zip = aDecoder.decodeObjectForKey("zip") as? String else
+        guard let zip = aDecoder.decodeObject(forKey: "zip") as? String else
         {
             return nil
         }
         self.zip = zip
         
-        guard let title = aDecoder.decodeObjectForKey("title") as? String else
+        guard let title = aDecoder.decodeObject(forKey: "title") as? String else
         {
             return nil
         }
         self.title = title
         
-        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
         }
         self.modified = decodedModified
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(venueId, forKey: "venueId")
-        aCoder.encodeObject(address, forKey: "address")
-        aCoder.encodeObject(city, forKey: "city")
-        aCoder.encodeObject(state, forKey: "state")
-        aCoder.encodeObject(zip, forKey: "zip")
-        aCoder.encodeObject(title, forKey: "title")
-        aCoder.encodeObject(modified, forKey: "modified")
+        aCoder.encode(venueId, forKey: "venueId")
+        aCoder.encode(address, forKey: "address")
+        aCoder.encode(city, forKey: "city")
+        aCoder.encode(state, forKey: "state")
+        aCoder.encode(zip, forKey: "zip")
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -115,23 +115,26 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(venue_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: venue_modified) else
         {
             return nil
         }
         
         self.modified = parsedModified
         
-        let encodedVenueTitle = venue_title.dataUsingEncoding(NSUTF8StringEncoding)!
-        let attributedOptions : [String: AnyObject] = [
-            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-            NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding
+        guard let encodedVenueTitle = venue_title.data(using: String.Encoding.utf8) else
+        {
+            return nil
+        }
+
+        let attributedOptions: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType: NSAttributedString.DocumentType.html
         ]
-        
+
         if let attributedString = try? NSAttributedString(data: encodedVenueTitle, options: attributedOptions, documentAttributes: nil)
         {
             self.title = attributedString.string
@@ -140,7 +143,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         {
             return nil
         }
-        
+
         self.venueId = venue_slug
         self.address = venue_street
         self.city = venue_city
@@ -156,14 +159,14 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-    static func getVenues(completionHandler: (Result<[Venue], NSError>) -> Void)
+    static func getVenues(_ completionHandler: @escaping (Result<[Venue]>) -> Void)
     {
-        Alamofire.request(.GET, Venue.endpoint).getPostsReponseArray { response in
+        Alamofire.request(Venue.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    class Helper: NSObject, NSCoding
+    @objc(_TtCV8SWSabres5Venue6Helper)class Helper: NSObject, NSCoding
     {
         var venue: Venue?
         
@@ -177,7 +180,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
             venue = Venue(coder: aDecoder)
         }
         
-        func encodeWithCoder(aCoder: NSCoder)
+        func encode(with aCoder: NSCoder)
         {
             venue?.encodeWithCoder(aCoder)
         }

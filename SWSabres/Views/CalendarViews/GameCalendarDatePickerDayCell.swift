@@ -19,7 +19,7 @@ class GameCalendarDatePickerDayCell: RSDFDatePickerDayCell {
     }
     */
 
-    override func selectedDayImageColor() -> UIColor!
+    override func selectedDayImageColor() -> UIColor
     {
         return AppTintColors.backgroundTintColor
     }

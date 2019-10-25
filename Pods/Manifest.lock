@@ -1,35 +1,48 @@
 PODS:
-  - Alamofire (3.1.1)
-  - FLAnimatedImage (1.0.8)
-  - PINCache (2.1)
-  - PINRemoteImage (1.2.2):
-    - PINRemoteImage/FLAnimatedImage (= 1.2.2)
-  - PINRemoteImage/Core (1.2.2):
+  - Alamofire (4.9.0)
+  - FLAnimatedImage (1.0.12)
+  - PINCache (2.3)
+  - PINRemoteImage (1.2.3):
+    - PINRemoteImage/FLAnimatedImage (= 1.2.3)
+  - PINRemoteImage/Core (1.2.3):
     - PINCache (>= 2.1)
-  - PINRemoteImage/FLAnimatedImage (1.2.2):
+  - PINRemoteImage/FLAnimatedImage (1.2.3):
     - FLAnimatedImage (>= 1.0)
     - PINRemoteImage/Core
-  - ReachabilitySwift (2.3)
-  - RSDayFlow (1.2.0)
-  - SwiftyJSON (2.3.1)
-  - THLabel (1.4.6)
+  - ReachabilitySwift (4.3.1)
+  - RSDayFlow (1.7.1)
+  - SwiftyJSON (4.3.0)
+  - THLabel (1.4.9)
 
 DEPENDENCIES:
-  - Alamofire (~> 3.1)
+  - Alamofire (~> 4.9.0)
   - PINRemoteImage (~> 1.2)
-  - ReachabilitySwift (~> 2.3)
+  - ReachabilitySwift (~> 4.3.0)
   - RSDayFlow (~> 1.2)
-  - SwiftyJSON (~> 2.3)
+  - SwiftyJSON (~> 4.3.0)
   - THLabel (~> 1.4)
 
-SPEC CHECKSUMS:
-  Alamofire: 9b0a7188b961a03914a99304488bd226b0e46c0e
-  FLAnimatedImage: f9422f796135aff80d8c00b2afc48015bb746e24
-  PINCache: 0581b0a7578fc0bbc6c7a8b70b0615388bea064c
-  PINRemoteImage: 9f6f484bbceee15e2df5aee0beeac2e261e4ac81
-  ReachabilitySwift: 2ac9df18a443901f06caae38a9f5431219a4c36a
-  RSDayFlow: 5eeed1aac1ef4c47efc69bdbc8664afb64f74c60
-  SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
-  THLabel: 27890d10123514ffe74b6e023b57b2ece55304af
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - FLAnimatedImage
+    - PINCache
+    - PINRemoteImage
+    - ReachabilitySwift
+    - RSDayFlow
+    - SwiftyJSON
+    - THLabel
 
-COCOAPODS: 0.39.0
+SPEC CHECKSUMS:
+  Alamofire: afc3e7c6db61476cb45cdd23fed06bad03bbc321
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
+  PINRemoteImage: b6f6b10a704fa8c68ead4d7e55b68dbde79b3686
+  ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
+  RSDayFlow: c4d27ab9d40773bdd53ace3a5accb807c070d4bf
+  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
+  THLabel: f922f41441f1ca66beef5a6c629060470fcb5c0b
+
+PODFILE CHECKSUM: dbc9a0d7cc2c95582a774fdf4bacb879af72854d
+
+COCOAPODS: 1.8.3

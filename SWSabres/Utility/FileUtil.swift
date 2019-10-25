@@ -10,39 +10,39 @@ import Foundation
 
 public final class FileUtil
 {
-    public class func ensureFolder(folderPath: String) throws
+    public class func ensureFolder(_ folderPath: String) throws
     {
-        let fileManager: NSFileManager = NSFileManager()
+        let fileManager: FileManager = FileManager()
         
-        if (fileManager.fileExistsAtPath(folderPath) == false)
+        if (fileManager.fileExists(atPath: folderPath) == false)
         {
-            try fileManager.createDirectoryAtPath(folderPath, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
         }
     }
     
-    public class func deleteFolder(folderPath: String) throws
+    public class func deleteFolder(_ folderPath: String) throws
     {
-        let fileManager: NSFileManager = NSFileManager()
+        let fileManager: FileManager = FileManager()
         
-        if (fileManager.fileExistsAtPath(folderPath))
+        if (fileManager.fileExists(atPath: folderPath))
         {
-            try fileManager.removeItemAtPath(folderPath)
+            try fileManager.removeItem(atPath: folderPath)
         }
     }
     
-    public class func ensureFileFolder(fileName: String) throws
+    public class func ensureFileFolder(_ fileName: String) throws
     {
         return try FileUtil.ensureFolder(fileName.stringByDeletingLastPathComponent)
     }
     
-    public class func contentsOfFolderSortedAscendingByFileModificationDate(folderPath: String) throws -> [String]
+    public class func contentsOfFolderSortedAscendingByFileModificationDate(_ folderPath: String) throws -> [String]
     {
-        let fileManager: NSFileManager = NSFileManager()
+        let fileManager: FileManager = FileManager()
         
-        var filesArray: [String] = try fileManager.contentsOfDirectoryAtPath(folderPath)
+        var filesArray: [String] = try fileManager.contentsOfDirectory(atPath: folderPath)
         
         
-        filesArray.sortInPlace { (string1: String, string2: String) -> Bool in
+        filesArray.sort { (string1: String, string2: String) -> Bool in
             
             let fullFileName1 = folderPath.stringByAppendingPathComponent(string1)
             let fullFileName2 = folderPath.stringByAppendingPathComponent(string2)
@@ -50,12 +50,12 @@ public final class FileUtil
             do
             {
                 // Sort the paths by the file modification date.
-                let file1Attributes =  try fileManager.attributesOfItemAtPath(fullFileName1) as NSDictionary
-                let file2Attributes =  try fileManager.attributesOfItemAtPath(fullFileName2) as NSDictionary
+                let file1Attributes =  try fileManager.attributesOfItem(atPath: fullFileName1) as NSDictionary
+                let file2Attributes =  try fileManager.attributesOfItem(atPath: fullFileName2) as NSDictionary
                 
-                if let file1ModDate = file1Attributes.fileModificationDate(), file2ModDate = file2Attributes.fileModificationDate()
+                if let file1ModDate = file1Attributes.fileModificationDate(), let file2ModDate = file2Attributes.fileModificationDate()
                 {
-                    return file1ModDate.compare(file2ModDate) == .OrderedAscending
+                    return file1ModDate.compare(file2ModDate) == .orderedAscending
                 }
                 else
                 {
@@ -73,14 +73,14 @@ public final class FileUtil
     
     public class func getFreeSpace() throws -> UInt64
     {
-        let documentFolder = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let fileManager: NSFileManager = NSFileManager()
+        let documentFolder = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let fileManager: FileManager = FileManager()
         
-        let attributes = try fileManager.attributesOfFileSystemForPath(documentFolder) as NSDictionary
+        let attributes = try fileManager.attributesOfFileSystem(forPath: documentFolder) as NSDictionary
         
-        if let fileSystemSizeInBytes: NSNumber = attributes.objectForKey(NSFileSystemFreeSize) as? NSNumber
+        if let fileSystemSizeInBytes: NSNumber = attributes.object(forKey: FileAttributeKey.systemFreeSize) as? NSNumber
         {
-            return fileSystemSizeInBytes.unsignedLongLongValue
+            return fileSystemSizeInBytes.uint64Value
         }
         
         return 0

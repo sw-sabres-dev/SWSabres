@@ -16,41 +16,41 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
     
     let teamId: String
     let name: String
-    let modified: NSDate
+    let modified: Date
     var logoUrl: String?
     var shortName: String?
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let teamId = aDecoder.decodeObjectForKey("teamId") as? String else
+        guard let teamId = aDecoder.decodeObject(forKey: "teamId") as? String else
         {
             return nil
         }
         self.teamId = teamId
         
-        guard let name = aDecoder.decodeObjectForKey("name") as? String else
+        guard let name = aDecoder.decodeObject(forKey: "name") as? String else
         {
             return nil
         }
         self.name = name
         
-        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
         }
         self.modified = decodedModified
         
-        logoUrl = aDecoder.decodeObjectForKey("logoUrl") as? String
-        shortName = aDecoder.decodeObjectForKey("shortName") as? String
+        logoUrl = aDecoder.decodeObject(forKey: "logoUrl") as? String
+        shortName = aDecoder.decodeObject(forKey: "shortName") as? String
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(teamId, forKey: "teamId")
-        aCoder.encodeObject(name, forKey: "name")
-        aCoder.encodeObject(logoUrl, forKey: "logoUrl")
-        aCoder.encodeObject(shortName, forKey: "shortName")
-        aCoder.encodeObject(modified, forKey: "modified")
+        aCoder.encode(teamId, forKey: "teamId")
+        aCoder.encode(name, forKey: "name")
+        aCoder.encode(logoUrl, forKey: "logoUrl")
+        aCoder.encode(shortName, forKey: "shortName")
+        aCoder.encode(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -70,11 +70,11 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
             return nil
         }
         
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(team_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: team_modified) else
         {
             return nil
         }
@@ -104,14 +104,14 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
         }
     }
     
-    static func getTeams(completionHandler: (Result<[Team], NSError>) -> Void)
+    static func getTeams(_ completionHandler: @escaping (Result<[Team]>) -> Void)
     {
-        Alamofire.request(.GET, Team.endpoint).getPostsReponseArray { response in
+        Alamofire.request(Team.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    class Helper: NSObject, NSCoding
+    @objc(_TtCV8SWSabres4Team6Helper)class Helper: NSObject, NSCoding
     {
         var team: Team?
         
@@ -125,7 +125,7 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable
             team = Team(coder: aDecoder)
         }
         
-        func encodeWithCoder(aCoder: NSCoder)
+        func encode(with aCoder: NSCoder)
         {
             team?.encodeWithCoder(aCoder)
         }

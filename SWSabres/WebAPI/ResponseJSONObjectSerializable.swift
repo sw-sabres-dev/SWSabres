@@ -16,13 +16,13 @@ public protocol ResponseJSONObjectSerializable
 
 extension ResponseJSONObjectSerializable
 {
-    static func loadObjects<T: ResponseJSONObjectSerializable>(fileName: String) -> [T]
+    static func loadObjects<T: ResponseJSONObjectSerializable>(_ fileName: String) -> [T]
     {
         var objects: [T] = [T]()
         
-        if let data: NSData = NSData(contentsOfFile: fileName)
+        if let data: Data = try? Data(contentsOf: URL(fileURLWithPath: fileName))
         {
-            if let JSONObject = try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            if let JSONObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
             {
                 let json = SwiftyJSON.JSON(JSONObject)
                 

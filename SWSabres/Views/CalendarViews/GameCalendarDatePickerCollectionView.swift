@@ -20,7 +20,7 @@ class GameCalendarDatePickerCollectionView: RSDFDatePickerCollectionView
     }
     */
 
-    override func selfBackgroundColor() -> UIColor!
+    override func selfBackgroundColor() -> UIColor
     {
         return UIColor(red: 248.0/255, green:248.0/255, blue:248.0/255, alpha:1.0)
     }

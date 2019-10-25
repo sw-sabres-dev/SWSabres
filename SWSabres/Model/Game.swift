@@ -12,15 +12,15 @@ import Alamofire
 
 struct Game: ResponseJSONObjectSerializable
 {
-    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&meta_key=game_unix_dtg&orderby=meta_value&order=ASC"
+    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1"
     static let baseUpdateGameScoreEndPoint = "http://www.southwakesabres.org/updateGameResults.php"
     
     let gameId: String
     let gamePostId: Int
-    let gameDate: NSDate
+    let gameDate: Date
     let gameScheduleId: String
     let isHomeGame: Bool
-    let modified: NSDate
+    let modified: Date
     var opponent: String?
     var teamId: String?
     var gameVenueId: String?
@@ -30,78 +30,78 @@ struct Game: ResponseJSONObjectSerializable
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let gameId = aDecoder.decodeObjectForKey("gameId") as? String else
+        guard let gameId = aDecoder.decodeObject(forKey: "gameId") as? String else
         {
             return nil
         }
         self.gameId = gameId
         
-        guard let gamePostId = aDecoder.decodeObjectForKey("gamePostId") as? NSNumber else
+        guard let gamePostId = aDecoder.decodeObject(forKey: "gamePostId") as? NSNumber else
         {
             return nil
         }
-        self.gamePostId = gamePostId.integerValue
+        self.gamePostId = gamePostId.intValue
         
-        guard let gameDate = aDecoder.decodeObjectForKey("gameDate") as? NSDate else
+        guard let gameDate = aDecoder.decodeObject(forKey: "gameDate") as? Date else
         {
             return nil
         }
         self.gameDate = gameDate
         
-        guard let gameScheduleId = aDecoder.decodeObjectForKey("gameScheduleId") as? String else
+        guard let gameScheduleId = aDecoder.decodeObject(forKey: "gameScheduleId") as? String else
         {
             return nil
         }
         self.gameScheduleId = gameScheduleId
         
-        guard let isHomeGameNumber = aDecoder.decodeObjectForKey("isHomeGame") as? NSNumber else
+        guard let isHomeGameNumber = aDecoder.decodeObject(forKey: "isHomeGame") as? NSNumber else
         {
             return nil
         }
         self.isHomeGame = isHomeGameNumber.boolValue
         
-        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
         }
         self.modified = decodedModified
 
-        self.opponent = aDecoder.decodeObjectForKey("opponent") as? String
-        self.teamId = aDecoder.decodeObjectForKey("teamId") as? String
-        self.gameVenueId = aDecoder.decodeObjectForKey("gameVenueId") as? String
-        self.gameResult = aDecoder.decodeObjectForKey("gameResult") as? String
+        self.opponent = aDecoder.decodeObject(forKey: "opponent") as? String
+        self.teamId = aDecoder.decodeObject(forKey: "teamId") as? String
+        self.gameVenueId = aDecoder.decodeObject(forKey: "gameVenueId") as? String
+        self.gameResult = aDecoder.decodeObject(forKey: "gameResult") as? String
         
-        if let gameOurScoreNumber = aDecoder.decodeObjectForKey("gameOurScore") as? NSNumber
+        if let gameOurScoreNumber = aDecoder.decodeObject(forKey: "gameOurScore") as? NSNumber
         {
-            self.gameOurScore = gameOurScoreNumber.integerValue
+            self.gameOurScore = gameOurScoreNumber.intValue
         }
-        if let gameOppScoreNumber = aDecoder.decodeObjectForKey("gameOppScore") as? NSNumber
+        if let gameOppScoreNumber = aDecoder.decodeObject(forKey: "gameOppScore") as? NSNumber
         {
-            self.gameOppScore = gameOppScoreNumber.integerValue
+            self.gameOppScore = gameOppScoreNumber.intValue
         }
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(gameId, forKey: "gameId")
-        aCoder.encodeObject(NSNumber(integer: gamePostId), forKey: "gamePostId")
-        aCoder.encodeObject(gameDate, forKey: "gameDate")
-        aCoder.encodeObject(gameScheduleId, forKey: "gameScheduleId")
-        aCoder.encodeObject(NSNumber(bool: isHomeGame), forKey: "isHomeGame")
-        aCoder.encodeObject(opponent, forKey: "opponent")
-        aCoder.encodeObject(teamId, forKey: "teamId")
-        aCoder.encodeObject(gameVenueId, forKey: "gameVenueId")
-        aCoder.encodeObject(gameResult, forKey: "gameResult")
-        aCoder.encodeObject(modified, forKey: "modified")
+        aCoder.encode(gameId, forKey: "gameId")
+        aCoder.encode(NSNumber(value: gamePostId as Int), forKey: "gamePostId")
+        aCoder.encode(gameDate, forKey: "gameDate")
+        aCoder.encode(gameScheduleId, forKey: "gameScheduleId")
+        aCoder.encode(NSNumber(value: isHomeGame as Bool), forKey: "isHomeGame")
+        aCoder.encode(opponent, forKey: "opponent")
+        aCoder.encode(teamId, forKey: "teamId")
+        aCoder.encode(gameVenueId, forKey: "gameVenueId")
+        aCoder.encode(gameResult, forKey: "gameResult")
+        aCoder.encode(modified, forKey: "modified")
         
         if let gameOurScore = gameOurScore
         {
-            aCoder.encodeObject(NSNumber(integer: gameOurScore), forKey: "gameOurScore")
+            aCoder.encode(NSNumber(value: gameOurScore as Int), forKey: "gameOurScore")
         }
         
         if let gameOppScore = gameOppScore
         {
-            aCoder.encodeObject(NSNumber(integer: gameOppScore), forKey: "gameOppScore")
+            aCoder.encode(NSNumber(value: gameOppScore as Int), forKey: "gameOppScore")
         }
     }
 
@@ -127,11 +127,11 @@ struct Game: ResponseJSONObjectSerializable
             return nil
         }
         
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(game_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: game_modified) else
         {
             return nil
         }
@@ -153,49 +153,49 @@ struct Game: ResponseJSONObjectSerializable
         
         self.gameResult = !String.isNilOrEmpty(result) ? result : nil
         
-        if let game_our_scoreString = json["custom_fields"]["game_our_score"][0].string where !game_our_scoreString.isEmpty
+        if let game_our_scoreString = json["custom_fields"]["game_our_score"][0].string, !game_our_scoreString.isEmpty
         {
             self.gameOurScore = Int(game_our_scoreString)
         }
         
-        if let game_opp_scoreString = json["custom_fields"]["game_opp_score"][0].string where !game_opp_scoreString.isEmpty
+        if let game_opp_scoreString = json["custom_fields"]["game_opp_score"][0].string, !game_opp_scoreString.isEmpty
         {
             self.gameOppScore = Int(game_opp_scoreString)
         }
         
         // The game time is stored in local unix time not GMT.
         // Use seconds from GMT to get the unix time for the day of the game.
-        let tempGameUnixDate = game_unix_dtg - Double(NSTimeZone.localTimeZone().secondsFromGMT)
+        let tempGameUnixDate = game_unix_dtg - Double(NSTimeZone.local.secondsFromGMT())
         // Get the date for the game.
-        let tempGameDate = NSDate(timeIntervalSince1970: tempGameUnixDate)
+        let tempGameDate = Date(timeIntervalSince1970: tempGameUnixDate)
         // Calculate what the offset from GMT will be on that day.  This will take into account daylight savings.
-        let offset = NSTimeZone.localTimeZone().secondsFromGMTForDate(tempGameDate)
+        let offset = TimeZone.autoupdatingCurrent.secondsFromGMT(for: tempGameDate)
         
         // Fix the timezone offset
         game_unix_dtg -= Double(offset)
 
-        self.gameDate = NSDate(timeIntervalSince1970: game_unix_dtg)
+        self.gameDate = Date(timeIntervalSince1970: game_unix_dtg)
         
         self.gameId = game_slug
         self.gamePostId = game_postId
         self.gameScheduleId = game_sched_id
     }
     
-    static func endpointForScheduleId(scheduleId: String) -> String
+    static func endpointForScheduleId(_ scheduleId: String) -> String
     {
         return baseEndpoint + "&meta_key=game_sched_id&meta_value=\(scheduleId)"
     }
     
-    static func getAllGames(completionHandler: (Result<[Game], NSError>) -> Void)
+    static func getAllGames(_ completionHandler: @escaping (Result<[Game]>) -> Void)
     {
         let endpoint: String = String(format: "%@&include=id,slug,modified,custom_fields", Game.baseEndpoint)
         
-        Alamofire.request(.GET, endpoint).getPostsReponseArray { response in
+        Alamofire.request(endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    static func getGamesForKeys(keys: [Int], completionHandler: (Result<[Game], NSError>) -> Void)
+    static func getGamesForKeys(_ keys: [Int], completionHandler: @escaping (Result<[Game]>) -> Void)
     {
         var endpoint: String = Game.baseEndpoint
         
@@ -204,14 +204,14 @@ struct Game: ResponseJSONObjectSerializable
             endpoint += "&post__in[]=\(key)"
         }
         
-        Alamofire.request(.GET, endpoint).getPostsReponseArray { response in
+        Alamofire.request(endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    static func updateGameScore(game: Game, completionHandler: (Result<UpdateGameScoreResult, NSError>) -> Void)
+    static func updateGameScore(_ game: Game, completionHandler: @escaping (Result<UpdateGameScoreResult>) -> Void)
     {
-        guard let components = NSURLComponents(string: baseUpdateGameScoreEndPoint) else
+        guard var components = URLComponents(string: baseUpdateGameScoreEndPoint) else
         {
             return
         }
@@ -236,18 +236,19 @@ struct Game: ResponseJSONObjectSerializable
         }
         
         components.queryItems = [
-            NSURLQueryItem(name: "post_id", value: String(game.gamePostId)),
-            NSURLQueryItem(name: "game_our_score", value: gameOurScoreString),
-            NSURLQueryItem(name: "game_opp_score", value: gameOppScoreString),
-            NSURLQueryItem(name: "game_result", value: gameResultString)
+            URLQueryItem(name: "post_id", value: String(game.gamePostId)),
+            URLQueryItem(name: "game_our_score", value: gameOurScoreString),
+            URLQueryItem(name: "game_opp_score", value: gameOppScoreString),
+            URLQueryItem(name: "game_result", value: gameResultString)
         ]
         
-        Alamofire.request(.GET, components.URLString).responseObject { response in
+        let url = try? components.asURL()
+        Alamofire.request(url!).responseObject { response in
             completionHandler(response.result)
         }
     }
     
-    class Helper: NSObject, NSCoding
+    @objc(_TtCV8SWSabres4Game6Helper)class Helper: NSObject, NSCoding
     {
         var game: Game?
         
@@ -261,7 +262,7 @@ struct Game: ResponseJSONObjectSerializable
             game = Game(coder: aDecoder)
         }
         
-        func encodeWithCoder(aCoder: NSCoder)
+        func encode(with aCoder: NSCoder)
         {
             game?.encodeWithCoder(aCoder)
         }
