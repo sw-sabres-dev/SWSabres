@@ -107,6 +107,8 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
 @property (nonatomic, strong) NSMutableDictionary *tasks;
 @property (nonatomic, strong) NSMutableSet *canceledTasks;
 @property (nonatomic, strong) NSArray *progressThresholds;
+@property (nonatomic, assign) BOOL shouldBlurProgressive;
+@property (nonatomic, assign) CGSize maxProgressiveRenderSize;
 @property (nonatomic, assign) NSTimeInterval estimatedRemainingTimeThreshold;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, strong) NSOperationQueue *concurrentOperationQueue;
@@ -128,14 +130,24 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
 
 @implementation PINRemoteImageManager
 
+static PINRemoteImageManager *sharedImageManager = nil;
+static dispatch_once_t sharedDispatchToken;
+
 + (instancetype)sharedImageManager
 {
-    static PINRemoteImageManager *sharedImageManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    dispatch_once(&sharedDispatchToken, ^{
         sharedImageManager = [[[self class] alloc] init];
     });
     return sharedImageManager;
+}
+
++ (void)setSharedImageManagerWithConfiguration:(NSURLSessionConfiguration *)configuration
+{
+    NSAssert(sharedImageManager == nil, @"sharedImageManager singleton is already configured");
+
+    dispatch_once(&sharedDispatchToken, ^{
+        sharedImageManager = [[[self class] alloc] initWithSessionConfiguration:configuration];
+    });
 }
 
 - (instancetype)init
@@ -172,6 +184,8 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
         _highQualityBPSThreshold = 500000;
         _lowQualityBPSThreshold = 50000; // approximately edge speeds
         _shouldUpgradeLowQualityImages = NO;
+        _shouldBlurProgressive = YES;
+        _maxProgressiveRenderSize = CGSizeMake(1024, 1024);
         self.tasks = [[NSMutableDictionary alloc] init];
         self.canceledTasks = [[NSMutableSet alloc] init];
         self.taskQOS = [[NSMutableArray alloc] initWithCapacity:5];
@@ -262,6 +276,34 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
         typeof(self) strongSelf = weakSelf;
         [strongSelf lock];
             strongSelf.progressThresholds = progressThresholds;
+        [strongSelf unlock];
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+- (void)setProgressiveRendersShouldBlur:(BOOL)shouldBlur completion:(nullable dispatch_block_t)completion
+{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        typeof(self) strongSelf = weakSelf;
+        [strongSelf lock];
+            strongSelf.shouldBlurProgressive = shouldBlur;
+        [strongSelf unlock];
+        if (completion) {
+            completion();
+        }
+    });
+}
+
+- (void)setProgressiveRendersMaxProgressiveRenderSize:(CGSize)maxProgressiveRenderSize completion:(nullable dispatch_block_t)completion
+{
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        typeof(self) strongSelf = weakSelf;
+        [strongSelf lock];
+            strongSelf.maxProgressiveRenderSize = maxProgressiveRenderSize;
         [strongSelf unlock];
         if (completion) {
             completion();
@@ -1050,6 +1092,8 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
         }
         PINProgressiveImage *progressiveImage = task.progressImage;
         BOOL hasProgressBlocks = task.hasProgressBlocks;
+        BOOL shouldBlur = self.shouldBlurProgressive;
+        CGSize maxProgressiveRenderSize = self.maxProgressiveRenderSize;
     [self unlock];
     
     [progressiveImage updateProgressiveImageWithData:data expectedNumberOfBytes:[dataTask countOfBytesExpectedToReceive]];
@@ -1058,7 +1102,7 @@ typedef void (^PINRemoteImageManagerDataCompletion)(NSData *data, NSError *error
         __weak typeof(self) weakSelf = self;
         [_concurrentOperationQueue pin_addOperationWithQueuePriority:PINRemoteImageManagerPriorityLow block:^{
             typeof(self) strongSelf = weakSelf;
-            UIImage *progressImage = [progressiveImage currentImage];
+            UIImage *progressImage = [progressiveImage currentImageBlurred:shouldBlur maxProgressiveRenderSize:maxProgressiveRenderSize];
             if (progressImage) {
                 [strongSelf lock];
                     NSString *cacheKey = [strongSelf cacheKeyForURL:[[dataTask originalRequest] URL] processorKey:nil];

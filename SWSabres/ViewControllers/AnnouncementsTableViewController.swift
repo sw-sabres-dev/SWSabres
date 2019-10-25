@@ -10,20 +10,20 @@ import UIKit
 
 class AnnouncementsTableViewController: UITableViewController {
 
-    lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
+    @objc lazy var dateFormatter: DateFormatter = DateFormatter()
     var announcements: [Announcement] = [Announcement]()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
 
-        dateFormatter.dateStyle = .FullStyle
-        dateFormatter.timeStyle = .NoStyle
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .none
         
         if let logoTitleView: LogoTitleView = LogoTitleView.loadFromNibNamed("LogoTitleView") as? LogoTitleView
         {
             logoTitleView.backgroundColor = AppTintColors.backgroundTintColor
-            logoTitleView.titleLabel.textColor = UIColor.whiteColor()
+            logoTitleView.titleLabel.textColor = UIColor.white
             
             if let size = self.navigationController?.navigationBar.bounds
             {
@@ -32,18 +32,18 @@ class AnnouncementsTableViewController: UITableViewController {
             self.navigationItem.titleView = logoTitleView
         }
         
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
             delegate.contentManager.announcementsLoadedCallback = {
                 
                 
                 switch delegate.contentManager.downloadContentError
                 {
-                    case .NoConnectivity:
+                    case .noConnectivity:
                     self.showErrorMessage("No Internet Connectivity found!")
                     return
                     
-                    case .Error(let error):
+                    case .error(let error):
                     self.showErrorMessage("Failed to retrieve web site data: \(error)")
                     return
                     
@@ -76,18 +76,18 @@ class AnnouncementsTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    override func numberOfSections(in tableView: UITableView) -> Int
     {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return announcements.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("announcementCellIdentifier", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "announcementCellIdentifier", for: indexPath)
 
 //        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier")
 //        if (cell == nil)
@@ -102,7 +102,7 @@ class AnnouncementsTableViewController: UITableViewController {
         if let announcementCell: AnnouncementTableViewCell = cell as? AnnouncementTableViewCell
         {
             announcementCell.headlineLabel.text = announcement.title
-            announcementCell.dateLabel.text = dateFormatter.stringFromDate(announcement.date)
+            announcementCell.dateLabel.text = dateFormatter.string(from: announcement.date as Date)
         }
 
         //cell.textLabel?.text = announcement.title
@@ -174,32 +174,32 @@ class AnnouncementsTableViewController: UITableViewController {
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: AnnouncementDetailsViewController = segue.destinationViewController as? AnnouncementDetailsViewController, let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell), let viewController: AnnouncementDetailsViewController = segue.destination as? AnnouncementDetailsViewController, let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
             viewController.announcement = delegate.contentManager.announcements[indexPath.row]
         }
     }
     
-    private func showErrorMessage(message: String)
+    fileprivate func showErrorMessage(_ message: String)
     {
-        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
-        let retryAction = UIAlertAction(title: "Retry", style: .Default) { (alertAction) -> Void in
+        let retryAction = UIAlertAction(title: "Retry", style: .default) { (alertAction) -> Void in
             
-            if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+            if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
             {
                 delegate.contentManager.loadContent()
             }
         }
         alertController.addAction(retryAction)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
         alertController.view.tintColor = AppTintColors.backgroundTintColor
 
     }

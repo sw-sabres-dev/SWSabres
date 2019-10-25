@@ -10,12 +10,12 @@ import Foundation
 
 final class WordPressHelper
 {
-    class func appendModifiedAfterDateQueryParams(date: NSDate, url: String) -> String
+    class func appendModifiedAfterDateQueryParams(_ date: Date, url: String) -> String
     {
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         
-        return url + "&date_query[column]=post_modified&date_query[after]=\(dateFormatter.stringFromDate(date))"
+        return url + "&date_query[column]=post_modified&date_query[after]=\(dateFormatter.string(from: date))"
     }
 }

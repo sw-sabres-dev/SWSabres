@@ -14,7 +14,7 @@ struct AppTintColors
     {
         get
         {
-            return UIColor.whiteColor()
+            return UIColor.white
         }
     }
     
@@ -22,7 +22,7 @@ struct AppTintColors
     {
         get
         {
-            return UIColor(colorLiteralRed: 88/255, green: 21/255, blue: 48/255, alpha: 1.0)
+            return UIColor(red: 88/255, green: 21/255, blue: 48/255, alpha: 1.0)
         }
     }
 }

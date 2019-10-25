@@ -10,21 +10,26 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-extension Alamofire.Request
+enum BackendError: Error {
+    case network(error: Error) // Capture any underlying Error from the URLSession API
+    case dataSerialization(error: Error)
+    case jsonSerialization(error: Error)
+    case objectSerialization(reason: String)
+}
+
+extension Alamofire.DataRequest
 {
-    public func responseObject<T: ResponseJSONObjectSerializable>(completionHandler: Response<T, NSError> -> Void) -> Self
+    public func responseObject<T: ResponseJSONObjectSerializable>(_ completionHandler: @escaping (DataResponse<T>) -> Void) -> Self
     {
-        let responseSerializer = ResponseSerializer<T, NSError> { request, response, data, error in
+        let responseSerializer = DataResponseSerializer<T> { request, response, data, error in
             guard error == nil else {
-                return .Failure(error!)
+                return .failure(error!)
             }
             guard let responseData = data else {
-                let failureReason = "Array could not be serialized because input data was nil."
-                let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
-                return .Failure(error)
+                return .failure(BackendError.objectSerialization(reason: "Response could not be serialized because input data was nil."))
             }
             
-            let JSONResponseSerializer = Request.JSONResponseSerializer(options: .AllowFragments)
+            let JSONResponseSerializer = DataRequest.jsonResponseSerializer(options: .allowFragments)
             let result = JSONResponseSerializer.serializeResponse(request, response, responseData, error)
             
             if result.isSuccess
@@ -34,40 +39,35 @@ extension Alamofire.Request
                     let json = SwiftyJSON.JSON(value)
                     if let newObject = T(json: json)
                     {
-                        return .Success(newObject)
+                        return .success(newObject)
                     }
                 }
             }
             
-            let error = Error.errorWithCode(.JSONSerializationFailed, failureReason: "JSON could not be converted to object")
-            return .Failure(error)
+            return .failure(error!)
         }
         
-        return response(responseSerializer: responseSerializer, completionHandler: completionHandler)
+        return response(queue: DispatchQueue.main, responseSerializer: responseSerializer, completionHandler: completionHandler)
     }
     
-    public func responseArray<T: ResponseJSONObjectSerializable>(completionHandler: Response<[T], NSError> -> Void) -> Self
+    public func responseArray<T: ResponseJSONObjectSerializable>(_ completionHandler: @escaping (DataResponse<[T]>) -> Void) -> Self
     {
-        let responseSerializer = ResponseSerializer<[T], NSError> { request, response, data, error in
+        let responseSerializer = DataResponseSerializer<[T]> { request, response, data, error in
             
-            guard error == nil else
-            {
-                return .Failure(error!)
+            guard error == nil else {
+                return .failure(error!)
             }
             
-            guard let responseData = data else
-            {
-                let failureReason = "Array could not be serialized because input data was nil."
-                let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
-                return .Failure(error)
+            guard let responseData = data else {
+                return .failure(BackendError.objectSerialization(reason: "Response could not be serialized because input data was nil."))
             }
             
-            let JSONResponseSerializer = Request.JSONResponseSerializer(options: .AllowFragments)
+            let JSONResponseSerializer = DataRequest.jsonResponseSerializer(options: .allowFragments)
             let result = JSONResponseSerializer.serializeResponse(request, response, responseData, error)
             
             switch result {
                 
-            case .Success(let value):
+            case .success(let value):
                 let json = SwiftyJSON.JSON(value)
                 var objects: [T] = []
                 for (_, item) in json
@@ -77,42 +77,38 @@ extension Alamofire.Request
                         objects.append(object)
                     }
                 }
-                return .Success(objects)
+                return .success(objects)
                 
-            case .Failure(let error):
-                return .Failure(error)
+            case .failure(let error):
+                return .failure(error)
             }
         }
         
-        return response(responseSerializer: responseSerializer, completionHandler: completionHandler)
+        return response(queue: DispatchQueue.main, responseSerializer: responseSerializer, completionHandler: completionHandler)
     }
     
-    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(fileName: String? = nil, completionHandler: Response<[T], NSError> -> Void) -> Self
+    public func getPostsReponseArray<T: ResponseJSONObjectSerializable>(_ fileName: String? = nil, completionHandler: @escaping (DataResponse<[T]>) -> Void) -> Self
     {
-        let responseSerializer = ResponseSerializer<[T], NSError> { request, response, data, error in
+        let responseSerializer = DataResponseSerializer<[T]> { request, response, data, error in
             
-            guard error == nil else
-            {
-                return .Failure(error!)
+            guard error == nil else {
+                return .failure(error!)
             }
             
-            guard let responseData = data else
-            {
-                let failureReason = "Array could not be serialized because input data was nil."
-                let error = Error.errorWithCode(.DataSerializationFailed, failureReason: failureReason)
-                return .Failure(error)
+            guard let responseData = data else {
+                return .failure(BackendError.objectSerialization(reason: "Response could not be serialized because input data was nil."))
             }
             
-            let JSONResponseSerializer = Request.JSONResponseSerializer(options: .AllowFragments)
+            let JSONResponseSerializer = DataRequest.jsonResponseSerializer(options: .allowFragments)
             let result = JSONResponseSerializer.serializeResponse(request, response, responseData, error)
             
             switch result {
                 
-            case .Success(let value):
+            case .success(let value):
                 
                 if let fileName = fileName
                 {
-                    responseData.writeToFile(fileName, atomically: true)
+                    try? responseData.write(to: URL(fileURLWithPath: fileName), options: [.atomic])
                 }
                 
                 let json = SwiftyJSON.JSON(value)
@@ -127,14 +123,14 @@ extension Alamofire.Request
                         objects.append(object)
                     }
                 }
-                return .Success(objects)
+                return .success(objects)
                 
-            case .Failure(let error):
-                return .Failure(error)
+            case .failure(let error):
+                return .failure(error)
             }
         }
         
-        return response(responseSerializer: responseSerializer, completionHandler: completionHandler)
+        return response(queue: DispatchQueue.main, responseSerializer: responseSerializer, completionHandler: completionHandler)
     }
 
 }

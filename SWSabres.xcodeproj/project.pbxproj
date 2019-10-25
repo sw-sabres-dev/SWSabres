@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */; };
 		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
 		892AF9691BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */; };
 		89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */; };
@@ -46,10 +45,13 @@
 		8FEE52EA1BEC473B004FBB40 /* GameDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */; };
 		8FEE52EC1BEC5586004FBB40 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FEE52EB1BEC5586004FBB40 /* MapKit.framework */; };
 		8FEE52F01BEC5B7D004FBB40 /* ContentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE52EF1BEC5B7D004FBB40 /* ContentManager.swift */; };
+		9156A4AF0095680227518509 /* Pods_SWSabres.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3972306E0E67D2998630BE7E /* Pods_SWSabres.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3972306E0E67D2998630BE7E /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		71748425912148E8E02A6693 /* Pods-SWSabres.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.debug.xcconfig"; path = "Target Support Files/Pods-SWSabres/Pods-SWSabres.debug.xcconfig"; sourceTree = "<group>"; };
+		7B82AFF3085E572D4919553C /* Pods-SWSabres.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.release.xcconfig"; path = "Target Support Files/Pods-SWSabres/Pods-SWSabres.release.xcconfig"; sourceTree = "<group>"; };
 		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
 		892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerDayCell.swift; path = Views/CalendarViews/GameCalendarDatePickerDayCell.swift; sourceTree = "<group>"; };
 		89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementDetailsViewController.swift; path = ViewControllers/AnnouncementDetailsViewController.swift; sourceTree = "<group>"; };
@@ -90,8 +92,6 @@
 		8FEE52E91BEC473B004FBB40 /* GameDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameDetailViewController.swift; path = ViewControllers/GameDetailViewController.swift; sourceTree = "<group>"; };
 		8FEE52EB1BEC5586004FBB40 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		8FEE52EF1BEC5B7D004FBB40 /* ContentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentManager.swift; path = Utility/ContentManager.swift; sourceTree = "<group>"; };
-		EFB70A4F1F3B3FA1EA8785D4 /* Pods-SWSabres.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.release.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.release.xcconfig"; sourceTree = "<group>"; };
-		F6ECCBC35FC3C957308B17E9 /* Pods-SWSabres.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,29 +100,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FEE52EC1BEC5586004FBB40 /* MapKit.framework in Frameworks */,
-				37C3B180FB9F1CCF8785B6D0 /* Pods_SWSabres.framework in Frameworks */,
+				9156A4AF0095680227518509 /* Pods_SWSabres.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3852AAE4A22B4AD70F2279D3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				71748425912148E8E02A6693 /* Pods-SWSabres.debug.xcconfig */,
+				7B82AFF3085E572D4919553C /* Pods-SWSabres.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		54F17438AB206A4533EC7923 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				8FEE52EB1BEC5586004FBB40 /* MapKit.framework */,
-				194BF691D4332552E2EEC13D /* Pods_SWSabres.framework */,
+				3972306E0E67D2998630BE7E /* Pods_SWSabres.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		79352EC8C35F97FEDE6C13C9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				F6ECCBC35FC3C957308B17E9 /* Pods-SWSabres.debug.xcconfig */,
-				EFB70A4F1F3B3FA1EA8785D4 /* Pods-SWSabres.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		8963C2831BEA626700DF4B0A /* Cells */ = {
@@ -211,9 +211,9 @@
 			isa = PBXGroup;
 			children = (
 				54F17438AB206A4533EC7923 /* Frameworks */,
-				79352EC8C35F97FEDE6C13C9 /* Pods */,
 				8F9EC55D1BE5A7B500FB60CD /* Products */,
 				8F9EC55E1BE5A7B500FB60CD /* SWSabres */,
+				3852AAE4A22B4AD70F2279D3 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -262,12 +262,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8F9EC5701BE5A7B500FB60CD /* Build configuration list for PBXNativeTarget "SWSabres" */;
 			buildPhases = (
-				9DEDA72489B95D0C25F9E55B /* Check Pods Manifest.lock */,
+				D314F55833E4ED60EEBD29D0 /* [CP] Check Pods Manifest.lock */,
 				8F9EC5581BE5A7B500FB60CD /* Sources */,
 				8F9EC5591BE5A7B500FB60CD /* Frameworks */,
 				8F9EC55A1BE5A7B500FB60CD /* Resources */,
-				D731A3431FCFABEC073344DB /* Embed Pods Frameworks */,
-				DB2E8E41512417DBAFB3F7D9 /* Copy Pods Resources */,
+				1D6D6B69F92AE2A73F6D813C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -285,17 +284,19 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = swdev.net;
 				TargetAttributes = {
 					8F9EC55B1BE5A7B500FB60CD = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 9Q7555LQY8;
+						LastSwiftMigration = 0940;
 					};
 				};
 			};
 			buildConfigurationList = 8F9EC5571BE5A7B500FB60CD /* Build configuration list for PBXProject "SWSabres" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -326,49 +327,52 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		9DEDA72489B95D0C25F9E55B /* Check Pods Manifest.lock */ = {
+		1D6D6B69F92AE2A73F6D813C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SWSabres/Pods-SWSabres-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
+				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
+				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
+				"${BUILT_PRODUCTS_DIR}/RSDayFlow/RSDayFlow.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/THLabel/THLabel.framework",
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSDayFlow.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THLabel.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SWSabres/Pods-SWSabres-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D731A3431FCFABEC073344DB /* Embed Pods Frameworks */ = {
+		D314F55833E4ED60EEBD29D0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SWSabres-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DB2E8E41512417DBAFB3F7D9 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SWSabres/Pods-SWSabres-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -444,13 +448,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -489,13 +503,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -514,6 +538,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -521,31 +546,35 @@
 		};
 		8F9EC5711BE5A7B500FB60CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6ECCBC35FC3C957308B17E9 /* Pods-SWSabres.debug.xcconfig */;
+			baseConfigurationReference = 71748425912148E8E02A6693 /* Pods-SWSabres.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
+				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
 		8F9EC5721BE5A7B500FB60CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EFB70A4F1F3B3FA1EA8785D4 /* Pods-SWSabres.release.xcconfig */;
+			baseConfigurationReference = 7B82AFF3085E572D4919553C /* Pods-SWSabres.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
+				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

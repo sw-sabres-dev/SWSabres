@@ -10,9 +10,9 @@ import Foundation
 
 public extension String
 {
-    public func stringByAppendingPathComponent(path: String) -> String
+    public func stringByAppendingPathComponent(_ path: String) -> String
     {
-        return (self as NSString).stringByAppendingPathComponent(path)
+        return (self as NSString).appendingPathComponent(path)
     }
     
     public var lastPathComponent: String
@@ -35,20 +35,20 @@ public extension String
     {
         get
         {
-            return (self as NSString).stringByDeletingLastPathComponent
+            return (self as NSString).deletingLastPathComponent
         }
     }
     
-    public func stringByAppendingPathExtension(ext: String) -> String?
+    public func stringByAppendingPathExtension(_ ext: String) -> String?
     {
-        return (self as NSString).stringByAppendingPathExtension(ext)
+        return (self as NSString).appendingPathExtension(ext)
     }
     
     public var stringByDeletingPathExtension: String
     {
         get
         {
-            return (self as NSString).stringByDeletingPathExtension
+            return (self as NSString).deletingPathExtension
         }
     }
 }

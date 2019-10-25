@@ -17,41 +17,41 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
     let scheduleId: String
     let title: String
     let scheduleTeamId: String
-    let modified: NSDate
+    let modified: Date
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let scheduleId = aDecoder.decodeObjectForKey("scheduleId") as? String else
+        guard let scheduleId = aDecoder.decodeObject(forKey: "scheduleId") as? String else
         {
             return nil
         }
         self.scheduleId = scheduleId
         
-        guard let title = aDecoder.decodeObjectForKey("title") as? String else
+        guard let title = aDecoder.decodeObject(forKey: "title") as? String else
         {
             return nil
         }
         self.title = title
         
-        guard let scheduleTeamId = aDecoder.decodeObjectForKey("scheduleTeamId") as? String else
+        guard let scheduleTeamId = aDecoder.decodeObject(forKey: "scheduleTeamId") as? String else
         {
             return nil
         }
         self.scheduleTeamId = scheduleTeamId
         
-        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
         }
         self.modified = decodedModified
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(scheduleId, forKey: "scheduleId")
-        aCoder.encodeObject(title, forKey: "title")
-        aCoder.encodeObject(scheduleTeamId, forKey: "scheduleTeamId")
-        aCoder.encodeObject(modified, forKey: "modified")
+        aCoder.encode(scheduleId, forKey: "scheduleId")
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(scheduleTeamId, forKey: "scheduleTeamId")
+        aCoder.encode(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -76,21 +76,24 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(schedule_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: schedule_modified) else
         {
             return nil
         }
         
         self.modified = parsedModified
         
-        let encodedTitle = schedule_title.dataUsingEncoding(NSUTF8StringEncoding)!
-        let attributedOptions : [String: AnyObject] = [
-            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-            NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding
+        guard let encodedTitle = schedule_title.data(using: String.Encoding.utf8) else
+        {
+            return nil
+        }
+        
+        let attributedOptions : [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType : NSAttributedString.DocumentType.html
         ]
         
         if let attributedString = try? NSAttributedString(data: encodedTitle, options: attributedOptions, documentAttributes: nil)
@@ -113,15 +116,15 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
             return scheduleId
         }
     }
-    
-    static func getSchedules(completionHandler: (Result<[Schedule], NSError>) -> Void)
+
+    static func getSchedules(_ completionHandler: @escaping (Result<[Schedule]>) -> Void)
     {
-        Alamofire.request(.GET, Schedule.endpoint).getPostsReponseArray { response in
+        Alamofire.request(Schedule.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    class Helper: NSObject, NSCoding
+    @objc(_TtCV8SWSabres8Schedule6Helper)class Helper: NSObject, NSCoding
     {
         var schedule: Schedule?
         
@@ -135,7 +138,7 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
             schedule = Schedule(coder: aDecoder)
         }
         
-        func encodeWithCoder(aCoder: NSCoder)
+        func encode(with aCoder: NSCoder)
         {
             schedule?.encodeWithCoder(aCoder)
         }

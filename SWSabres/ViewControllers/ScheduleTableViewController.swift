@@ -13,15 +13,15 @@ import PINRemoteImage
 
 final class ScheduleTableViewController: UITableViewController
 {
-    lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
-    lazy var sectionDateFormatter: NSDateFormatter = NSDateFormatter()
+    @objc lazy var dateFormatter: DateFormatter = DateFormatter()
+    @objc lazy var sectionDateFormatter: DateFormatter = DateFormatter()
     
-    var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
+    var gameSections: [Date: [Game]] = [Date: [Game]]()
     var selectedDaysGames: [Game] = [Game]()
     var scheduleMap: [String: Schedule] = [String: Schedule]()
     var venueMap: [String: Venue] = [String: Venue]()
     var teamMap: [String: Team] = [String: Team]()
-    var sortedDays: [NSDate] = [NSDate]()
+    @objc var sortedDays: [Date] = [Date]()
     
     weak var contentManager: ContentManager?
     
@@ -37,26 +37,26 @@ final class ScheduleTableViewController: UITableViewController
         
         self.title = "Game Schedule"
 
-        dateFormatter.dateStyle = .NoStyle
-        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
 
         //sectionDateFormatter.dateFormat = "EEE MMM dd yyyy"
-        sectionDateFormatter.dateStyle = .FullStyle
-        sectionDateFormatter.timeStyle = .NoStyle
+        sectionDateFormatter.dateStyle = .full
+        sectionDateFormatter.timeStyle = .none
         
         self.tableView.rowHeight = 88
         
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
             contentManager = delegate.contentManager
             
             delegate.contentManager.loadContentScheduleCallback = {
                 
-                self.gameSections = delegate.contentManager.gameSections
+                self.gameSections = delegate.contentManager.gameSections as [Date : [Game]]
                 self.scheduleMap = delegate.contentManager.scheduleMap
                 self.venueMap = delegate.contentManager.venueMap
                 self.teamMap = delegate.contentManager.teamMap
-                self.sortedDays = delegate.contentManager.sortedDays
+                self.sortedDays = delegate.contentManager.sortedDays as [Date]
                 
                 self.tableView?.reloadData()
                 self.gotoNearestNextGame()
@@ -64,13 +64,13 @@ final class ScheduleTableViewController: UITableViewController
             
             if !delegate.contentManager.isLoadingContent
             {
-                self.gameSections = delegate.contentManager.gameSections
+                self.gameSections = delegate.contentManager.gameSections as [Date : [Game]]
                 self.scheduleMap = delegate.contentManager.scheduleMap
                 self.venueMap = delegate.contentManager.venueMap
                 self.teamMap = delegate.contentManager.teamMap
-                self.sortedDays = delegate.contentManager.sortedDays
+                self.sortedDays = delegate.contentManager.sortedDays as [Date]
 
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
                     self.gotoNearestNextGame()
                 }
@@ -84,7 +84,7 @@ final class ScheduleTableViewController: UITableViewController
 //            }
         }
     }
-    @IBAction func todayButtonPressed(sender: UIBarButtonItem)
+    @IBAction func todayButtonPressed(_ sender: UIBarButtonItem)
     {
         self.gotoNearestNextGame(true)
     }
@@ -95,9 +95,9 @@ final class ScheduleTableViewController: UITableViewController
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func prepareForUnwind(segue: UIStoryboardSegue)
+    @IBAction func prepareForUnwind(_ segue: UIStoryboardSegue)
     {
-        if let gameFilterViewController = segue.sourceViewController as? GameFilterTableViewController, let contentManager = contentManager
+        if let gameFilterViewController = segue.source as? GameFilterTableViewController, let contentManager = contentManager
         {
             if gameFilterViewController.filtersChanged
             {
@@ -106,16 +106,16 @@ final class ScheduleTableViewController: UITableViewController
         }
     }
     
-    func gotoNearestNextGame(animate: Bool = false)
+    @objc func gotoNearestNextGame(_ animate: Bool = false)
     {
-        if let today: NSDate = ContentManager.dayForDate(NSDate())
+        if let today: Date = ContentManager.dayForDate(Date())
         {
-            for var index = 0; index < sortedDays.count; ++index
+            for index in 0 ..< sortedDays.count
             {
-                let result: NSComparisonResult = today.compare(sortedDays[index])
-                if result == .OrderedSame || result == .OrderedAscending
+                let result: ComparisonResult = today.compare(sortedDays[index])
+                if result == .orderedSame || result == .orderedAscending
                 {
-                    self.tableView?.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: index), atScrollPosition: .Top, animated: animate)
+                    self.tableView?.scrollToRow(at: IndexPath(row: 0, section: index), at: .top, animated: animate)
                     break;
                 }
             }
@@ -124,33 +124,33 @@ final class ScheduleTableViewController: UITableViewController
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    override func numberOfSections(in tableView: UITableView) -> Int
     {
         return sortedDays.count
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        let dayDate: NSDate = sortedDays[section]
+        let dayDate: Date = sortedDays[section]
         let gamesOnDay: [Game]? = gameSections[dayDate]
         
         return gamesOnDay != nil ? gamesOnDay!.count : 0
     }
 
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-        let dayDate: NSDate = sortedDays[section]
+        let dayDate: Date = sortedDays[section]
         
-        return sectionDateFormatter.stringFromDate(dayDate)
+        return sectionDateFormatter.string(from: dayDate)
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let baseCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath)
+        let baseCell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "gameLogoCellIdentifier", for: indexPath)
         
         if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
         {
-            let dayDate: NSDate = sortedDays[indexPath.section]
+            let dayDate: Date = sortedDays[indexPath.section]
             if let gamesOnDay: [Game] = gameSections[dayDate]
             {
                 let game = gamesOnDay[indexPath.row]
@@ -159,13 +159,13 @@ final class ScheduleTableViewController: UITableViewController
                 {
                     if game.isHomeGame
                     {
-                        cell.firstLogo.pin_setImageFromURL(nil)
+                        cell.firstLogo.pin_setImage(from: nil)
                         cell.firstLogo.image = UIImage(named: "logo")
                         cell.firstLogoLabel.text = shortName
                     }
                     else
                     {
-                        cell.secondLogo.pin_setImageFromURL(nil)
+                        cell.secondLogo.pin_setImage(from: nil)
                         cell.secondLogo.image = UIImage(named: "logo")
                         cell.secondLogoLabel.text = shortName
                     }
@@ -173,23 +173,23 @@ final class ScheduleTableViewController: UITableViewController
                 
                 if let teamId: String = game.teamId, let team: Team = teamMap[teamId], let teamName: String = team.shortName ?? team.name
                 {
-                    var logoUrl: NSURL? = nil
+                    var logoUrl: URL? = nil
                     
                     if let teamLogoUrlString: String = team.logoUrl
                     {
-                        logoUrl = NSURL(string: teamLogoUrlString)
+                        logoUrl = URL(string: teamLogoUrlString)
                     }
                     
                     if game.isHomeGame
                     {
                         cell.secondLogo.image = nil
-                        cell.secondLogo.pin_setImageFromURL(logoUrl)
+                        cell.secondLogo.pin_setImage(from: logoUrl)
                         cell.secondLogoLabel.text = teamName
                     }
                     else
                     {
                         cell.firstLogo.image = nil
-                        cell.firstLogo.pin_setImageFromURL(logoUrl)
+                        cell.firstLogo.pin_setImage(from: logoUrl)
                         cell.firstLogoLabel.text = teamName
                     }
                 }
@@ -197,13 +197,13 @@ final class ScheduleTableViewController: UITableViewController
                 {
                     if game.isHomeGame
                     {
-                        cell.secondLogo.pin_setImageFromURL(nil)
+                        cell.secondLogo.pin_setImage(from: nil)
                         cell.secondLogo.image = nil
                         cell.secondLogoLabel.text = opponent
                     }
                     else
                     {
-                        cell.firstLogo.pin_setImageFromURL(nil)
+                        cell.firstLogo.pin_setImage(from: nil)
                         cell.firstLogo.image = nil
                         cell.firstLogoLabel.text = opponent
                     }
@@ -212,15 +212,15 @@ final class ScheduleTableViewController: UITableViewController
                 if let gameResult = game.gameResult
                 {
                     cell.gameTimeLabel.text = gameResult
-                    cell.venueLabel.hidden = true
-                    cell.addressLabel.hidden = true
+                    cell.venueLabel.isHidden = true
+                    cell.addressLabel.isHidden = true
                 }
                 else
                 {
-                    cell.venueLabel.hidden = false
-                    cell.addressLabel.hidden = false
+                    cell.venueLabel.isHidden = false
+                    cell.addressLabel.isHidden = false
 
-                    cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
+                    cell.gameTimeLabel.text = dateFormatter.string(from: game.gameDate as Date)
                     
                     if let gameVenueId = game.gameVenueId, let venue: Venue = venueMap[gameVenueId]
                     {
@@ -237,10 +237,10 @@ final class ScheduleTableViewController: UITableViewController
             else
             {
                 cell.firstLogoLabel.text = ""
-                cell.firstLogo.pin_setImageFromURL(nil)
+                cell.firstLogo.pin_setImage(from: nil)
                 cell.firstLogo.image = nil
                 cell.secondLogoLabel.text = ""
-                cell.secondLogo.pin_setImageFromURL(nil)
+                cell.secondLogo.pin_setImage(from: nil)
                 cell.secondLogo.image = nil
                 cell.gameTimeLabel.text = ""
                 cell.venueLabel.text = ""
@@ -310,12 +310,12 @@ final class ScheduleTableViewController: UITableViewController
         */
     }
 
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
         if let headerView: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView
         {
             headerView.contentView.backgroundColor = AppTintColors.backgroundTintColor
-            headerView.textLabel?.textColor = UIColor.whiteColor()
+            headerView.textLabel?.textColor = UIColor.white
         }
     }
     
@@ -357,14 +357,14 @@ final class ScheduleTableViewController: UITableViewController
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPathForCell(cell), let viewController: GameDetailViewController = segue.destinationViewController as? GameDetailViewController
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell), let viewController: GameDetailViewController = segue.destination as? GameDetailViewController
         {
-            let dayDate: NSDate = sortedDays[indexPath.section]
+            let dayDate: Date = sortedDays[indexPath.section]
             if let gamesOnDay: [Game] = gameSections[dayDate]
             {
                 viewController.game = gamesOnDay[indexPath.row]

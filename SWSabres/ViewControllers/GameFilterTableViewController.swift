@@ -10,7 +10,7 @@ import UIKit
 
 class GameFilterTableViewController: UITableViewController {
 
-    var filtersChanged = false
+    @objc var filtersChanged = false
     
     override func viewDidLoad()
     {
@@ -30,13 +30,13 @@ class GameFilterTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func getCurrentTeamsFilterString() -> String
+    @objc func getCurrentTeamsFilterString() -> String
     {
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             switch contentManager.teamsFilter
             {
-                case .Selected(let teams):
+                case .selected(let teams):
                 
                     return teams.reduce("") {
                         wholeString, team in
@@ -52,19 +52,19 @@ class GameFilterTableViewController: UITableViewController {
         return "All Teams"
     }
     
-    func getCurrentGameLocationFilterString() -> String
+    @objc func getCurrentGameLocationFilterString() -> String
     {
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             switch contentManager.gameLocationFilter
             {
-                case .All:
+                case .all:
                 return "All"
                 
-                case .Home:
+                case .home:
                 return "Home"
                 
-                case .Away:
+                case .away:
                 return "Away"
             }
         }
@@ -72,35 +72,35 @@ class GameFilterTableViewController: UITableViewController {
         return "All"
     }
 
-    @IBAction func prepareForUnwind(segue: UIStoryboardSegue)
+    @IBAction func prepareForUnwind(_ segue: UIStoryboardSegue)
     {
-        if let teamSelectionViewController = segue.sourceViewController as? TeamSelectionTableViewController where teamSelectionViewController.updatedTeamFilter == true
+        if let teamSelectionViewController = segue.source as? TeamSelectionTableViewController, teamSelectionViewController.updatedTeamFilter == true
         {
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .Automatic)
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
             filtersChanged = true
         }
-        else if let gameLocationFilterTableViewController = segue.sourceViewController as? GameLocationFilterTableViewController where gameLocationFilterTableViewController.updatedGameLocationFilter == true
+        else if let gameLocationFilterTableViewController = segue.source as? GameLocationFilterTableViewController, gameLocationFilterTableViewController.updatedGameLocationFilter == true
         {
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: .Automatic)
+            self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
             filtersChanged = true
         }
     }
     
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    override func numberOfSections(in tableView: UITableView) -> Int
     {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return 2
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("settingsStyleCellIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "settingsStyleCellIdentifier", for: indexPath)
 
         // Configure the cell...
 
@@ -122,19 +122,19 @@ class GameFilterTableViewController: UITableViewController {
             break
         }
         
-        cell.accessoryType = .DisclosureIndicator
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if indexPath.row == 0
         {
-            self.performSegueWithIdentifier("teamsFilterSegue", sender: nil)
+            self.performSegue(withIdentifier: "teamsFilterSegue", sender: nil)
         }
         else if indexPath.row == 1
         {
-            self.performSegueWithIdentifier("gameLocationFilterSegue", sender: nil)
+            self.performSegue(withIdentifier: "gameLocationFilterSegue", sender: nil)
         }
     }
     

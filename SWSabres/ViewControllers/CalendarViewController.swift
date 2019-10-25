@@ -14,13 +14,13 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
     @IBOutlet weak var calendarView: GameCalendarDatePickerView!
     @IBOutlet weak var gameTableView: UITableView!
 
-    var gameSections: [NSDate: [Game]] = [NSDate: [Game]]()
+    var gameSections: [Date: [Game]] = [Date: [Game]]()
     var selectedDaysGames: [Game] = [Game]()
     var scheduleMap: [String: Schedule] = [String: Schedule]()
     var venueMap: [String: Venue] = [String: Venue]()
     var teamMap: [String: Team] = [String: Team]()
 
-    lazy var dateFormatter: NSDateFormatter = NSDateFormatter()
+    @objc lazy var dateFormatter: DateFormatter = DateFormatter()
     
     override func viewDidLoad()
     {
@@ -34,14 +34,14 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
 
         self.view.backgroundColor = UIColor(red: 200/255, green: 199/255, blue: 204/255, alpha: 1.0)
         
-        dateFormatter.dateStyle = .NoStyle
-        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
 
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             delegate.contentManager.loadContentCalendarCallback = {
                 
-                self.gameSections = contentManager.gameSections
+                self.gameSections = contentManager.gameSections as [Date : [Game]]
                 self.scheduleMap = contentManager.scheduleMap
                 self.venueMap = contentManager.venueMap
                 self.teamMap = contentManager.teamMap
@@ -51,12 +51,12 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             
             if !delegate.contentManager.isLoadingContent
             {
-                self.gameSections = contentManager.gameSections
+                self.gameSections = contentManager.gameSections as [Date : [Game]]
                 self.scheduleMap = contentManager.scheduleMap
                 self.venueMap = contentManager.venueMap
                 self.teamMap = contentManager.teamMap
 
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
                     self.gotoToday()
                 }
@@ -69,20 +69,20 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(animated: Bool)
+    override func viewDidAppear(_ animated: Bool)
     {
         if let indexPath = gameTableView.indexPathForSelectedRow
         {
-            gameTableView.deselectRowAtIndexPath(indexPath, animated: animated)
+            gameTableView.deselectRow(at: indexPath, animated: animated)
         }
     }
     
-    func gotoToday(animate: Bool = false)
+    @objc func gotoToday(_ animate: Bool = false)
     {
-        if let today: NSDate = ContentManager.dayForDate(NSDate())
+        if let today: Date = ContentManager.dayForDate(Date())
         {
-            calendarView?.selectDate(today)
-            calendarView?.scrollToDate(today, animated: animate)
+            calendarView?.select(today)
+            calendarView?.scroll(to: today, animated: animate)
             
             if let games: [Game] = self.gameSections[today]
             {
@@ -97,14 +97,14 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         }
     }
     
-    @IBAction func todayButtonPressed(sender: UIBarButtonItem)
+    @IBAction func todayButtonPressed(_ sender: UIBarButtonItem)
     {
         self.gotoToday(true)
     }
     
-    @IBAction func prepareForUnwind(segue: UIStoryboardSegue)
+    @IBAction func prepareForUnwind(_ segue: UIStoryboardSegue)
     {
-        if let gameFilterViewController = segue.sourceViewController as? GameFilterTableViewController, let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let gameFilterViewController = segue.source as? GameFilterTableViewController, let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             if gameFilterViewController.filtersChanged
             {
@@ -113,7 +113,7 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         }
     }
     
-    func datePickerView(view: RSDFDatePickerView!, didSelectDate date: NSDate!)
+    func datePickerView(_ view: RSDFDatePickerView!, didSelect date: Date!)
     {
         if let games: [Game] = self.gameSections[date]
         {
@@ -127,12 +127,12 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         self.gameTableView.reloadData()
     }
     
-    func datePickerView(view: RSDFDatePickerView!, shouldMarkDate date: NSDate!) -> Bool
+    func datePickerView(_ view: RSDFDatePickerView!, shouldMark date: Date!) -> Bool
     {
         return self.gameSections[date] != nil
     }
     
-    func datePickerView(view: RSDFDatePickerView!, markImageColorForDate date: NSDate!) -> UIColor!
+    func datePickerView(_ view: RSDFDatePickerView!, markImageColorFor date: Date!) -> UIColor!
     {
 //        if let today: NSDate = ContentManager.dayForDate(NSDate())
 //        {
@@ -142,35 +142,35 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
 //            }
 //        }
         
-        return UIColor.lightGrayColor()
+        return UIColor.lightGray
     }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = gameTableView.indexPathForCell(cell), let viewController: GameDetailViewController = segue.destinationViewController as? GameDetailViewController
+        if let cell: UITableViewCell = sender as? UITableViewCell, let indexPath = gameTableView.indexPath(for: cell), let viewController: GameDetailViewController = segue.destination as? GameDetailViewController
         {
             viewController.game = selectedDaysGames[indexPath.row]
         }
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    func numberOfSections(in tableView: UITableView) -> Int
     {
             return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return selectedDaysGames.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let baseCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("gameLogoCellIdentifier", forIndexPath: indexPath)
+        let baseCell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "gameLogoCellIdentifier", for: indexPath)
         
         if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
         {
@@ -180,13 +180,13 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             {
                 if game.isHomeGame
                 {
-                    cell.firstLogo.pin_setImageFromURL(nil)
+                    cell.firstLogo.pin_setImage(from: nil)
                     cell.firstLogo.image = UIImage(named: "logo")
                     cell.firstLogoLabel.text = shortName
                 }
                 else
                 {
-                    cell.secondLogo.pin_setImageFromURL(nil)
+                    cell.secondLogo.pin_setImage(from: nil)
                     cell.secondLogo.image = UIImage(named: "logo")
                     cell.secondLogoLabel.text = shortName
                 }
@@ -194,23 +194,23 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             
             if let teamId: String = game.teamId, let team: Team = teamMap[teamId], let teamName: String = team.shortName ?? team.name
             {
-                var logoUrl: NSURL? = nil
+                var logoUrl: URL? = nil
                 
                 if let teamLogoUrlString: String = team.logoUrl
                 {
-                    logoUrl = NSURL(string: teamLogoUrlString)
+                    logoUrl = URL(string: teamLogoUrlString)
                 }
                 
                 if game.isHomeGame
                 {
                     cell.secondLogo.image = nil
-                    cell.secondLogo.pin_setImageFromURL(logoUrl)
+                    cell.secondLogo.pin_setImage(from: logoUrl)
                     cell.secondLogoLabel.text = teamName
                 }
                 else
                 {
                     cell.firstLogo.image = nil
-                    cell.firstLogo.pin_setImageFromURL(logoUrl)
+                    cell.firstLogo.pin_setImage(from: logoUrl)
                     cell.firstLogoLabel.text = teamName
                 }
             }
@@ -218,13 +218,13 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             {
                 if game.isHomeGame
                 {
-                    cell.secondLogo.pin_setImageFromURL(nil)
+                    cell.secondLogo.pin_setImage(from: nil)
                     cell.secondLogo.image = nil
                     cell.secondLogoLabel.text = opponent
                 }
                 else
                 {
-                    cell.firstLogo.pin_setImageFromURL(nil)
+                    cell.firstLogo.pin_setImage(from: nil)
                     cell.firstLogo.image = nil
                     cell.firstLogoLabel.text = opponent
                 }
@@ -233,15 +233,15 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             if let gameResult = game.gameResult
             {
                 cell.gameTimeLabel.text = gameResult
-                cell.venueLabel.hidden = true
-                cell.addressLabel.hidden = true
+                cell.venueLabel.isHidden = true
+                cell.addressLabel.isHidden = true
             }
             else
             {
-                cell.venueLabel.hidden = false
-                cell.addressLabel.hidden = false
+                cell.venueLabel.isHidden = false
+                cell.addressLabel.isHidden = false
                 
-                cell.gameTimeLabel.text = dateFormatter.stringFromDate(game.gameDate)
+                cell.gameTimeLabel.text = dateFormatter.string(from: game.gameDate as Date)
                 
                 if let gameVenueId = game.gameVenueId, let venue: Venue = venueMap[gameVenueId]
                 {

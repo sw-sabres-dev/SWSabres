@@ -1,10 +1,10 @@
 //
 //  THLabel.m
 //
-//  Version 1.4.6
+//  Version 1.4.9
 //
 //  Created by Tobias Hagemann on 11/25/12.
-//  Copyright (c) 2014 tobiha.de. All rights reserved.
+//  Copyright (c) 2012-2019 tobiha.de. All rights reserved.
 //
 //  Original source and inspiration from:
 //  FXLabel by Nick Lockwood,
@@ -12,7 +12,7 @@
 //  KSLabel by Kai Schweiger,
 //  https://github.com/vigorouscoding/KSLabel
 //  GTMFadeTruncatingLabel by Google,
-//  https://code.google.com/p/google-toolbox-for-mac/source/browse/trunk/iPhone/
+//  https://github.com/google/google-toolbox-for-mac/tree/master/iPhone
 //
 //  Big thanks to Jason Miller for showing me sample code of his implementation
 //  using Core Text! It inspired me to dig deeper and move away from drawing
@@ -21,7 +21,7 @@
 //  Distributed under the permissive zlib license
 //  Get the latest version from here:
 //
-//  https://github.com/MuscleRumble/THLabel
+//  https://github.com/tobihagemann/THLabel
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
@@ -108,7 +108,7 @@
 	}
 	
 	CGRect textRect;
-	CTFrameRef frameRef = [self frameRefFromSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) textRectOutput:&textRect];
+	CTFrameRef frameRef = [self frameRefFromSize:CGSizeMake(self.preferredMaxLayoutWidth, CGFLOAT_MAX) textRectOutput:&textRect];
 	CFRelease(frameRef);
 	
 	return CGSizeMake(ceilf(CGRectGetWidth(textRect) + self.textInsets.left + self.textInsets.right),
@@ -426,8 +426,12 @@
 
 - (CTFrameRef)frameRefFromSize:(CGSize)size textRectOutput:(CGRect *)textRectOutput CF_RETURNS_RETAINED {
 	// Set up font.
-	CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)self.font.fontName, self.font.pointSize, NULL);
+	CTFontRef fontRef = CTFontCreateWithFontDescriptor((__bridge CTFontDescriptorRef)self.font.fontDescriptor, self.font.pointSize, NULL);
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0
+	CTTextAlignment alignment = NSTextAlignmentToCTTextAlignment(self.textAlignment);
+#else
 	CTTextAlignment alignment = NSTextAlignmentToCTTextAlignment ? NSTextAlignmentToCTTextAlignment(self.textAlignment) : [self CTTextAlignmentFromNSTextAlignment:self.textAlignment];
+#endif
 	CTLineBreakMode lineBreakMode = (CTLineBreakMode)self.lineBreakMode;
 	CGFloat lineSpacing = self.lineSpacing;
 	CTParagraphStyleSetting paragraphStyleSettings[] = {
@@ -446,8 +450,9 @@
 	CFRelease(paragraphStyleRef);
 	CFRelease(kernRef);
 	
-	CFStringRef stringRef = (__bridge CFStringRef)self.text;
+	CFStringRef stringRef = (CFStringRef)CFBridgingRetain(self.text);
 	CFAttributedStringRef attributedStringRef = CFAttributedStringCreate(kCFAllocatorDefault, stringRef, attributes);
+	CFRelease(stringRef);
 	CFRelease(attributes);
 	
 	// Set up frame.

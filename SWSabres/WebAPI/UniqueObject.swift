@@ -16,13 +16,13 @@ public protocol UniqueObject
 
 extension UniqueObject
 {
-    static func loadObjectMap<T where T: ResponseJSONObjectSerializable, T: UniqueObject>(fileName: String) -> [String: T]
+    static func loadObjectMap<T>(_ fileName: String) -> [String: T] where T: ResponseJSONObjectSerializable, T: UniqueObject
     {
         var objectMap: [String: T] = [String: T]()
         
-        if let data: NSData = NSData(contentsOfFile: fileName)
+        if let data: Data = try? Data(contentsOf: URL(fileURLWithPath: fileName))
         {
-            if let JSONObject = try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            if let JSONObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
             {
                 let json = SwiftyJSON.JSON(JSONObject)
                 

@@ -17,49 +17,49 @@ struct Announcement: ResponseJSONObjectSerializable
     let announcementId: String
     let title: String
     let content: String
-    let date: NSDate
-    let modified: NSDate
+    let date: Date
+    let modified: Date
     
     init?(coder aDecoder: NSCoder)
     {
-        guard let decodedAnnouncementId: String = aDecoder.decodeObjectForKey("announcementId") as? String else
+        guard let decodedAnnouncementId: String = aDecoder.decodeObject(forKey: "announcementId") as? String else
         {
             return nil
         }
         self.announcementId = decodedAnnouncementId
         
-        guard let decodedTitle: String = aDecoder.decodeObjectForKey("title") as? String else
+        guard let decodedTitle: String = aDecoder.decodeObject(forKey: "title") as? String else
         {
             return nil
         }
         self.title = decodedTitle
         
-        guard let decodedContent: String = aDecoder.decodeObjectForKey("content") as? String else
+        guard let decodedContent: String = aDecoder.decodeObject(forKey: "content") as? String else
         {
             return nil
         }
         self.content = decodedContent
         
-        guard let decodedDate: NSDate = aDecoder.decodeObjectForKey("date") as? NSDate else
+        guard let decodedDate: Date = aDecoder.decodeObject(forKey: "date") as? Date else
         {
             return nil
         }
         self.date = decodedDate
         
-        guard let decodedModified: NSDate = aDecoder.decodeObjectForKey("modified") as? NSDate else
+        guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
         }
         self.modified = decodedModified
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(announcementId, forKey: "announcementId")
-        aCoder.encodeObject(title, forKey: "title")
-        aCoder.encodeObject(content, forKey: "content")
-        aCoder.encodeObject(date, forKey: "date")
-        aCoder.encodeObject(modified, forKey: "modified")
+        aCoder.encode(announcementId, forKey: "announcementId")
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(content, forKey: "content")
+        aCoder.encode(date, forKey: "date")
+        aCoder.encode(modified, forKey: "modified")
     }
     
     init?(json: SwiftyJSON.JSON)
@@ -92,30 +92,30 @@ struct Announcement: ResponseJSONObjectSerializable
         self.announcementId = announcement_slug
         self.content = announcement_content
 
-        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        let dateFormatter: DateFormatter = DateFormatter()
         //dateFormatter.timeZone = NSTimeZone(name: "EST")
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
-        guard let parsedDate:NSDate = dateFormatter.dateFromString(announcement_date) else
+        guard let parsedDate:Date = dateFormatter.date(from: announcement_date) else
         {
             return nil
         }
         
         self.date = parsedDate
         
-        guard let parsedModified: NSDate = dateFormatter.dateFromString(announcement_modified) else
+        guard let parsedModified: Date = dateFormatter.date(from: announcement_modified) else
         {
             return nil
         }
         
         self.modified = parsedModified
         
-        let attributedOptions : [String: AnyObject] = [
-            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-            NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding
+        let attributedOptions : [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html,
+            NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8
         ]
         
-        guard let encodedTitle = announcement_title.dataUsingEncoding(NSUTF8StringEncoding) else
+        guard let encodedTitle = announcement_title.data(using: String.Encoding.utf8) else
         {
             return nil
         }
@@ -130,14 +130,14 @@ struct Announcement: ResponseJSONObjectSerializable
         }
     }
     
-    static func getAnnouncements(completionHandler: (Result<[Announcement], NSError>) -> Void)
+    static func getAnnouncements(_ completionHandler: @escaping (Result<[Announcement]>) -> Void)
     {
-        Alamofire.request(.GET, Announcement.endpoint).getPostsReponseArray { response in
+        Alamofire.request(Announcement.endpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }
     }
     
-    class Helper: NSObject, NSCoding
+    @objc(_TtCV8SWSabres12Announcement6Helper)class Helper: NSObject, NSCoding
     {
         var announcement: Announcement?
         
@@ -151,7 +151,7 @@ struct Announcement: ResponseJSONObjectSerializable
             announcement = Announcement(coder: aDecoder)
         }
         
-        func encodeWithCoder(aCoder: NSCoder)
+        func encode(with aCoder: NSCoder)
         {
             announcement?.encodeWithCoder(aCoder)
         }

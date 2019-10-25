@@ -10,7 +10,7 @@ import UIKit
 
 class GameLocationFilterTableViewController: UITableViewController
 {
-    var updatedGameLocationFilter: Bool = false
+    @objc var updatedGameLocationFilter: Bool = false
     
     override func viewDidLoad()
     {
@@ -28,41 +28,41 @@ class GameLocationFilterTableViewController: UITableViewController
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    override func numberOfSections(in tableView: UITableView) -> Int
     {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         
         return 3
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("gameLocationCellIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "gameLocationCellIdentifier", for: indexPath)
 
         // Configure the cell...
 
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             switch indexPath.row
             {
             case 0:
                 
                 cell.textLabel?.text = "All"
-                cell.accessoryType = contentManager.gameLocationFilter == .All ? .Checkmark : .None
+                cell.accessoryType = contentManager.gameLocationFilter == .all ? .checkmark : .none
                 
             case 1:
                 
                 cell.textLabel?.text = "Home"
-                cell.accessoryType = contentManager.gameLocationFilter == .Home ? .Checkmark : .None
+                cell.accessoryType = contentManager.gameLocationFilter == .home ? .checkmark : .none
                 
             case 2:
                 
                 cell.textLabel?.text = "Away"
-                cell.accessoryType = contentManager.gameLocationFilter == .Away ? .Checkmark : .None
+                cell.accessoryType = contentManager.gameLocationFilter == .away ? .checkmark : .none
                 
             default:
                 break;
@@ -73,49 +73,49 @@ class GameLocationFilterTableViewController: UITableViewController
         return cell
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if let delegate:AppDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             switch indexPath.row
             {
             case 0:
                 
-                if contentManager.gameLocationFilter == .All
+                if contentManager.gameLocationFilter == .all
                 {
                     return
                 }
                 else
                 {
-                    contentManager.gameLocationFilter = .All
+                    contentManager.gameLocationFilter = .all
                     updatedGameLocationFilter = true
                     tableView.reloadData()
                 }
                 
             case 1:
                 
-                if contentManager.gameLocationFilter == .Home
+                if contentManager.gameLocationFilter == .home
                 {
                     return
                 }
                 else
                 {
-                    contentManager.gameLocationFilter = .Home
+                    contentManager.gameLocationFilter = .home
                     updatedGameLocationFilter = true
                     tableView.reloadData()
                 }
                 
             case 2:
                 
-                if contentManager.gameLocationFilter == .Away
+                if contentManager.gameLocationFilter == .away
                 {
                     return
                 }
                 else
                 {
-                    contentManager.gameLocationFilter = .Away
+                    contentManager.gameLocationFilter = .away
                     updatedGameLocationFilter = true
                     tableView.reloadData()
                 }

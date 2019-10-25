@@ -20,12 +20,12 @@ class GameCalendarDatePickerView: RSDFDatePickerView
     }
     */
 
-    override func collectionViewClass() -> AnyClass!
+    override func collectionViewClass() -> AnyClass
     {
         return GameCalendarDatePickerCollectionView.self
     }
     
-    override func dayCellClass() -> AnyClass!
+    override func dayCellClass() -> AnyClass
     {
         return GameCalendarDatePickerDayCell.self
     }

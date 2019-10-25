@@ -1,4 +1,4 @@
-# RSDayFlow [![Build Status](https://travis-ci.org/ruslanskorb/RSDayFlow.svg)](https://travis-ci.org/ruslanskorb/RSDayFlow)
+# RSDayFlow [![Build Status](https://travis-ci.org/ruslanskorb/RSDayFlow.svg)](https://travis-ci.org/ruslanskorb/RSDayFlow) [![CocoaPods](https://img.shields.io/cocoapods/dt/RSDayFlow.svg?maxAge=3600)](https://cocoapods.org/pods/RSDayFlow) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/ruslanskorb/RSDayFlow)
 
 <p align="center">
 	<img src="Screenshot.png" alt="Sample">
@@ -8,7 +8,7 @@ iOS 7 Calendar with Infinite Scrolling. Only need 4 lines of code to set up.
 
 > [RSDayFlow](https://github.com/ruslanskorb/RSDayFlow) is a slim fork of [DayFlow](https://github.com/evadne/DayFlow) with updates and extensions:
 
-> * Visual feedback of the currently selected cell
+* Visual feedback of the currently selected cell
 * Possibility to mark the date
 * Design like iOS 7
 * Much more updates
@@ -36,10 +36,10 @@ Just create your date picker view and set a delegate / a data source if needed.
 ``` objective-c
 - (void)viewDidLoad
 {
-	[super viewDidLoad];
-	
-	RSDFDatePickerView *datePickerView = [[RSDFDatePickerView alloc] initWithFrame:self.view.bounds];
-	datePickerView.delegate = self;
+    [super viewDidLoad];
+    
+    RSDFDatePickerView *datePickerView = [[RSDFDatePickerView alloc] initWithFrame:self.view.bounds];
+    datePickerView.delegate = self;
     datePickerView.dataSource = self;
     [self.view addSubview:datePickerView];
 }
