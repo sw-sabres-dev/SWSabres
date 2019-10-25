@@ -175,6 +175,7 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
         {
             let game = selectedDaysGames[indexPath.row]
+            print("Displaying game \(game.gameId) in calendar view")
             
             if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
@@ -241,7 +242,8 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
                 cell.venueLabel.isHidden = false
                 cell.addressLabel.isHidden = false
                 
-                cell.gameTimeLabel.text = dateFormatter.string(from: game.gameDate as Date)
+                cell.gameTimeLabel.text = game.isTimeTba ?
+                    "TBA" : dateFormatter.string(from: game.gameDate as Date)
                 
                 if let gameVenueId = game.gameVenueId, let venue: Venue = venueMap[gameVenueId]
                 {

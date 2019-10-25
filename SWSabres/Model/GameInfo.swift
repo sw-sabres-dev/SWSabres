@@ -45,6 +45,7 @@ struct GameInfo: ResponseJSONObjectSerializable
     
     static func getAllGameInfo(_ completionHandler: @escaping (Result<[GameInfo]>) -> Void)
     {
+        print("Getting all game info")
         Alamofire.request(GameInfo.baseEndpoint).getPostsReponseArray { response in
             completionHandler(response.result)
         }

@@ -20,6 +20,7 @@ struct Game: ResponseJSONObjectSerializable
     let gameDate: Date
     let gameScheduleId: String
     let isHomeGame: Bool
+    let isTimeTba: Bool
     let modified: Date
     var opponent: String?
     var teamId: String?
@@ -35,6 +36,7 @@ struct Game: ResponseJSONObjectSerializable
             return nil
         }
         self.gameId = gameId
+        print("Loading encoded game \(gameId)")
         
         guard let gamePostId = aDecoder.decodeObject(forKey: "gamePostId") as? NSNumber else
         {
@@ -59,7 +61,13 @@ struct Game: ResponseJSONObjectSerializable
             return nil
         }
         self.isHomeGame = isHomeGameNumber.boolValue
-        
+
+        if let isTimeTbaNumber = aDecoder.decodeObject(forKey: "isTimeTba") as? NSNumber {
+            self.isTimeTba = isTimeTbaNumber.boolValue
+        } else {
+            self.isTimeTba = false
+        }
+
         guard let decodedModified: Date = aDecoder.decodeObject(forKey: "modified") as? Date else
         {
             return nil
@@ -83,11 +91,13 @@ struct Game: ResponseJSONObjectSerializable
     
     func encodeWithCoder(_ aCoder: NSCoder)
     {
+        print("Encoding game \(gameId)")
         aCoder.encode(gameId, forKey: "gameId")
         aCoder.encode(NSNumber(value: gamePostId as Int), forKey: "gamePostId")
         aCoder.encode(gameDate, forKey: "gameDate")
         aCoder.encode(gameScheduleId, forKey: "gameScheduleId")
         aCoder.encode(NSNumber(value: isHomeGame as Bool), forKey: "isHomeGame")
+        aCoder.encode(NSNumber(value: isTimeTba as Bool), forKey: "isTimeTba")
         aCoder.encode(opponent, forKey: "opponent")
         aCoder.encode(teamId, forKey: "teamId")
         aCoder.encode(gameVenueId, forKey: "gameVenueId")
@@ -116,6 +126,7 @@ struct Game: ResponseJSONObjectSerializable
         {
             return nil
         }
+        print("Loading game \(game_postId) from JSON")
         
         guard let game_sched_id = json["custom_fields"]["game_sched_id"][0].string else
         {
@@ -148,6 +159,13 @@ struct Game: ResponseJSONObjectSerializable
         self.teamId = json["custom_fields"]["game_opponent_team"][0].string
         self.opponent = json["custom_fields"]["game_opponent"][0].string
         self.isHomeGame = json["custom_fields"]["game_is_home_game"][0].boolValue
+
+        if let game_time_tba = json["custom_fields"]["game_time_tba"][0].string {
+            self.isTimeTba = game_time_tba.uppercased().starts(with: "TB")
+        } else {
+            self.isTimeTba = false
+        }
+
         self.gameVenueId = json["custom_fields"]["game_gl_location"][0].string
         let result = json["custom_fields"]["game_result"][0].string
         
