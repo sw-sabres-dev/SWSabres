@@ -449,7 +449,7 @@ final class ContentManager
             let queueGroup = DispatchGroup()
             
             queueGroup.notify(queue: DispatchQueue.main) {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                UIApplication.shared.isNetworkActivityIndicatorVisible = true
             }
             
             let contentUpdate: ContentUpdate = ContentUpdate()
@@ -664,7 +664,7 @@ final class ContentManager
             queueGroup.enter()
             
             GameInfo.getAllGameInfo { (result) -> Void in
-                
+                print("Loading all games")
                 if let fetchedGameInfos = result.value
                 {
                     var fetchedGameInfoMap: [Int: GameInfo] = [Int: GameInfo]()

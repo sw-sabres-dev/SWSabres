@@ -111,6 +111,7 @@ class GameDetailViewController: UIViewController
     {
         if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager, let game = game
         {
+            print("Displaying game detail for \(game.gameId)")
             if let schedule: Schedule = contentManager.scheduleMap[game.gameScheduleId], let team: Team = contentManager.teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
                 if game.isHomeGame
@@ -250,7 +251,8 @@ class GameDetailViewController: UIViewController
                 dateFormatter.dateFormat = nil
                 dateFormatter.timeStyle = .short
                 
-                timeLabel.text = dateFormatter.string(from: game.gameDate as Date)
+                timeLabel.text = game.isTimeTba ?
+                    "TBA" : dateFormatter.string(from: game.gameDate as Date)
             }
             
             if let gameVenueId = game.gameVenueId, let venue: Venue = contentManager.venueMap[gameVenueId]

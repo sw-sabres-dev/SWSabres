@@ -154,6 +154,8 @@ final class ScheduleTableViewController: UITableViewController
             if let gamesOnDay: [Game] = gameSections[dayDate]
             {
                 let game = gamesOnDay[indexPath.row]
+
+                print("Displaying game \(game.gameId) in schedule table")
              
                 if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
                 {
@@ -220,7 +222,8 @@ final class ScheduleTableViewController: UITableViewController
                     cell.venueLabel.isHidden = false
                     cell.addressLabel.isHidden = false
 
-                    cell.gameTimeLabel.text = dateFormatter.string(from: game.gameDate as Date)
+                    cell.gameTimeLabel.text = game.isTimeTba ?
+                        "TBA" : dateFormatter.string(from: game.gameDate as Date)
                     
                     if let gameVenueId = game.gameVenueId, let venue: Venue = venueMap[gameVenueId]
                     {
