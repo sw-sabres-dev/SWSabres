@@ -289,7 +289,7 @@
 				TargetAttributes = {
 					8F9EC55B1BE5A7B500FB60CD = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = 9Q7555LQY8;
+						DevelopmentTeam = 47Q6UG6WP4;
 						LastSwiftMigration = 1110;
 					};
 				};
@@ -550,6 +550,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -568,6 +569,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
