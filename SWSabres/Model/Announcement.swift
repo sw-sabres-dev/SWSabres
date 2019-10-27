@@ -12,7 +12,7 @@ import Alamofire
 
 struct Announcement: ResponseJSONObjectSerializable
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=1&count=-1&include=slug,title,content,date,modified&orderby=date&order=DESC"
+    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&count=-1&include=slug,title,content,date,modified&orderby=date&order=DESC"
     
     let announcementId: String
     let title: String
@@ -110,15 +110,14 @@ struct Announcement: ResponseJSONObjectSerializable
         
         self.modified = parsedModified
         
-        let attributedOptions : [NSAttributedString.DocumentReadingOptionKey: Any] = [
-            NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html,
-            NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8
-        ]
-        
         guard let encodedTitle = announcement_title.data(using: String.Encoding.utf8) else
         {
             return nil
         }
+
+        let attributedOptions : [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType : NSAttributedString.DocumentType.html
+        ]
         
         if let attributedString = try? NSAttributedString(data: encodedTitle, options: attributedOptions, documentAttributes: nil)
         {
