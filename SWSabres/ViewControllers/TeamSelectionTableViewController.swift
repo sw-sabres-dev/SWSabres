@@ -23,6 +23,8 @@ class TeamSelectionTableViewController: UITableViewController
         if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
         {
             self.teams = contentManager.scheduleMap.values.compactMap { contentManager.teamMap[$0.scheduleTeamId] }
+            // dedupe scheduleIds
+            self.teams = Array(Set(self.teams))
             self.teams.sort {
                 
                 if let shortName1 = $0.shortName, let shortName2 = $1.shortName
