@@ -20,8 +20,9 @@ class TeamSelectionTableViewController: UITableViewController
         self.tableView.tintColor = AppTintColors.backgroundTintColor
         self.title = "Teams"
         
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate: AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager = delegate.contentManager
             self.teams = contentManager.scheduleMap.values.compactMap { contentManager.teamMap[$0.scheduleTeamId] }
             // dedupe scheduleIds
             self.teams = Array(Set(self.teams))
@@ -68,8 +69,9 @@ class TeamSelectionTableViewController: UITableViewController
 
         // Configure the cell...
 
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager = delegate.contentManager
             if indexPath.row == 0
             {
                 cell.textLabel?.text = "All Teams"
@@ -107,8 +109,9 @@ class TeamSelectionTableViewController: UITableViewController
     {
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager = delegate.contentManager
             if indexPath.row == 0
             {
                 switch contentManager.teamsFilter
