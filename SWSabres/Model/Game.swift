@@ -36,7 +36,6 @@ struct Game: ResponseJSONObjectSerializable
             return nil
         }
         self.gameId = gameId
-        print("Loading encoded game \(gameId)")
         
         guard let gamePostId = aDecoder.decodeObject(forKey: "gamePostId") as? NSNumber else
         {
@@ -91,7 +90,6 @@ struct Game: ResponseJSONObjectSerializable
     
     func encodeWithCoder(_ aCoder: NSCoder)
     {
-        print("Encoding game \(gameId)")
         aCoder.encode(gameId, forKey: "gameId")
         aCoder.encode(NSNumber(value: gamePostId as Int), forKey: "gamePostId")
         aCoder.encode(gameDate, forKey: "gameDate")

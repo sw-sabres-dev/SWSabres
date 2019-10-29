@@ -349,6 +349,14 @@ class GameDetailViewController: UIViewController
                             gamesOnDay.append(gameToUpdate)
                             
                             contentManager.gameSections[dayOfGame] = gamesOnDay.sorted { $0.gameDate.compare($1.gameDate) == .orderedAscending}
+
+                            // replace game in contentManager.games array with updated game
+                            contentManager.games.removeAll(where: { return $0.gameId == gameToUpdate.gameId })
+                            contentManager.games.append(gameToUpdate)
+
+                            // serialize updated games
+                            contentManager.saveGames()
+
                             self.game = gameToUpdate
                             
                             self.populateControlsWithGame()

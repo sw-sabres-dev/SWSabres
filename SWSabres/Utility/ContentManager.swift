@@ -1219,6 +1219,7 @@ final class ContentManager
     
     func saveGames()
     {
+        print("Saving all games")
         let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
         
         do
