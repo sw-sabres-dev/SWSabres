@@ -10,31 +10,6 @@ import UIKit
 import MapKit
 import Reachability
 
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
 class GameDetailViewController: UIViewController
 {
     @IBOutlet weak var scrollView: UIScrollView!
@@ -351,7 +326,14 @@ class GameDetailViewController: UIViewController
                 {
                     gameToUpdate.gameOurScore = gameToUpdate.isHomeGame ? firstScore : secondScore
                     gameToUpdate.gameOppScore = gameToUpdate.isHomeGame ? secondScore : firstScore
-                    gameToUpdate.gameResult = String(format: "%@: %@-%@", gameToUpdate.gameOurScore > gameToUpdate.gameOppScore ? "W" : "L", firstScoreString, secondScoreString)
+
+                    var gameWinOrLoss = "W"
+                    if let ourScore = gameToUpdate.gameOurScore, let oppScore = gameToUpdate.gameOppScore,
+                        ourScore < oppScore {
+                        gameWinOrLoss = "L"
+                    }
+
+                    gameToUpdate.gameResult = String(format: "%@: %@-%@", gameWinOrLoss, firstScoreString, secondScoreString)
                     
                     UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.navigationController?.view.isUserInteractionEnabled = false
@@ -372,7 +354,6 @@ class GameDetailViewController: UIViewController
                             self.populateControlsWithGame()
                             
                             contentManager.fireGameContentCallbacks()
-                            
                         }
                         else
                         {
