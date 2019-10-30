@@ -12,7 +12,7 @@ import Alamofire
 
 struct GameInfo: ResponseJSONObjectSerializable
 {
-    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&meta_key=game_unix_dtg&orderby=meta_value&order=ASC&include=id,modified"
+    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&include=id,modified"
     
     let gamePostId: Int
     let modified: Date
