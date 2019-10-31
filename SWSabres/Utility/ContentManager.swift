@@ -436,7 +436,7 @@ final class ContentManager
         if let lastCheckForContentUpdate: Date = ContentManager.lastCheckForContentUpdate
         {
             let interval: TimeInterval = Date().timeIntervalSince(lastCheckForContentUpdate)
-            if interval < (1 * 60 * 2)
+            if interval < 15
             {
                 return
             }
@@ -664,7 +664,6 @@ final class ContentManager
             queueGroup.enter()
             
             GameInfo.getAllGameInfo { (result) -> Void in
-                print("Loading all games")
                 if let fetchedGameInfos = result.value
                 {
                     var fetchedGameInfoMap: [Int: GameInfo] = [Int: GameInfo]()
@@ -672,25 +671,31 @@ final class ContentManager
                     var deletedGames: [Game] = [Game]()
                     var updatedKeys: [Int] = [Int]()
                     
+                    // create map of existing games
                     for game in self.games
                     {
                         gameMap[game.gamePostId] = game
                     }
                     
+                    // create map of fetched game infos
                     for fetchedGameInfo in fetchedGameInfos
                     {
                         fetchedGameInfoMap[fetchedGameInfo.gamePostId] = fetchedGameInfo
                         
+                        // if fetched ID not found, add to updated keys
                         if gameMap[fetchedGameInfo.gamePostId] == nil
                         {
                             updatedKeys.append(fetchedGameInfo.gamePostId)
                         }
                     }
                     
+                    // process list of existing games
                     for game in self.games
                     {
+                        
                         if let fetchedGameInfo: GameInfo = fetchedGameInfoMap[game.gamePostId]
                         {
+                            // if existing modtime not equal to fetched modtime, mark as updated
                             if game.modified != fetchedGameInfo.modified
                             {
                                 updatedKeys.append(fetchedGameInfo.gamePostId)
@@ -698,10 +703,12 @@ final class ContentManager
                         }
                         else
                         {
+                            // if existing game not found in fetched list, mark as removed
                             deletedGames.append(game)
                         }
                     }
                     
+                    // add lists to content update
                     if !deletedGames.isEmpty
                     {
                         contentUpdate.deletedGames = deletedGames
@@ -903,12 +910,16 @@ final class ContentManager
                 
                 if gameSet.count > 0
                 {
+                    // get list of unchanged games
                     var filteredGames = self.games.filter { return !gameSet.contains($0.gameId) }
+                    
+                    // add updated games
                     if let updatedGames = contentUpdate.updatedGames
                     {
                         filteredGames.append(contentsOf: updatedGames)
                     }
                     
+                    // sort games and "publish"
                     if !filteredGames.isEmpty
                     {
                         self.games = filteredGames.sorted { $0.gameDate.compare($1.gameDate as Date) == .orderedAscending}
