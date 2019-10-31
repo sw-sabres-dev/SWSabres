@@ -12,9 +12,10 @@ import Alamofire
 
 struct GameInfo: ResponseJSONObjectSerializable
 {
-    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&include=id,modified"
+    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1&include=id,modified,slug"
     
     let gamePostId: Int
+    let slug: String
     let modified: Date
     
     init?(json: SwiftyJSON.JSON)
@@ -30,6 +31,12 @@ struct GameInfo: ResponseJSONObjectSerializable
         {
             return nil
         }
+        
+        guard let slug = json["slug"].string else
+        {
+            return nil
+        }
+        self.slug = slug
         
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
