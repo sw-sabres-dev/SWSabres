@@ -1050,8 +1050,12 @@ final class ContentManager
             }
         }
         
-        for game in filteredGames
+        for game in filteredGames.sorted(by: { $0.gameDate.compare($1.gameDate) == .orderedAscending })
         {
+            let df = DateFormatter()
+            df.dateFormat = "MM/dd/yyyy HH:mm:ss"
+            let formattedDate = df.string(from: game.gameDate)
+            print("Adding game \(game.gameId) date: \(formattedDate)")
             if let gameDay: Date = ContentManager.dayForDate(game.gameDate as Date)
             {
                 if var gamesOnDay: [Game] = self.gameSections[gameDay]
