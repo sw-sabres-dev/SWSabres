@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891151C21BE925EB0039FE46 /* WordPressHelper.swift */; };
 		892AF9691BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */; };
 		89364B661BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */; };
 		8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */; };
@@ -26,7 +25,6 @@
 		89FE146C1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */; };
 		89FE146E1BE7EC0C006FC782 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FE146D1BE7EC0C006FC782 /* Announcement.swift */; };
 		8F281A8D1BF3D7350091EA67 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */; };
-		8F4C7AD81BF1A18800B81FE5 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4C7AD71BF1A18800B81FE5 /* GameInfo.swift */; };
 		8F58A4071BF429F900CCE069 /* GameCalendarDatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */; };
 		8F58A4091BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */; };
 		8F593EC01BF17EE100F02D54 /* ContentUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F593EBF1BF17EE100F02D54 /* ContentUpdate.swift */; };
@@ -52,7 +50,6 @@
 		3972306E0E67D2998630BE7E /* Pods_SWSabres.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SWSabres.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71748425912148E8E02A6693 /* Pods-SWSabres.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.debug.xcconfig"; path = "Target Support Files/Pods-SWSabres/Pods-SWSabres.debug.xcconfig"; sourceTree = "<group>"; };
 		7B82AFF3085E572D4919553C /* Pods-SWSabres.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SWSabres.release.xcconfig"; path = "Target Support Files/Pods-SWSabres/Pods-SWSabres.release.xcconfig"; sourceTree = "<group>"; };
-		891151C21BE925EB0039FE46 /* WordPressHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WordPressHelper.swift; path = SWSabres/WebAPI/WordPressHelper.swift; sourceTree = "<group>"; };
 		892AF9681BF65ABF005DE028 /* GameCalendarDatePickerDayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerDayCell.swift; path = Views/CalendarViews/GameCalendarDatePickerDayCell.swift; sourceTree = "<group>"; };
 		89364B651BEBF3E5007A3AD5 /* AnnouncementDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementDetailsViewController.swift; path = ViewControllers/AnnouncementDetailsViewController.swift; sourceTree = "<group>"; };
 		8963C2811BEA5AE600DF4B0A /* AppTintColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTintColors.swift; path = Utility/AppTintColors.swift; sourceTree = "<group>"; };
@@ -71,7 +68,6 @@
 		89FE146B1BE7EB8B006FC782 /* AnnouncementsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnnouncementsTableViewController.swift; path = ViewControllers/AnnouncementsTableViewController.swift; sourceTree = "<group>"; };
 		89FE146D1BE7EC0C006FC782 /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Announcement.swift; path = SWSabres/Model/Announcement.swift; sourceTree = "<group>"; };
 		8F281A8C1BF3D7350091EA67 /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarViewController.swift; path = ViewControllers/CalendarViewController.swift; sourceTree = "<group>"; };
-		8F4C7AD71BF1A18800B81FE5 /* GameInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameInfo.swift; path = SWSabres/Model/GameInfo.swift; sourceTree = "<group>"; };
 		8F58A4061BF429F900CCE069 /* GameCalendarDatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerView.swift; path = Views/CalendarViews/GameCalendarDatePickerView.swift; sourceTree = "<group>"; };
 		8F58A4081BF42A8800CCE069 /* GameCalendarDatePickerCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameCalendarDatePickerCollectionView.swift; path = Views/CalendarViews/GameCalendarDatePickerCollectionView.swift; sourceTree = "<group>"; };
 		8F593EBF1BF17EE100F02D54 /* ContentUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentUpdate.swift; path = Utility/ContentUpdate.swift; sourceTree = "<group>"; };
@@ -166,7 +162,6 @@
 			children = (
 				89FE146D1BE7EC0C006FC782 /* Announcement.swift */,
 				89E9FB581BE79FB200D031CE /* Game.swift */,
-				8F4C7AD71BF1A18800B81FE5 /* GameInfo.swift */,
 				89E9FB5A1BE7B4FB00D031CE /* Schedule.swift */,
 				8F95C2371BE81A6300126D4C /* Team.swift */,
 				8F78C1E41BFE17FD009ED4A2 /* UpdateGameScoreResult.swift */,
@@ -182,7 +177,6 @@
 				89E9FB611BE7CBC300D031CE /* Request-ResponseSerializer.swift */,
 				89E9FB5F1BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift */,
 				897B84041BE959B000CBEB90 /* UniqueObject.swift */,
-				891151C21BE925EB0039FE46 /* WordPressHelper.swift */,
 			);
 			name = WebAPI;
 			path = ..;
@@ -283,8 +277,9 @@
 		8F9EC5541BE5A7B500FB60CD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = swdev.net;
 				TargetAttributes = {
 					8F9EC55B1BE5A7B500FB60CD = {
@@ -335,20 +330,22 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-SWSabres/Pods-SWSabres-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
+				"${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework",
 				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
 				"${BUILT_PRODUCTS_DIR}/RSDayFlow/RSDayFlow.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/THLabel/THLabel.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINOperation.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSDayFlow.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THLabel.framework",
 			);
@@ -386,7 +383,6 @@
 				8963C2821BEA5AE600DF4B0A /* AppTintColors.swift in Sources */,
 				89E9FB5B1BE7B4FB00D031CE /* Schedule.swift in Sources */,
 				8F88C88B1C7BB42200814823 /* AppTabControllerDelegate.swift in Sources */,
-				891151C31BE925EB0039FE46 /* WordPressHelper.swift in Sources */,
 				89E9FB551BE79D7F00D031CE /* ScheduleTableViewController.swift in Sources */,
 				89E9FB601BE7CB2E00D031CE /* ResponseJSONObjectSerializable.swift in Sources */,
 				8963C2851BEA62A700DF4B0A /* GameLogoTableViewCell.swift in Sources */,
@@ -414,7 +410,6 @@
 				8F95C2381BE81A6300126D4C /* Team.swift in Sources */,
 				8F281A8D1BF3D7350091EA67 /* CalendarViewController.swift in Sources */,
 				8F9EC5601BE5A7B500FB60CD /* AppDelegate.swift in Sources */,
-				8F4C7AD81BF1A18800B81FE5 /* GameInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +457,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -486,7 +482,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -517,6 +513,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -535,7 +532,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -554,14 +551,21 @@
 				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 5.0;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -575,14 +579,21 @@
 				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 5.0;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

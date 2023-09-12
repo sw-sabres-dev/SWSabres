@@ -1,22 +1,28 @@
 PODS:
-  - Alamofire (4.9.0)
-  - FLAnimatedImage (1.0.12)
-  - PINCache (2.3)
-  - PINRemoteImage (1.2.3):
-    - PINRemoteImage/FLAnimatedImage (= 1.2.3)
-  - PINRemoteImage/Core (1.2.3):
-    - PINCache (>= 2.1)
-  - PINRemoteImage/FLAnimatedImage (1.2.3):
-    - FLAnimatedImage (>= 1.0)
+  - Alamofire (4.9.1)
+  - PINCache (3.0.3):
+    - PINCache/Arc-exception-safe (= 3.0.3)
+    - PINCache/Core (= 3.0.3)
+  - PINCache/Arc-exception-safe (3.0.3):
+    - PINCache/Core
+  - PINCache/Core (3.0.3):
+    - PINOperation (~> 1.2.1)
+  - PINOperation (1.2.2)
+  - PINRemoteImage (3.0.3):
+    - PINRemoteImage/PINCache (= 3.0.3)
+  - PINRemoteImage/Core (3.0.3):
+    - PINOperation
+  - PINRemoteImage/PINCache (3.0.3):
+    - PINCache (~> 3.0.3)
     - PINRemoteImage/Core
   - ReachabilitySwift (4.3.1)
-  - RSDayFlow (1.7.1)
+  - RSDayFlow (1.8.0)
   - SwiftyJSON (4.3.0)
-  - THLabel (1.4.9)
+  - THLabel (1.4.10)
 
 DEPENDENCIES:
   - Alamofire (~> 4.9.0)
-  - PINRemoteImage (~> 1.2)
+  - PINRemoteImage (~> 3.0.3)
   - ReachabilitySwift (~> 4.3.0)
   - RSDayFlow (~> 1.2)
   - SwiftyJSON (~> 4.3.0)
@@ -25,8 +31,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - FLAnimatedImage
     - PINCache
+    - PINOperation
     - PINRemoteImage
     - ReachabilitySwift
     - RSDayFlow
@@ -34,15 +40,15 @@ SPEC REPOS:
     - THLabel
 
 SPEC CHECKSUMS:
-  Alamofire: afc3e7c6db61476cb45cdd23fed06bad03bbc321
-  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
-  PINRemoteImage: b6f6b10a704fa8c68ead4d7e55b68dbde79b3686
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
+  PINOperation: daa34d4aa1d8449089be7d405b9d974abc4724c6
+  PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
   ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
-  RSDayFlow: c4d27ab9d40773bdd53ace3a5accb807c070d4bf
+  RSDayFlow: 3f320945d56fb08231b8204309a564aecca9787f
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
-  THLabel: f922f41441f1ca66beef5a6c629060470fcb5c0b
+  THLabel: 3fc93a0f01f74e4eec7574df2819e576d57150b3
 
-PODFILE CHECKSUM: dbc9a0d7cc2c95582a774fdf4bacb879af72854d
+PODFILE CHECKSUM: 3a46239d25b4d1d1a2df617ab667e41b0625d41d
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.12.1
