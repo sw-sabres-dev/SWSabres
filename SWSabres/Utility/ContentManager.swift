@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 final class ContentManager
 {
@@ -124,57 +125,6 @@ final class ContentManager
             return documentFolder.stringByAppendingPathComponent("contentCache")
         }
     }
-
-    /*
-    func loadAnnouncements(completionBlock: () -> ())
-    {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            
-            let fileManager: NSFileManager = NSFileManager()
-            
-            do
-            {
-                try FileUtil.ensureFolder(ContentManager.contentPath)
-            }
-            catch
-            {
-                return
-            }
-            
-            let announcementsFileName = ContentManager.contentPath.stringByAppendingPathComponent("announcements.ser")
-            
-            if fileManager.fileExistsAtPath(announcementsFileName)
-            {
-                self.loadAnnouncements()
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    
-                    completionBlock()
-                    //self.tableView.reloadData()
-                }
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                
-                Announcement.getAnnouncements { (result) -> Void in
-                    
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    
-                    if let fetchedAnnouncements = result.value
-                    {
-                        self.announcements = fetchedAnnouncements
-                        
-                        self.saveAnnouncements()
-                        
-                        completionBlock()
-                        //self.tableView.reloadData()
-                    }
-                }
-            }
-        }
-    }
-    */
     
     func loadContent()
     {
@@ -183,6 +133,7 @@ final class ContentManager
         let userDefaults = UserDefaults.standard
         if userDefaults.integer(forKey: "resetContentCount") == 0
         {
+            os_log("Found resetContentCount = 0, deleting saved data at games.ser")
             let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
             let fileManager: FileManager = FileManager()
             if fileManager.fileExists(atPath: gamesFileName)
@@ -221,6 +172,7 @@ final class ContentManager
             
             if fileManager.fileExists(atPath: announcementsFileName) && fileManager.fileExists(atPath: venuesFileName) && fileManager.fileExists(atPath: teamsFileName) && fileManager.fileExists(atPath: schedulesFileName) && fileManager.fileExists(atPath: gamesFileName)
             {
+                os_log("Loading saved data from file")
                 do
                 {
                     try self.loadAnnouncements()
@@ -315,47 +267,35 @@ final class ContentManager
 
     func downloadContent(_ completionBlock: @escaping () -> ())
     {
-        DispatchQueue.global().async {
+        os_log("Downloading updated content")
+        Task.detached(priority: .background) {
             let queueGroup = DispatchGroup()
-            
-            queueGroup.notify(queue: DispatchQueue.main) {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            }
 
             queueGroup.enter()
             
-            Announcement.getAnnouncements { (result) -> Void in
+            if let announcements = await Announcement.getAnnouncements() {
+                self.announcements = announcements
                 
-                if let fetchedAnnouncements = result.value
+                self.saveAnnouncements()
+                
+                if let announcementsLoadedCallback = self.announcementsLoadedCallback
                 {
-                    self.announcements = fetchedAnnouncements
-                    
-                    self.saveAnnouncements()
-                    
-                    if let announcementsLoadedCallback = self.announcementsLoadedCallback
-                    {
-                        DispatchQueue.main.async {
-                            
-                            announcementsLoadedCallback()
-                        }
+                    DispatchQueue.main.async {
+                        
+                        announcementsLoadedCallback()
                     }
-                    
-                    queueGroup.leave()
                 }
+                queueGroup.leave()
             }
             
             queueGroup.enter()
             
-            Venue.getVenues { (result) -> Void in
+            if let venues = await Venue.getVenues() {
+                self.venueMap.removeAll()
                 
-                if let venues = result.value
+                for venue in venues
                 {
-                    self.venueMap.removeAll()
-                    
-                    for venue in venues
-                    {
-                        self.venueMap[venue.venueId] = venue
-                    }
+                    self.venueMap[venue.venueId] = venue
                 }
                 
                 self.saveVenues()
@@ -365,16 +305,12 @@ final class ContentManager
             
             queueGroup.enter()
             
-            Team.getTeams { (result) -> Void in
+            if let teams = await Team.getTeams() {
+                self.teamMap.removeAll()
                 
-                if let teams = result.value
+                for team in teams
                 {
-                    self.teamMap.removeAll()
-                    
-                    for team in teams
-                    {
-                        self.teamMap[team.teamId] = team
-                    }
+                    self.teamMap[team.teamId] = team
                 }
                 
                 self.saveTeams()
@@ -384,16 +320,12 @@ final class ContentManager
             
             queueGroup.enter()
             
-            Schedule.getSchedules { (result) -> Void in
+            if let schedules = await Schedule.getSchedules() {
+                self.scheduleMap.removeAll()
                 
-                if let schedules = result.value
+                for schedule in schedules
                 {
-                    self.scheduleMap.removeAll()
-                    
-                    for schedule in schedules
-                    {
-                        self.scheduleMap[schedule.scheduleId] = schedule
-                    }
+                    self.scheduleMap[schedule.scheduleId] = schedule
                 }
                 
                 self.saveSchedules()
@@ -403,27 +335,22 @@ final class ContentManager
             
             queueGroup.enter()
             
-            Game.getAllGames { (result) -> Void in
+            if let fetchedGames = await Game.getAllGames() {
                 
-                if let fetchedGames = result.value
-                {
-                    self.games = fetchedGames
-                    
-                    let userDefaults = UserDefaults.standard
-                    self.loadPersistedTeamsFilter(userDefaults)
-                    self.loadGameLocationFiler(userDefaults)
-                    
-                    self.filterGames()
-                }
+                self.games = fetchedGames
+                
+                let userDefaults = UserDefaults.standard
+                self.loadPersistedTeamsFilter(userDefaults)
+                self.loadGameLocationFiler(userDefaults)
+                
+                self.filterGames()
                 
                 self.saveGames()
                 
                 queueGroup.leave()
             }
             
-            queueGroup.notify(queue: DispatchQueue.main) {
-                
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            DispatchQueue.main.async {
                 ContentManager.lastCheckForContentUpdate = Date()
                 completionBlock()
             }
@@ -438,224 +365,206 @@ final class ContentManager
             let interval: TimeInterval = Date().timeIntervalSince(lastCheckForContentUpdate)
             if interval < 15
             {
+                os_log("Not ready to update, interval = %d", interval)
                 return
             }
+            os_log("Performing update")
         }
         
         self.downloadContentError = .none
         
-        DispatchQueue.global().async {
+        Task.detached(priority: .background) {
             
             let queueGroup = DispatchGroup()
-            
-            queueGroup.notify(queue: DispatchQueue.main) {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            }
             
             let contentUpdate: ContentUpdate = ContentUpdate()
             
             queueGroup.enter()
             
-            Announcement.getAnnouncements { (result) -> Void in
+            if let fetchedAnnouncements = await Announcement.getAnnouncements() {
+                var fetchedAnnouncementMap: [String: Announcement] = [String: Announcement]()
+                var updatedAnnouncements: [Announcement] = [Announcement]()
+                var deletedAnnouncements: [Announcement] = [Announcement]()
                 
-                if let fetchedAnnouncements = result.value
+                for fetchedAnnouncement in fetchedAnnouncements
                 {
-                    var fetchedAnnouncementMap: [String: Announcement] = [String: Announcement]()
-                    var updatedAnnouncements: [Announcement] = [Announcement]()
-                    var deletedAnnouncements: [Announcement] = [Announcement]()
+                    fetchedAnnouncementMap[fetchedAnnouncement.announcementId] = fetchedAnnouncement
                     
-                    for fetchedAnnouncement in fetchedAnnouncements
+                    var found: Bool = false
+                    
+                    for announcement in self.announcements
                     {
-                        fetchedAnnouncementMap[fetchedAnnouncement.announcementId] = fetchedAnnouncement
-                        
-                        var found: Bool = false
-                        
-                        for announcement in self.announcements
+                        if announcement.announcementId == fetchedAnnouncement.announcementId
                         {
-                            if announcement.announcementId == fetchedAnnouncement.announcementId
-                            {
-                                found = true
-                                break;
-                            }
+                            found = true
+                            break;
                         }
-                        
-                        if !found
+                    }
+                    
+                    if !found
+                    {
+                        updatedAnnouncements.append(fetchedAnnouncement)
+                    }
+                }
+                
+                for announcement in self.announcements
+                {
+                    if let fetchedAnnouncement: Announcement = fetchedAnnouncementMap[announcement.announcementId]
+                    {
+                        if announcement.modified != fetchedAnnouncement.modified
                         {
                             updatedAnnouncements.append(fetchedAnnouncement)
                         }
                     }
-                    
-                    for announcement in self.announcements
+                    else
                     {
-                        if let fetchedAnnouncement: Announcement = fetchedAnnouncementMap[announcement.announcementId]
-                        {
-                            if announcement.modified != fetchedAnnouncement.modified
-                            {
-                                updatedAnnouncements.append(fetchedAnnouncement)
-                            }
-                        }
-                        else
-                        {
-                            deletedAnnouncements.append(announcement)
-                        }
+                        deletedAnnouncements.append(announcement)
                     }
-                    
-                    if !updatedAnnouncements.isEmpty
-                    {
-                        contentUpdate.updatedAnnouncements = updatedAnnouncements
-                    }
-                    
-                    if !deletedAnnouncements.isEmpty
-                    {
-                        contentUpdate.deletedAnnouncements = deletedAnnouncements
-                    }
-                    
-                    queueGroup.leave()
                 }
+                
+                if !updatedAnnouncements.isEmpty
+                {
+                    contentUpdate.updatedAnnouncements = updatedAnnouncements
+                }
+                
+                if !deletedAnnouncements.isEmpty
+                {
+                    contentUpdate.deletedAnnouncements = deletedAnnouncements
+                }
+                
+                queueGroup.leave()
             }
             
             queueGroup.enter()
             
-            Venue.getVenues { (result) -> Void in
+            if let fetchedVenues = await Venue.getVenues() {
+                var fetchedVenueMap: [String: Venue] = [String: Venue]()
+                var updatedVenues: [Venue] = [Venue]()
+                var deletedVenues: [Venue] = [Venue]()
                 
-                if let fetchedVenues = result.value
+                for fetchedVenue in fetchedVenues
                 {
-                    var fetchedVenueMap: [String: Venue] = [String: Venue]()
-                    var updatedVenues: [Venue] = [Venue]()
-                    var deletedVenues: [Venue] = [Venue]()
+                    fetchedVenueMap[fetchedVenue.venueId] = fetchedVenue
                     
-                    for fetchedVenue in fetchedVenues
+                    if self.venueMap[fetchedVenue.venueId] == nil
                     {
-                        fetchedVenueMap[fetchedVenue.venueId] = fetchedVenue
-                        
-                        if self.venueMap[fetchedVenue.venueId] == nil
+                        updatedVenues.append(fetchedVenue)
+                    }
+                }
+                
+                for venue in self.venueMap.values
+                {
+                    if let fetchedVenue: Venue = fetchedVenueMap[venue.venueId]
+                    {
+                        if venue.modified != fetchedVenue.modified
                         {
                             updatedVenues.append(fetchedVenue)
                         }
                     }
-                    
-                    for venue in self.venueMap.values
+                    else
                     {
-                        if let fetchedVenue: Venue = fetchedVenueMap[venue.venueId]
-                        {
-                            if venue.modified != fetchedVenue.modified
-                            {
-                                updatedVenues.append(fetchedVenue)
-                            }
-                        }
-                        else
-                        {
-                            deletedVenues.append(venue)
-                        }
+                        deletedVenues.append(venue)
                     }
-                    
-                    if !updatedVenues.isEmpty
-                    {
-                        contentUpdate.updatedVenues = updatedVenues
-                    }
-                    
-                    if !deletedVenues.isEmpty
-                    {
-                        contentUpdate.deletedVenues = deletedVenues
-                    }
+                }
+                
+                if !updatedVenues.isEmpty
+                {
+                    contentUpdate.updatedVenues = updatedVenues
+                }
+                
+                if !deletedVenues.isEmpty
+                {
+                    contentUpdate.deletedVenues = deletedVenues
                 }
                 
                 queueGroup.leave()
             }
-            
             queueGroup.enter()
             
-            Team.getTeams { (result) -> Void in
+            if let fetchedTeams = await Team.getTeams() {
+                var fetchedTeamsMap: [String: Team] = [String: Team]()
+                var updatedTeams: [Team] = [Team]()
+                var deletedTeams: [Team] = [Team]()
                 
-                if let fetchedTeams = result.value
+                for fetchedTeam in fetchedTeams
                 {
-                    var fetchedTeamsMap: [String: Team] = [String: Team]()
-                    var updatedTeams: [Team] = [Team]()
-                    var deletedTeams: [Team] = [Team]()
+                    fetchedTeamsMap[fetchedTeam.teamId] = fetchedTeam
                     
-                    for fetchedTeam in fetchedTeams
+                    if self.teamMap[fetchedTeam.teamId] == nil
                     {
-                        fetchedTeamsMap[fetchedTeam.teamId] = fetchedTeam
-                        
-                        if self.teamMap[fetchedTeam.teamId] == nil
+                        updatedTeams.append(fetchedTeam)
+                    }
+                }
+                
+                for team in self.teamMap.values
+                {
+                    if let fetchedTeam: Team = fetchedTeamsMap[team.teamId]
+                    {
+                        if team.modified != fetchedTeam.modified
                         {
                             updatedTeams.append(fetchedTeam)
                         }
                     }
-                    
-                    for team in self.teamMap.values
+                    else
                     {
-                        if let fetchedTeam: Team = fetchedTeamsMap[team.teamId]
-                        {
-                            if team.modified != fetchedTeam.modified
-                            {
-                                updatedTeams.append(fetchedTeam)
-                            }
-                        }
-                        else
-                        {
-                            deletedTeams.append(team)
-                        }
-                    }
-                    
-                    if !updatedTeams.isEmpty
-                    {
-                        contentUpdate.updatedTeams = updatedTeams
-                    }
-                    
-                    if !deletedTeams.isEmpty
-                    {
-                        contentUpdate.deletedTeams = deletedTeams
+                        deletedTeams.append(team)
                     }
                 }
                 
+                if !updatedTeams.isEmpty
+                {
+                    contentUpdate.updatedTeams = updatedTeams
+                }
+                
+                if !deletedTeams.isEmpty
+                {
+                    contentUpdate.deletedTeams = deletedTeams
+                }
+
                 queueGroup.leave()
             }
             
             queueGroup.enter()
             
-            Schedule.getSchedules { (result) -> Void in
+            if let fetchedSchedules = await Schedule.getSchedules() {
                 
-                if let fetchedSchedules = result.value
+                var fetchedSchedulesMap: [String: Schedule] = [String: Schedule]()
+                var updatedSchedules: [Schedule] = [Schedule]()
+                var deletedSchedules: [Schedule] = [Schedule]()
+                
+                for fetchedSchedule in fetchedSchedules
                 {
-                    var fetchedSchedulesMap: [String: Schedule] = [String: Schedule]()
-                    var updatedSchedules: [Schedule] = [Schedule]()
-                    var deletedSchedules: [Schedule] = [Schedule]()
+                    fetchedSchedulesMap[fetchedSchedule.scheduleId] = fetchedSchedule
                     
-                    for fetchedSchedule in fetchedSchedules
+                    if self.scheduleMap[fetchedSchedule.scheduleId] == nil
                     {
-                        fetchedSchedulesMap[fetchedSchedule.scheduleId] = fetchedSchedule
-                        
-                        if self.scheduleMap[fetchedSchedule.scheduleId] == nil
+                        updatedSchedules.append(fetchedSchedule)
+                    }
+                }
+                
+                for schedule in self.scheduleMap.values
+                {
+                    if let fetchedSchedule: Schedule = fetchedSchedulesMap[schedule.scheduleId]
+                    {
+                        if schedule.modified != fetchedSchedule.modified
                         {
                             updatedSchedules.append(fetchedSchedule)
                         }
                     }
-                    
-                    for schedule in self.scheduleMap.values
+                    else
                     {
-                        if let fetchedSchedule: Schedule = fetchedSchedulesMap[schedule.scheduleId]
-                        {
-                            if schedule.modified != fetchedSchedule.modified
-                            {
-                                updatedSchedules.append(fetchedSchedule)
-                            }
-                        }
-                        else
-                        {
-                            deletedSchedules.append(schedule)
-                        }
+                        deletedSchedules.append(schedule)
                     }
-                    
-                    if !updatedSchedules.isEmpty
-                    {
-                        contentUpdate.updatedSchedules = updatedSchedules
-                    }
-                    
-                    if !deletedSchedules.isEmpty
-                    {
-                        contentUpdate.deletedSchedules = deletedSchedules
-                    }
+                }
+                
+                if !updatedSchedules.isEmpty
+                {
+                    contentUpdate.updatedSchedules = updatedSchedules
+                }
+                
+                if !deletedSchedules.isEmpty
+                {
+                    contentUpdate.deletedSchedules = deletedSchedules
                 }
                 
                 queueGroup.leave()
@@ -663,107 +572,12 @@ final class ContentManager
             
             queueGroup.enter()
             
-            GameInfo.getAllGameInfo { (result) -> Void in
-                if let fetchedGameInfos = result.value
-                {
-                    var fetchedGameInfoMap: [Int: GameInfo] = [Int: GameInfo]()
-                    var gameMap: [Int: Game] = [Int: Game]()
-                    var deletedGames: [Game] = [Game]()
-                    var updatedKeys: [Int] = [Int]()
-                    
-                    // create map of existing games
-                    for game in self.games
-                    {
-                        gameMap[game.gamePostId] = game
-                    }
-                    
-                    // create map of fetched game infos
-                    for fetchedGameInfo in fetchedGameInfos
-                    {
-                        fetchedGameInfoMap[fetchedGameInfo.gamePostId] = fetchedGameInfo
-                        
-                        // if fetched ID not found, add to updated keys
-                        if gameMap[fetchedGameInfo.gamePostId] == nil
-                        {
-                            updatedKeys.append(fetchedGameInfo.gamePostId)
-                        }
-                    }
-                    
-                    // process list of existing games
-                    for game in self.games
-                    {
-                        
-                        if let fetchedGameInfo: GameInfo = fetchedGameInfoMap[game.gamePostId]
-                        {
-                            // if existing modtime not equal to fetched modtime, mark as updated
-                            if game.modified != fetchedGameInfo.modified
-                            {
-                                updatedKeys.append(fetchedGameInfo.gamePostId)
-                            }
-                        }
-                        else
-                        {
-                            // if existing game not found in fetched list, mark as removed
-                            deletedGames.append(game)
-                        }
-                    }
-                    
-                    // add lists to content update
-                    if !deletedGames.isEmpty
-                    {
-                        contentUpdate.deletedGames = deletedGames
-                    }
-                    
-                    if !updatedKeys.isEmpty
-                    {
-                        contentUpdate.updatedGameKeys = updatedKeys
-                    }
-                }
-                
-                
-                queueGroup.leave()
-            }
+            contentUpdate.allGames = await Game.getAllGames()
             
-            
-            queueGroup.wait(timeout: DispatchTime.distantFuture)
-            
-            if let gameKeys = contentUpdate.updatedGameKeys, gameKeys.count > 0
-            {
-                queueGroup.enter()
-                
-                if gameKeys.count < 10
-                {
-                    Game.getGamesForKeys(gameKeys) { (result) -> Void in
-                        
-                        if let fetchedGames = result.value
-                        {
-                            contentUpdate.updatedGames = fetchedGames
-                        }
-                        
-                        queueGroup.leave()
-                    }
-                }
-                else
-                {
-                    // There are too many updates to retreive by key just get all the games.
-                    
-                    Game.getAllGames { (result) -> Void in
-                        
-                        if let fetchedGames = result.value
-                        {
-                            contentUpdate.allGames = fetchedGames
-                        }
-                        
-                        queueGroup.leave()
-                    }
-                }
-                
-            }
+            queueGroup.leave()
             
             queueGroup.notify(queue: DispatchQueue.main) {
-                
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                
+
                 ContentManager.lastCheckForContentUpdate = Date()
                 
                 if contentUpdate.isContentUpdated
@@ -1055,7 +869,7 @@ final class ContentManager
             let df = DateFormatter()
             df.dateFormat = "MM/dd/yyyy HH:mm:ss"
             let formattedDate = df.string(from: game.gameDate)
-            print("Adding game \(game.gameId) date: \(formattedDate)")
+            os_log("Adding game %@ date: %@", log: .default, game.gameId, formattedDate)
             if let gameDay: Date = ContentManager.dayForDate(game.gameDate as Date)
             {
                 if var gamesOnDay: [Game] = self.gameSections[gameDay]
@@ -1234,7 +1048,7 @@ final class ContentManager
     
     func saveGames()
     {
-        print("Saving all games")
+        os_log("Saving all games")
         let gamesFileName = ContentManager.contentPath.stringByAppendingPathComponent("games.ser")
         
         do

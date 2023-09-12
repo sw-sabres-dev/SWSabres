@@ -8,11 +8,11 @@
 
 import Foundation
 import SwiftyJSON
-import Alamofire
+import os.log
 
 struct Venue: ResponseJSONObjectSerializable, UniqueObject
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_venue&count=-1&include=slug,title,modified,custom_fields&custom_fields=venue_street,venue_city,venue_state,venue_zip"
+    static let endpoint: String = "https://southwakesabres.org/wp-json/wp/v2/mstw_ss_venue"
     
     let venueId: String
     let address: String
@@ -80,22 +80,22 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
     
     init?(json: SwiftyJSON.JSON)
     {
-        guard let venue_street = json["custom_fields"]["venue_street"][0].string else
+        guard let venue_street = json["custom_fields"]["venue_street"].string else
         {
             return nil
         }
         
-        guard let venue_city = json["custom_fields"]["venue_city"][0].string else
+        guard let venue_city = json["custom_fields"]["venue_city"].string else
         {
             return nil
         }
         
-        guard let venue_state = json["custom_fields"]["venue_state"][0].string else
+        guard let venue_state = json["custom_fields"]["venue_state"].string else
         {
             return nil
         }
         
-        guard let venue_zip = json["custom_fields"]["venue_zip"][0].string else
+        guard let venue_zip = json["custom_fields"]["venue_zip"].string else
         {
             return nil
         }
@@ -105,7 +105,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         
-        guard let venue_title = json["title"].string else
+        guard let venue_title = json["title"]["rendered"].string else
         {
             return nil
         }
@@ -117,7 +117,7 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         
         guard let parsedModified: Date = dateFormatter.date(from: venue_modified) else
         {
@@ -149,6 +149,8 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         self.city = venue_city
         self.state = venue_state
         self.zip = venue_zip
+        
+        os_log("Loaded venue: %@", venueId)
     }
  
     var uniqueId: String
@@ -159,11 +161,8 @@ struct Venue: ResponseJSONObjectSerializable, UniqueObject
         }
     }
     
-    static func getVenues(_ completionHandler: @escaping (Result<[Venue]>) -> Void)
-    {
-        Alamofire.request(Venue.endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
+    static func getVenues() async -> [Venue]? {
+        return await Venue.getObjects(Venue.endpoint)
     }
     
     @objc(_TtCV8SWSabres5Venue6Helper)class Helper: NSObject, NSCoding

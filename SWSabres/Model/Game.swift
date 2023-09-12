@@ -9,10 +9,11 @@
 import Foundation
 import SwiftyJSON
 import Alamofire
+import os.log
 
 struct Game: ResponseJSONObjectSerializable
 {
-    static let baseEndpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_game&count=-1"
+    static let baseEndpoint: String = "https://southwakesabres.org/wp-json/wp/v2/mstw_ss_game"
     static let baseUpdateGameScoreEndPoint = "http://www.southwakesabres.org/updateGameResults.php"
     
     let gameId: String
@@ -115,18 +116,19 @@ struct Game: ResponseJSONObjectSerializable
 
     init?(json: SwiftyJSON.JSON)
     {
+        
         guard let game_slug = json["slug"].string else
         {
             return nil
         }
+        os_log("Loading game %@", log: .default, game_slug)
 
         guard let game_postId = json["id"].int else
         {
             return nil
         }
-        print("Loading game \(game_postId) from JSON")
-        
-        guard let game_sched_id = json["custom_fields"]["game_sched_id"][0].string else
+
+        guard let game_sched_id = json["custom_fields"]["game_sched_id"].string else
         {
             return nil
         }
@@ -138,7 +140,7 @@ struct Game: ResponseJSONObjectSerializable
         
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         
         guard let parsedModified: Date = dateFormatter.date(from: game_modified) else
         {
@@ -147,34 +149,34 @@ struct Game: ResponseJSONObjectSerializable
         
         self.modified = parsedModified
         
-        var game_unix_dtg = json["custom_fields"]["game_unix_dtg"][0].doubleValue
+        var game_unix_dtg = json["custom_fields"]["game_unix_dtg"].doubleValue
         
         if game_unix_dtg == 0
         {
             return nil
         }
         
-        self.teamId = json["custom_fields"]["game_opponent_team"][0].string
-        self.opponent = json["custom_fields"]["game_opponent"][0].string
-        self.isHomeGame = json["custom_fields"]["game_is_home_game"][0].boolValue
+        self.teamId = json["custom_fields"]["game_opponent_team"].string
+        self.opponent = json["custom_fields"]["game_opponent"].string
+        self.isHomeGame = json["custom_fields"]["game_is_home_game"].boolValue
 
-        if let game_time_tba = json["custom_fields"]["game_time_tba"][0].string {
+        if let game_time_tba = json["custom_fields"]["game_time_tba"].string {
             self.isTimeTba = game_time_tba.uppercased().starts(with: "TB")
         } else {
             self.isTimeTba = false
         }
 
-        self.gameVenueId = json["custom_fields"]["game_gl_location"][0].string
-        let result = json["custom_fields"]["game_result"][0].string
+        self.gameVenueId = json["custom_fields"]["game_gl_location"].string
+        let result = json["custom_fields"]["game_result"].string
         
         self.gameResult = !String.isNilOrEmpty(result) ? result : nil
         
-        if let game_our_scoreString = json["custom_fields"]["game_our_score"][0].string, !game_our_scoreString.isEmpty
+        if let game_our_scoreString = json["custom_fields"]["game_our_score"].string, !game_our_scoreString.isEmpty
         {
             self.gameOurScore = Int(game_our_scoreString)
         }
         
-        if let game_opp_scoreString = json["custom_fields"]["game_opp_score"][0].string, !game_opp_scoreString.isEmpty
+        if let game_opp_scoreString = json["custom_fields"]["game_opp_score"].string, !game_opp_scoreString.isEmpty
         {
             self.gameOppScore = Int(game_opp_scoreString)
         }
@@ -196,33 +198,9 @@ struct Game: ResponseJSONObjectSerializable
         self.gamePostId = game_postId
         self.gameScheduleId = game_sched_id
     }
-    
-    static func endpointForScheduleId(_ scheduleId: String) -> String
-    {
-        return baseEndpoint + "&meta_key=game_sched_id&meta_value=\(scheduleId)"
-    }
-    
-    static func getAllGames(_ completionHandler: @escaping (Result<[Game]>) -> Void)
-    {
-        let endpoint: String = String(format: "%@&include=id,slug,modified,custom_fields", Game.baseEndpoint)
-        
-        Alamofire.request(endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
-    }
-    
-    static func getGamesForKeys(_ keys: [Int], completionHandler: @escaping (Result<[Game]>) -> Void)
-    {
-        var endpoint: String = Game.baseEndpoint
-        
-        for key in keys
-        {
-            endpoint += "&post__in[]=\(key)"
-        }
-        
-        Alamofire.request(endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
+
+    static func getAllGames() async -> [Game]? {
+        return await Game.getObjects(Game.baseEndpoint)
     }
     
     static func updateGameScore(_ game: Game, completionHandler: @escaping (Result<UpdateGameScoreResult>) -> Void)

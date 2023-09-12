@@ -32,8 +32,9 @@ class GameFilterTableViewController: UITableViewController {
 
     @objc func getCurrentTeamsFilterString() -> String
     {
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             switch contentManager.teamsFilter
             {
                 case .selected(let teams):
@@ -54,8 +55,9 @@ class GameFilterTableViewController: UITableViewController {
     
     @objc func getCurrentGameLocationFilterString() -> String
     {
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             switch contentManager.gameLocationFilter
             {
                 case .all:

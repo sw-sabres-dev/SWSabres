@@ -45,8 +45,9 @@ class GameLocationFilterTableViewController: UITableViewController
 
         // Configure the cell...
 
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             switch indexPath.row
             {
             case 0:
@@ -77,8 +78,9 @@ class GameLocationFilterTableViewController: UITableViewController
     {
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             switch indexPath.row
             {
             case 0:

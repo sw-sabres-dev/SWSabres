@@ -8,11 +8,11 @@
 
 import Foundation
 import SwiftyJSON
-import Alamofire
+import os.log
 
 struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable, Hashable
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_team&count=-1&include=slug,modified,custom_fields&custom_fields=team_full_name,team_alt_logo,team_short_name"
+    static let endpoint: String = "https://southwakesabres.org/wp-json/wp/v2/mstw_ss_team"
     
     let teamId: String
     let name: String
@@ -55,7 +55,7 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable, Hashable
     
     init?(json: SwiftyJSON.JSON)
     {
-        guard let team_full_name = json["custom_fields"]["team_full_name"][0].string else
+        guard let team_full_name = json["custom_fields"]["team_full_name"].string else
         {
             return nil
         }
@@ -72,7 +72,7 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable, Hashable
         
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         
         guard let parsedModified: Date = dateFormatter.date(from: team_modified) else
         {
@@ -84,9 +84,9 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable, Hashable
         self.teamId = team_slug
         self.name = team_full_name
 
-        self.logoUrl = json["custom_fields"]["team_alt_logo"][0].string
+        self.logoUrl = json["custom_fields"]["team_alt_logo"].string
 
-        var team_short_name = json["custom_fields"]["team_short_name"][0].string
+        var team_short_name = json["custom_fields"]["team_short_name"].string
         
         if String.isNilOrEmpty(team_short_name)
         {
@@ -104,11 +104,8 @@ struct Team: ResponseJSONObjectSerializable, UniqueObject, Equatable, Hashable
         }
     }
     
-    static func getTeams(_ completionHandler: @escaping (Result<[Team]>) -> Void)
-    {
-        Alamofire.request(Team.endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
+    static func getTeams() async -> [Team]? {
+        return await Team.getObjects(Team.endpoint)
     }
     
     @objc(_TtCV8SWSabres4Team6Helper)class Helper: NSObject, NSCoding

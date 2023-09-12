@@ -8,11 +8,11 @@
 
 import Foundation
 import SwiftyJSON
-import Alamofire
+import os.log
 
 struct Announcement: ResponseJSONObjectSerializable
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&count=-1&include=slug,title,content,date,modified&orderby=date&order=DESC"
+    static let endpoint: String = "https://southwakesabres.org/wp-json/wp/v2/posts"
     
     let announcementId: String
     let title: String
@@ -69,12 +69,12 @@ struct Announcement: ResponseJSONObjectSerializable
             return nil
         }
         
-        guard let announcement_title = json["title"].string else
+        guard let announcement_title = json["title"]["rendered"].string else
         {
             return nil
         }
         
-        guard let announcement_content = json["content"].string else
+        guard let announcement_content = json["content"]["rendered"].string else
         {
             return nil
         }
@@ -95,7 +95,7 @@ struct Announcement: ResponseJSONObjectSerializable
         let dateFormatter: DateFormatter = DateFormatter()
         //dateFormatter.timeZone = NSTimeZone(name: "EST")
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         guard let parsedDate:Date = dateFormatter.date(from: announcement_date) else
         {
             return nil
@@ -129,11 +129,8 @@ struct Announcement: ResponseJSONObjectSerializable
         }
     }
     
-    static func getAnnouncements(_ completionHandler: @escaping (Result<[Announcement]>) -> Void)
-    {
-        Alamofire.request(Announcement.endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
+    static func getAnnouncements() async -> [Announcement]? {
+        return await Announcement.getObjects(Announcement.endpoint)
     }
     
     @objc(_TtCV8SWSabres12Announcement6Helper)class Helper: NSObject, NSCoding

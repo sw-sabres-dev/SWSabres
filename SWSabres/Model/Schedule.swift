@@ -8,11 +8,11 @@
 
 import Foundation
 import SwiftyJSON
-import Alamofire
+import os.log
 
 struct Schedule: ResponseJSONObjectSerializable, UniqueObject
 {
-    static let endpoint: String = "http://www.southwakesabres.org/?json=get_posts&post_type=mstw_ss_schedule&count=-1&include=slug,title,modified,custom_fields&custom_fields=schedule_team"
+    static let endpoint: String = "https://southwakesabres.org/wp-json/wp/v2/mstw_ss_schedule"
     
     let scheduleId: String
     let title: String
@@ -61,12 +61,12 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
             return nil
         }
         
-        guard let schedule_title = json["title"].string else
+        guard let schedule_title = json["title"]["rendered"].string else
         {
             return nil
         }
         
-        guard let schedule_team = json["custom_fields"]["schedule_team"][0].string else
+        guard let schedule_team = json["custom_fields"]["schedule_team"].string else
         {
             return nil
         }
@@ -78,7 +78,7 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH:mm:ss"
         
         guard let parsedModified: Date = dateFormatter.date(from: schedule_modified) else
         {
@@ -117,11 +117,8 @@ struct Schedule: ResponseJSONObjectSerializable, UniqueObject
         }
     }
 
-    static func getSchedules(_ completionHandler: @escaping (Result<[Schedule]>) -> Void)
-    {
-        Alamofire.request(Schedule.endpoint).getPostsReponseArray { response in
-            completionHandler(response.result)
-        }
+    static func getSchedules() async -> [Schedule]? {
+        return await Schedule.getObjects(Schedule.endpoint)
     }
     
     @objc(_TtCV8SWSabres8Schedule6Helper)class Helper: NSObject, NSCoding

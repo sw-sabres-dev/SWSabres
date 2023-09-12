@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import Alamofire
 import SwiftyJSON
 import PINRemoteImage
+import os.log
 
 final class ScheduleTableViewController: UITableViewController
 {
@@ -155,26 +155,27 @@ final class ScheduleTableViewController: UITableViewController
             {
                 let game = gamesOnDay[indexPath.row]
 
-                print("Displaying game \(game.gameId) in schedule table")
+                os_log("Displaying game @% in schedule table", game.gameId)
              
                 if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
                 {
                     if game.isHomeGame
                     {
-                        cell.firstLogo.pin_setImage(from: nil)
+                        cell.firstLogo.pin_clearImages()
                         cell.firstLogo.image = UIImage(named: "logo")
                         cell.firstLogoLabel.text = shortName
                     }
                     else
                     {
-                        cell.secondLogo.pin_setImage(from: nil)
+                        cell.secondLogo.pin_clearImages()
                         cell.secondLogo.image = UIImage(named: "logo")
                         cell.secondLogoLabel.text = shortName
                     }
                 }
                 
-                if let teamId: String = game.teamId, let team: Team = teamMap[teamId], let teamName: String = team.shortName ?? team.name
+                if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
                 {
+                    let teamName: String = team.shortName ?? team.name
                     var logoUrl: URL? = nil
                     
                     if let teamLogoUrlString: String = team.logoUrl
@@ -199,13 +200,13 @@ final class ScheduleTableViewController: UITableViewController
                 {
                     if game.isHomeGame
                     {
-                        cell.secondLogo.pin_setImage(from: nil)
+                        cell.secondLogo.pin_clearImages()
                         cell.secondLogo.image = nil
                         cell.secondLogoLabel.text = opponent
                     }
                     else
                     {
-                        cell.firstLogo.pin_setImage(from: nil)
+                        cell.firstLogo.pin_clearImages()
                         cell.firstLogo.image = nil
                         cell.firstLogoLabel.text = opponent
                     }
@@ -240,10 +241,10 @@ final class ScheduleTableViewController: UITableViewController
             else
             {
                 cell.firstLogoLabel.text = ""
-                cell.firstLogo.pin_setImage(from: nil)
+                cell.firstLogo.pin_clearImages()
                 cell.firstLogo.image = nil
                 cell.secondLogoLabel.text = ""
-                cell.secondLogo.pin_setImage(from: nil)
+                cell.secondLogo.pin_clearImages()
                 cell.secondLogo.image = nil
                 cell.gameTimeLabel.text = ""
                 cell.venueLabel.text = ""

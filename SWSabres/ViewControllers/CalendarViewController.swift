@@ -8,6 +8,7 @@
 
 import UIKit
 import RSDayFlow
+import os.log
 
 class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDFDatePickerViewDataSource, UITableViewDataSource
 {
@@ -37,8 +38,9 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
 
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             delegate.contentManager.loadContentCalendarCallback = {
                 
                 self.gameSections = contentManager.gameSections as [Date : [Game]]
@@ -104,8 +106,9 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
     
     @IBAction func prepareForUnwind(_ segue: UIStoryboardSegue)
     {
-        if let gameFilterViewController = segue.source as? GameFilterTableViewController, let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager
+        if let gameFilterViewController = segue.source as? GameFilterTableViewController, let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate
         {
+            let contentManager: ContentManager = delegate.contentManager
             if gameFilterViewController.filtersChanged
             {
                 contentManager.refreshGamesWithFilter()
@@ -175,26 +178,27 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
         if let cell: GameLogoTableViewCell = baseCell as? GameLogoTableViewCell
         {
             let game = selectedDaysGames[indexPath.row]
-            print("Displaying game \(game.gameId) in calendar view")
+            os_log("Displaying game %@ in calendar view", log: .default, game.gameId)
             
             if let schedule: Schedule = scheduleMap[game.gameScheduleId], let team: Team = teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
                 if game.isHomeGame
                 {
-                    cell.firstLogo.pin_setImage(from: nil)
+                    cell.firstLogo.pin_clearImages()
                     cell.firstLogo.image = UIImage(named: "logo")
                     cell.firstLogoLabel.text = shortName
                 }
                 else
                 {
-                    cell.secondLogo.pin_setImage(from: nil)
+                    cell.secondLogo.pin_clearImages()
                     cell.secondLogo.image = UIImage(named: "logo")
                     cell.secondLogoLabel.text = shortName
                 }
             }
             
-            if let teamId: String = game.teamId, let team: Team = teamMap[teamId], let teamName: String = team.shortName ?? team.name
+            if let teamId: String = game.teamId, let team: Team = teamMap[teamId]
             {
+                let teamName: String = team.shortName ?? team.name
                 var logoUrl: URL? = nil
                 
                 if let teamLogoUrlString: String = team.logoUrl
@@ -219,13 +223,13 @@ class CalendarViewController: UIViewController, RSDFDatePickerViewDelegate, RSDF
             {
                 if game.isHomeGame
                 {
-                    cell.secondLogo.pin_setImage(from: nil)
+                    cell.secondLogo.pin_clearImages()
                     cell.secondLogo.image = nil
                     cell.secondLogoLabel.text = opponent
                 }
                 else
                 {
-                    cell.firstLogo.pin_setImage(from: nil)
+                    cell.firstLogo.pin_clearImages()
                     cell.firstLogo.image = nil
                     cell.firstLogoLabel.text = opponent
                 }

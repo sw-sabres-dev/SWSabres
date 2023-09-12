@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import Reachability
+import os.log
 
 class GameDetailViewController: UIViewController
 {
@@ -84,9 +85,10 @@ class GameDetailViewController: UIViewController
 
     @objc func populateControlsWithGame()
     {
-        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager, let game = game
+        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let game = game
         {
-            print("Displaying game detail for \(game.gameId)")
+            let contentManager: ContentManager = delegate.contentManager
+            os_log("Displaying game detail for %@", game.gameId)
             if let schedule: Schedule = contentManager.scheduleMap[game.gameScheduleId], let team: Team = contentManager.teamMap[schedule.scheduleTeamId], let shortName = team.shortName
             {
                 if game.isHomeGame
@@ -119,8 +121,9 @@ class GameDetailViewController: UIViewController
                 }
             }
             
-            if let teamId: String = game.teamId, let team: Team = contentManager.teamMap[teamId], let teamName: String = team.shortName ?? team.name
+            if let teamId: String = game.teamId, let team: Team = contentManager.teamMap[teamId]
             {
+                let teamName: String = team.shortName ?? team.name
                 var logoUrl: URL? = nil
                 
                 if let teamLogoUrlString: String = team.logoUrl
@@ -163,7 +166,7 @@ class GameDetailViewController: UIViewController
             {
                 if game.isHomeGame
                 {
-                    secondLogo.pin_setImage(from: nil)
+                    secondLogo.pin_clearImages()
                     secondLogo.image = nil
                     secondLogoLabel.text = opponent
                     if let score = game.gameOppScore
@@ -178,7 +181,7 @@ class GameDetailViewController: UIViewController
                 }
                 else
                 {
-                    firstLogo.pin_setImage(from: nil)
+                    secondLogo.pin_clearImages()
                     firstLogo.image = nil
                     firstLogoLabel.text = opponent
                     if let score = game.gameOppScore
@@ -343,8 +346,11 @@ class GameDetailViewController: UIViewController
                         UIApplication.shared.isNetworkActivityIndicatorVisible = false
                         self.navigationController?.view.isUserInteractionEnabled = true
                         
-                        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let contentManager: ContentManager = delegate.contentManager, let updateGameScoreResult = result.value, let dayOfGame: Date = ContentManager.dayForDate(gameToUpdate.gameDate), var gamesOnDay: [Game] = contentManager.gameSections[dayOfGame], updateGameScoreResult.success
+                        if let delegate:AppDelegate = UIApplication.shared.delegate as? AppDelegate, let updateGameScoreResult = result.value, let dayOfGame: Date = ContentManager.dayForDate(gameToUpdate.gameDate), updateGameScoreResult.success
                         {
+                            let contentManager: ContentManager = delegate.contentManager
+                            var gamesOnDay: [Game] = contentManager.gameSections[dayOfGame] ?? []
+                            
                             gamesOnDay = gamesOnDay.filter { return $0.gamePostId != gameToUpdate.gamePostId }
                             gamesOnDay.append(gameToUpdate)
                             
