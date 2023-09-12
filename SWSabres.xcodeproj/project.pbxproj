@@ -547,7 +547,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
@@ -556,7 +556,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
@@ -575,7 +575,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = 47Q6UG6WP4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SWSabres/Info.plist;
@@ -584,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = net.swdev.SWSabres;
 				PRODUCT_MODULE_NAME = SWSabres;
 				PRODUCT_NAME = "Go Sabres";
